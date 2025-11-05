@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FishingWear - Strona główna</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      th:href="@{/libs/bootstrap/bootstrap.min.css}"
+      href="../static/libs/bootstrap/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/css/style.css}"
+      href="../static/css/style.css"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img
+            src="../static/images/logo/logo.png"
+            alt="Logo"
+            class="d-inline-block align-text-top"
+          />
+          <span class="brand-name">FishingWear</span>
+        </a>
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownKurtki"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Odzież
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownKurtki">
+                <li><a class="dropdown-item" href="#">T-shirt</a></li>
+                <li><a class="dropdown-item" href="#">Bluzy</a></li>
+                <li><a class="dropdown-item" href="#">Czapki</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Zobacz wszystko</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Gadżety</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Akcesoria</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Promocje</a>
+            </li>
+          </ul>
+
+          <form class="d-flex mx-auto my-2 my-lg-0" role="search">
+            <div class="input-group search-group">
+              <input
+                class="form-control"
+                type="search"
+                placeholder="Szukaj produktu..."
+                aria-label="Szukaj"
+              />
+              <button class="btn btn-search" type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+          </form>
+
+          <div
+            class="navbar-actions d-flex align-items-center justify-content-center justify-content-lg-end ms-lg-3 mt-4 mt-lg-0"
+          >
+            <a
+              class="nav-link position-relative fs-4"
+              href="/koszyk"
+              aria-label="Koszyk"
+            >
+              <i class="fa-solid fa-basket-shopping"></i>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-small badge-accent"
+              >
+                5
+                <span class="visually-hidden">przedmioty w koszyku</span>
+              </span>
+            </a>
+
+            <div class="nav-item dropdown ms-3">
+              <a
+                class="nav-link dropdown-toggle fs-4"
+                href="#"
+                id="profileDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Mój profil"
+              >
+                <i class="fa-solid fa-user"></i>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="profileDropdown"
+              >
+                <li><a class="dropdown-item" href="#">Moje konto</a></li>
+                <li><a class="dropdown-item" href="#">Historia zamówień</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+  
+
+
+
+<div class="container my-5">
+    
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script
+      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
+      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
+    ></script>
+    <script th:src="@{/js/slider.js}" src="../static/js/slider.js"></script>
+  </body>
+</html>
