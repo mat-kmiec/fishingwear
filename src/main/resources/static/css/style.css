@@ -537,6 +537,7 @@ body {
 .product-card .card-title {
   min-height: 3rem;
   -webkit-line-clamp: 2;
+  display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
