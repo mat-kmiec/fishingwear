@@ -848,3 +848,73 @@ body {
   font-size: 3rem;
   color: var(--color-primary);
 }
+
+.cart-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.25rem rgba(var(--color-primary), 0.25);
+}
+
+.quantity-selector .btn {
+  border-color: #ddd;
+  color: var(--color-neutral-dark);
+}
+.quantity-selector .btn:hover {
+  background-color: var(--color-neutral-light);
+}
+.quantity-selector .form-control {
+  max-width: 60px;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+}
+.quantity-selector .form-control:focus {
+  box-shadow: none;
+  border-color: #ddd;
+}
+
+.cart-item-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.cart-item-title {
+  font-weight: 700;
+  color: var(--color-neutral-dark);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.cart-item-title:hover {
+  color: var(--color-primary);
+}
+.cart-item-details {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.cart-item-price {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.summary-total {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.btn-remove {
+  color: #dc3545;
+  font-size: 1.25rem;
+}
+.btn-remove:hover {
+  color: #a71d2a;
+}
