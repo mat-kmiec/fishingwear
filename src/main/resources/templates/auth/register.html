@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FishingWear - Logowanie</title>
+    <title>FishingWear - Rejestracja</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -24,7 +24,6 @@
       th:href="@{/css/slider.css}"
       href="../../static/css/slider.css"
     />
-
 
   </head>
   <body style="background-color: var(--color-neutral-light)">
@@ -144,15 +143,15 @@
               
               <div class="col-lg-6 d-none d-lg-block">
                 <img
-                  src="../../static/images/other/login.jpg"
-                  alt="Zdjęcie w tle logowania"
+                  src="../../static/images/other/register.jpg"
+                  alt="Mężczyzna łowiący ryby"
                   class="login-image"
                 />
               </div>
 
               <div class="col-lg-6">
                 <div class="p-4 p-md-5 bg-white">
-                  <h2 class="h3 fw-bold mb-4 text-center">Witaj z powrotem!</h2>
+                  <h2 class="h3 fw-bold mb-4 text-center">Dołącz do nas!</h2>
 
                   <a href="#" class="btn btn-facebook w-100 mb-2">
                     <i class="fa-brands fa-facebook me-2"></i> Kontynuuj przez
@@ -166,6 +165,17 @@
                   <hr class="hr-text" data-content="LUB" />
 
                   <form action="#" method="post">
+                    <div class="form-floating mb-3">
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        placeholder="Twoja imię"
+                        required
+                      />
+                      <label for="name">Imię</label>
+                    </div>
+                    
                     <div class="form-floating mb-3">
                       <input
                         type="email"
@@ -186,24 +196,36 @@
                       />
                       <label for="password">Hasło</label>
                     </div>
+                    <div class="form-floating mb-3">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password-repeat"
+                        placeholder="Powtórz hasło"
+                        required
+                      />
+                      <label for="password-repeat">Powtórz hasło</label>
+                    </div>
 
-                    <div class="text-end mb-3">
-                      <a href="#" class="btn-link-custom"
-                        >Nie pamiętasz hasła?</a
-                      >
+                    <div class="form-check mb-3">
+                      <input class="form-check-input" type="checkbox" value="" id="terms" required>
+                      <label class="form-check-label text-secondary" for="terms">
+                        Akceptuję <a href="#" class="btn-link-custom">Regulamin</a> i 
+                        <a href="#" class="btn-link-custom">Politykę Prywatności</a>.
+                      </label>
                     </div>
 
                     <button
                       type="submit"
                       class="btn btn-primary-custom w-100 btn-lg"
                     >
-                      Zaloguj się
+                      Zarejestruj się
                     </button>
                   </form>
 
                   <p class="text-center text-secondary mt-4 mb-0">
-                    Nie masz jeszcze konta?
-                    <a href="#" class="btn-link-custom">Zarejestruj się</a>
+                    Masz już konto?
+                    <a href="#" class="btn-link-custom">Zaloguj się</a>
                   </p>
                 </div>
               </div>
