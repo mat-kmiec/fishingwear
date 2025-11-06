@@ -918,3 +918,53 @@ body {
 .btn-remove:hover {
   color: #a71d2a;
 }
+
+/* === STYLE ZE STRONY LOGOWANIA (RECYKLING) === */
+
+/* Karta (dla tła sekcji i podsumowania) */
+.checkout-card {
+  border: none;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  overflow: hidden;
+}
+
+/* Pola formularza - focus */
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.25rem rgba(var(--color-primary), 0.25);
+}
+.form-floating > .form-control:focus ~ label {
+  color: var(--color-primary);
+}
+
+.method-card {
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.method-card:hover {
+  background-color: var(--color-neutral-light);
+}
+
+.method-card-input {
+  display: none;
+}
+
+.method-card-input:checked + .method-card {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary), 0.25);
+  background-color: #fff;
+}
+
+.summary-total {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.summary-product-item {
+  font-size: 0.9rem;
+}
