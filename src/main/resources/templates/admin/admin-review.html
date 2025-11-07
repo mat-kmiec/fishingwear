@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FishingWear - Panel Admina - Przegląd</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      th:href="@{/libs/bootstrap/bootstrap.min.css}"
+      href="../../static/libs/bootstrap/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/css/style.css}"
+      href="../../static/css/style.css"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/css/slider.css}"
+      href="../../static/css/slider.css"
+    />
+
+    <style>
+    
+
+    </style>
+  </head>
+  <body style="background-color: var(--color-neutral-light)">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img
+            src="../../static/images/logo/logo.png"
+            alt="Logo"
+            class="d-inline-block align-text-top"
+          />
+          <span class="brand-name">FishingWear</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownKurtki"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Odzież
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownKurtki">
+                <li><a class="dropdown-item" href="#">T-shirt</a></li>
+                <li><a class="dropdown-item" href="#">Bluzy</a></li>
+                <li><a class="dropdown-item" href="#">Czapki</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Zobacz wszystko</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Gadżety</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Akcesoria</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Promocje</a>
+            </li>
+          </ul>
+          <form class="d-flex mx-auto my-2 my-lg-0" role="search">
+            <div class="input-group search-group">
+              <input
+                class="form-control"
+                type="search"
+                placeholder="Szukaj produktu..."
+                aria-label="Szukaj"
+              />
+              <button class="btn btn-search" type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+          </form>
+          <div
+            class="navbar-actions d-flex align-items-center justify-content-center justify-content-lg-end ms-lg-3 mt-4 mt-lg-0"
+          >
+            <a
+              class="nav-link position-relative fs-4"
+              href="/koszyk"
+              aria-label="Koszyk"
+            >
+              <i class="fa-solid fa-basket-shopping"></i>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-small badge-accent"
+              >
+                5
+                <span class="visually-hidden">przedmioty w koszyku</span>
+              </span>
+            </a>
+            <div class="nav-item dropdown ms-3">
+              <a
+                class="nav-link dropdown-toggle fs-4"
+                href="#"
+                id="profileDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Mój profil"
+              >
+                <i class="fa-solid fa-user"></i>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="profileDropdown"
+              >
+                <li><a class="dropdown-item" href="#">Moje konto</a></li>
+                <li><a class="dropdown-item" href="#">Historia zamówień</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container my-5">
+      <div class="row g-4">
+        
+        <div class="col-lg-4">
+          <div class="account-card p-4">
+            <h3 class="h5 mb-3" style="color: var(--color-accent);">Panel Administratora</h3>
+            <nav class="nav nav-pills flex-column account-nav">
+              <a class="nav-link active" aria-current="page" href="#">Przegląd</a>
+              <a class="nav-link" href="#">Zarządzanie Użytkownikami</a>
+              <a class="nav-link" href="#">Zarządzanie Blogiem</a>
+              <a class="nav-link" href="#">Zarządzanie Zamówieniami</a>
+
+              <hr class="my-2">
+              <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">Sklep</h6>
+              <a class="nav-link submenu-link" href="#">Wszystkie produkty</a>
+              <a class="nav-link submenu-link" href="#">Dodaj nowy</a>
+              <a class="nav-link submenu-link" href="#">Kategorie produktów</a>
+              
+              <hr class="my-2">
+              <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">Slider</h6>
+              <a class="nav-link" href="#">Dodaj zdjęcia do bazy</a>
+              <a class="nav-link" href="#">Kolekcje Slidera</a>
+              
+              <hr class="my-2">
+              <a class="nav-link" href="#">Ustawienia Główne</a>
+              <a class="nav-link" href="#">Wyloguj się</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <h2 class="h3 mb-4">Przegląd</h2>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <div class="stat-card">
+                <div class="stat-card-icon icon-primary">
+                  <i class="fa-solid fa-sack-dollar"></i>
+                </div>
+                <div class="stat-card-info">
+                  <span class="stat-value">12 450 zł</span>
+                  <span class="stat-label">Przychód (Listopad)</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="stat-card">
+                <div class="stat-card-icon icon-warning">
+                  <i class="fa-solid fa-inbox"></i>
+                </div>
+                <div class="stat-card-info">
+                  <span class="stat-value">2</span>
+                  <span class="stat-label">Nowe zamówienia</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="stat-card">
+                <div class="stat-card-icon icon-accent">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-card-info">
+                  <span class="stat-value">18</span>
+                  <span class="stat-label">Nowi użytkownicy</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="stat-card">
+                <div class="stat-card-icon icon-danger">
+                  <i class="fa-solid fa-battery-empty"></i>
+                </div>
+                <div class="stat-card-info">
+                  <span class="stat-value">2</span>
+                  <span class="stat-label">Produkty na wyczerpaniu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row g-4">
+            
+            <div class="col-lg-12">
+              <div class="account-card p-4">
+                <h3 class="h5 mb-3">Nowe zamówienia</h3>
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Klient</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Suma</th>
+                        <th scope="col">Akcje</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="fw-bold">#10025</td>
+                        <td>Alicja Testowa</td>
+                        <td><span class="badge badge-status new">Nowe</span></td>
+                        <td class="fw-bold">299,98 zł</td>
+                        <td><a href="#" class="btn-link-custom">Zarządzaj</a></td>
+                      </tr>
+                      <tr>
+                        <td class="fw-bold">#10024</td>
+                        <td>Marek Cierpliwy</td>
+                        <td><span class="badge badge-status new">Oczekuje na płatność</span></td>
+                        <td class="fw-bold">99,99 zł</td>
+                        <td><a href="#" class="btn-link-custom">Zarządzaj</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="text-end mt-2">
+                  <a href="#" class="btn-link-custom">Zobacz wszystkie zamówienia <i class="fa-solid fa-arrow-right fa-xs ms-1"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="account-card p-4">
+                <h3 class="h5 mb-3">Ostatnia aktywność</h3>
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                      <i class="fa-solid fa-comment me-2 text-secondary"></i>
+                      Nowy komentarz od "Bartek Ryba"
+                    </div>
+                    <a href="#" class="btn-link-custom">Moderuj</a>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                      <i class="fa-solid fa-file-lines me-2 text-secondary"></i>
+                      Nowy post od "Bartek Ryba" czeka na akceptację
+                    </div>
+                    <a href="#" class="btn-link-custom">Przejrzyj</a>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div>
+                      <i class="fa-solid fa-user-plus me-2 text-secondary"></i>
+                      Zarejestrował się nowy użytkownik "AnnaW"
+                    </div>
+                    <a href="#" class="btn-link-custom">Zobacz</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer-custom py-5 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+            <a class="navbar-brand d-flex align-items-center mb-3" href="#">
+              <img
+                src="../../static/images/logo/logo.png"
+                alt="Logo FishingWear"
+                class="footer-logo me-2"
+              />
+              <span class="footer-brand-name">FishingWear</span>
+            </a>
+            <p class="text-white-50 small">
+              Twoje źródło profesjonalnej odzieży i akcesoriów wędkarskich.
+              Przygotuj się na każdą przygodę nad wodą z FishingWear.
+            </p>
+            <div class="social-icons mt-3">
+              <a href="#" class="text-white me-3"
+                ><i class="fa-brands fa-facebook-f fa-lg"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="fa-brands fa-instagram fa-lg"></i
+              ></a>
+              <a href="#" class="text-white"
+                ><i class="fa-brands fa-youtube fa-lg"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
+            <h5 class="text-white mb-3">Informacje</h5>
+            <ul class="list-unstyled footer-links">
+              <li><a href="#" class="text-white-50">O nas</a></li>
+              <li><a href="#" class="text-white-50">Kontakt</a></li>
+              <li><a href="#" class="text-white-50">Regulamin</a></li>
+              <li>
+                <a href="#" class="text-white-50">Polityka prywatności</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
+            <h5 class="text-white mb-3">Pomoc</h5>
+            <ul class="list-unstyled footer-links">
+              <li><a href="#" class="text-white-50">Dostawa i płatność</a></li>
+              <li><a href="#" class="text-white-50">Zwroty i reklamacje</a></li>
+              <li>
+                <a href="#" class="text-white-50"
+                  >Najczęściej zadawane pytania</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5 class="text-white mb-3">Skontaktuj się z nami</h5>
+            <ul class="list-unstyled text-white-50">
+              <li>
+                <i class="fa-solid fa-location-dot me-2"></i> ul. Przykładowa
+                123, 00-001 Miasto
+              </li>
+              <li><i class="fa-solid fa-phone me-2"></i> +48 123 456 789</li>
+              <li>
+                <i class="fa-solid fa-envelope me-2"></i> info@fishingwear.pl
+              </li>
+              <li>
+                <i class="fa-solid fa-clock me-2"></i> Pn-Pt: 9:00 - 17:00
+              </li>
+            </ul>
+          </div>
+        </div>
+        <hr class="footer-divider my-4" />
+        <div class="align-items-center">
+          <div class="text-center mb-3 mb-md-0">
+            <p class="text-white-50 small mb-0">
+              &copy; 2025 FishingWear. Wszelkie prawa zastrzeżone.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
+      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
+    ></script>
+    
+  </body>
+</html>

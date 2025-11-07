@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FishingWear - Panel Admina - Użytkownicy</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      th:href="@{/libs/bootstrap/bootstrap.min.css}"
+      href="../../static/libs/bootstrap/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/css/style.css}"
+      href="../../static/css/style.css"
+    />
+    <link
+      rel="stylesheet"
+      th:href="@{/css/slider.css}"
+      href="../../static/css/slider.css"
+    />
+
+  </head>
+  <body style="background-color: var(--color-neutral-light)">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img
+            src="../static/images/logo/logo.png"
+            alt="Logo"
+            class="d-inline-block align-text-top"
+          />
+          <span class="brand-name">FishingWear</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdownKurtki"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Odzież
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownKurtki">
+                <li><a class="dropdown-item" href="#">T-shirt</a></li>
+                <li><a class="dropdown-item" href="#">Bluzy</a></li>
+                <li><a class="dropdown-item" href="#">Czapki</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Zobacz wszystko</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Gadżety</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Akcesoria</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Promocje</a>
+            </li>
+          </ul>
+          <form class="d-flex mx-auto my-2 my-lg-0" role="search">
+            <div class="input-group search-group">
+              <input
+                class="form-control"
+                type="search"
+                placeholder="Szukaj produktu..."
+                aria-label="Szukaj"
+              />
+              <button class="btn btn-search" type="submit">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+          </form>
+          <div
+            class="navbar-actions d-flex align-items-center justify-content-center justify-content-lg-end ms-lg-3 mt-4 mt-lg-0"
+          >
+            <a
+              class="nav-link position-relative fs-4"
+              href="/koszyk"
+              aria-label="Koszyk"
+            >
+              <i class="fa-solid fa-basket-shopping"></i>
+              <span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-small badge-accent"
+              >
+                5
+                <span class="visually-hidden">przedmioty w koszyku</span>
+              </span>
+            </a>
+            <div class="nav-item dropdown ms-3">
+              <a
+                class="nav-link dropdown-toggle fs-4"
+                href="#"
+                id="profileDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Mój profil"
+              >
+                <i class="fa-solid fa-user"></i>
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="profileDropdown"
+              >
+                <li><a class="dropdown-item" href="#">Moje konto</a></li>
+                <li><a class="dropdown-item" href="#">Historia zamówień</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container my-5">
+      <div class="row g-4">
+        
+        <div class="col-lg-4">
+          <div class="account-card p-4">
+            <h3 class="h5 mb-3" style="color: var(--color-accent);">Panel Administratora</h3>
+            <nav class="nav nav-pills flex-column account-nav">
+              <a class="nav-link" href="#">Przegląd</a>
+              <a class="nav-link active" aria-current="page" href="#">Zarządzanie Użytkownikami</a>
+              <a class="nav-link" href="#">Zarządzanie Blogiem</a>
+              
+              <hr class="my-2">
+              <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">Slider</h6>
+              <a class="nav-link" href="#">Dodaj zdjęcia do bazy</a>
+              <a class="nav-link" href="#">Kolekcje Slidera</a>
+              
+              <hr class="my-2">
+              <a class="nav-link" href="#">Ustawienia Główne</a>
+              <a class="nav-link" href="#">Wyloguj się</a>
+            </nav>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <h2 class="h3 mb-4">Zarządzanie Użytkownikami</h2>
+
+          <div class="account-card p-4 p-md-5">
+            
+            <div class="input-group mb-4">
+              <input type="text" class="form-control" placeholder="Szukaj użytkownika (email, nazwa)..." aria-label="Szukaj użytkownika">
+              <button class="btn btn-primary-custom" type="button" id="button-search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">Użytkownik</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Rola</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Akcje</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  <tr>
+                    <td class="fw-bold">Jan Kowalski (Ty)</td>
+                    <td>jan.kowalski@admin.pl</td>
+                    <td>
+                      <span class="badge badge-role badge-role-admin">Admin</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-status completed">Aktywny</span>
+                    </td>
+                    <td>
+                      <button class="btn-link-custom" disabled>Edytuj</button>
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td class="fw-bold">Adam Kruk</td>
+                    <td>adam.kruk@mod.pl</td>
+                    <td>
+                      <span class="badge badge-role badge-role-mod">Moderator</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-status completed">Aktywny</span>
+                    </td>
+                    <td>
+                      <a href="#" class="btn-link-custom me-2" 
+                         data-bs-toggle="modal" data-bs-target="#editUserModal"
+                         data-name="Adam Kruk" data-email="adam.kruk@mod.pl" data-role="Moderator">Edytuj</a>
+                      <a href="#" class="btn-link-custom text-warning me-2">Zablokuj</a>
+                      <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                    </td>
+                  </tr>
+                  
+                  <tr>
+                    <td class="fw-bold">Bartek Ryba</td>
+                    <td>bartek.ryba@user.pl</td>
+                    <td>
+                      <span class="badge badge-role badge-role-user">Użytkownik</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-status completed">Aktywny</span>
+                    </td>
+                    <td>
+                      <a href="#" class="btn-link-custom me-2"
+                         data-bs-toggle="modal" data-bs-target="#editUserModal"
+                         data-name="Bartek Ryba" data-email="bartek.ryba@user.pl" data-role="Użytkownik">Edytuj</a>
+                      <a href="#" class="btn-link-custom text-warning me-2">Zablokuj</a>
+                      <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td class="fw-bold">Piotr Nowak</td>
+                    <td>piotr.nowak@user.pl</td>
+                    <td>
+                      <span class="badge badge-role badge-role-user">Użytkownik</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-status cancelled">Zablokowany</span>
+                    </td>
+                    <td>
+                      <a href="#" class="btn-link-custom me-2"
+                         data-bs-toggle="modal" data-bs-target="#editUserModal"
+                         data-name="Piotr Nowak" data-email="piotr.nowak@user.pl" data-role="Użytkownik">Edytuj</a>
+                      <a href="#" class="btn-link-custom text-success me-2">Odblokuj</a>
+                      <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                    </td>
+                  </tr>
+                  
+                </tbody>
+              </table>
+            </div>
+
+            <nav aria-label="Nawigacja po użytkownikach" class="mt-4 d-flex justify-content-center">
+              <ul class="pagination">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#">Poprzednia</a>
+                </li>
+                <li class="page-item active" aria-current="page">
+                  <a class="page-link" href="#">1</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">Następna</a>
+                </li>
+              </ul>
+            </nav>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 1rem; border: none;">
+          <form>
+            <div class="modal-header" style="border-bottom: none;">
+              <h5 class="modal-title" id="editUserModalLabel">Edytuj użytkownika</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body p-4">
+              
+              <div class="mb-3">
+                <label class="form-label">Nazwa użytkownika</label>
+                <input type="text" class="form-control" id="modalUserName" disabled>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="modalUserEmail" disabled>
+              </div>
+              
+              <hr class="my-4">
+
+              <div class="mb-3">
+                <label for="modalUserRole" class="form-label fw-bold">Zmień rolę</label>
+                <select class="form-select" id="modalUserRole">
+                  <option value="Użytkownik">Użytkownik</option>
+                  <option value="Moderator">Moderator</option>
+                  <option value="Administrator">Administrator</option>
+                </select>
+              </div>
+
+            </div>
+            <div class="modal-footer" style="border-top: none;">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+              <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer-custom py-5 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+            <a class="navbar-brand d-flex align-items-center mb-3" href="#">
+              <img
+                src="../static/images/logo/logo.png"
+                alt="Logo FishingWear"
+                class="footer-logo me-2"
+              />
+              <span class="footer-brand-name">FishingWear</span>
+            </a>
+            <p class="text-white-50 small">
+              Twoje źródło profesjonalnej odzieży i akcesoriów wędkarskich.
+              Przygotuj się na każdą przygodę nad wodą z FishingWear.
+            </p>
+            <div class="social-icons mt-3">
+              <a href="#" class="text-white me-3"
+                ><i class="fa-brands fa-facebook-f fa-lg"></i
+              ></a>
+              <a href="#" class="text-white me-3"
+                ><i class="fa-brands fa-instagram fa-lg"></i
+              ></a>
+              <a href="#" class="text-white"
+                ><i class="fa-brands fa-youtube fa-lg"></i
+              ></a>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
+            <h5 class="text-white mb-3">Informacje</h5>
+            <ul class="list-unstyled footer-links">
+              <li><a href="#" class="text-white-50">O nas</a></li>
+              <li><a href="#" class="text-white-50">Kontakt</a></li>
+              <li><a href="#" class="text-white-50">Regulamin</a></li>
+              <li>
+                <a href="#" class="text-white-50">Polityka prywatności</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
+            <h5 class="text-white mb-3">Pomoc</h5>
+            <ul class="list-unstyled footer-links">
+              <li><a href="#" class="text-white-50">Dostawa i płatność</a></li>
+              <li><a href="#" class="text-white-50">Zwroty i reklamacje</a></li>
+              <li>
+                <a href="#" class="text-white-50"
+                  >Najczęściej zadawane pytania</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h5 class="text-white mb-3">Skontaktuj się z nami</h5>
+            <ul class="list-unstyled text-white-50">
+              <li>
+                <i class="fa-solid fa-location-dot me-2"></i> ul. Przykładowa
+                123, 00-001 Miasto
+              </li>
+              <li><i class="fa-solid fa-phone me-2"></i> +48 123 456 789</li>
+              <li>
+                <i class="fa-solid fa-envelope me-2"></i> info@fishingwear.pl
+              </li>
+              <li>
+                <i class="fa-solid fa-clock me-2"></i> Pn-Pt: 9:00 - 17:00
+              </li>
+            </ul>
+          </div>
+        </div>
+        <hr class="footer-divider my-4" />
+        <div class="align-items-center">
+          <div class="text-center mb-3 mb-md-0">
+            <p class="text-white-50 small mb-0">
+              &copy; 2025 FishingWear. Wszelkie prawa zastrzeżone.
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
+      src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
+    ></script>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const editUserModal = document.getElementById('editUserModal');
+        
+        editUserModal.addEventListener('show.bs.modal', function (event) {
+          const button = event.relatedTarget;
+          const name = button.getAttribute('data-name');
+          const email = button.getAttribute('data-email');
+          const role = button.getAttribute('data-role');
+          const modalUserName = editUserModal.querySelector('#modalUserName');
+          const modalUserEmail = editUserModal.querySelector('#modalUserEmail');
+          const modalUserRole = editUserModal.querySelector('#modalUserRole');
+          
+          modalUserName.value = name;
+          modalUserEmail.value = email;
+          modalUserRole.value = role;
+        });
+      });
+    </script>
+    
+  </body>
+</html>
