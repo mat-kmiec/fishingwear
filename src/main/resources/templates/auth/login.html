@@ -188,6 +188,8 @@
                       />
                       <label for="password">Hasło</label>
                     </div>
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
 
                     <div class="text-end mb-3">
                       <a th:href="@{/przypomnij-haslo}" href="#" class="btn-link-custom"
