@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="pl">
+<!DOCTYPE html >
+<html lang="pl" xmlns:th="https://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -164,20 +164,9 @@
 
                   <hr class="hr-text" data-content="LUB" />
 
-                  <form action="#" method="post">
+                  <form th:action="@{/register}" method="post" th:object="${user}">
                     <div class="form-floating mb-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="name"
-                        placeholder="Twoja imię"
-                        required
-                      />
-                      <label for="name">Imię</label>
-                    </div>
-                    
-                    <div class="form-floating mb-3">
-                      <input
+                      <input th:field="*{email}"
                         type="email"
                         class="form-control"
                         id="email"
@@ -188,6 +177,7 @@
                     </div>
                     <div class="form-floating mb-3">
                       <input
+                              th:field="*{password}"
                         type="password"
                         class="form-control"
                         id="password"
@@ -225,7 +215,7 @@
 
                   <p class="text-center text-secondary mt-4 mb-0">
                     Masz już konto?
-                    <a href="#" class="btn-link-custom">Zaloguj się</a>
+                    <a th:href="@{/logowanie}" href="#" class="btn-link-custom">Zaloguj się</a>
                   </p>
                 </div>
               </div>
