@@ -11,9 +11,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/rejestracja").permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/rejestracja", "/logowanie", "/register").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/libs/**").permitAll()
-                        .requestMatchers("/login", "/logowanie", "/h2-console/**").permitAll()
+                        .requestMatchers("/login",  "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
