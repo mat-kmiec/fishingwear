@@ -9,16 +9,16 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(request -> request
+        http.authorizeHttpRequests(request -> request
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/libs/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login
-                        .loginPage("/login")
+                        .loginPage("/logowanie")
                         .permitAll()
                 );
+//        TODO: Logout
         return http.build();
     }
 }
