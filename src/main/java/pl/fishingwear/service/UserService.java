@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.fishingwear.dto.UserCredentialsDto;
 import pl.fishingwear.dto.UserRegistrationDto;
 import pl.fishingwear.exception.EmailAlreadyExistException;
+import pl.fishingwear.exception.PasswordNotMatchException;
 import pl.fishingwear.mapper.UserCredentialsDtoMapper;
 import pl.fishingwear.model.User;
 import pl.fishingwear.repository.UserRepository;
@@ -30,6 +31,9 @@ public class UserService {
         String email = registration.getEmail().trim().toLowerCase();
         if (userRepository.findByEmail(email).isPresent()) {
             throw new EmailAlreadyExistException(email);
+        }
+        if(!registration.getPassword().equals(registration.getConfirmPassword())){
+            throw new PasswordNotMatchException();
         }
         User user = new User();
         user.setEmail(email);
