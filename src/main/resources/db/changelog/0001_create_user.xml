@@ -31,5 +31,15 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="0001-2" author="matkmiec">
+        <insert tableName="users">
+            <column name="email" value="test"/>
+            <!-- Hasło zakodowane BCryptem dla 'test123' -->
+            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
+            <column name="role" value="USER"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="created_at" valueDate="2025-11-08T00:00:00"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>
