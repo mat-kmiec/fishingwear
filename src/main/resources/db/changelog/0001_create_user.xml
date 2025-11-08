@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+    <changeSet id="0001-1" author="matkmiec">
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="0001-2" author="matkmiec">
+        <insert tableName="users">
+            <column name="email" value="test@test.pl"/>
+            <!-- Hasło zakodowane BCryptem dla 'test123' -->
+            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
+            <column name="role" value="USER"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="created_at" valueDate="2025-11-08T00:00:00"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
