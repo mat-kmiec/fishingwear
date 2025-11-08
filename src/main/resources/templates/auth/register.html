@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="pl">
+<!DOCTYPE html >
+<html lang="pl" xmlns:th="https://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -143,6 +143,7 @@
               
               <div class="col-lg-6 d-none d-lg-block">
                 <img
+                        th:src="@{/images/other/register.jpg}"
                   src="../../static/images/other/register.jpg"
                   alt="Mężczyzna łowiący ryby"
                   class="login-image"
@@ -163,21 +164,10 @@
                   </a>
 
                   <hr class="hr-text" data-content="LUB" />
-
-                  <form action="#" method="post">
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+                  <form th:action="@{/register}" method="post" th:object="${user}">
                     <div class="form-floating mb-3">
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="name"
-                        placeholder="Twoja imię"
-                        required
-                      />
-                      <label for="name">Imię</label>
-                    </div>
-                    
-                    <div class="form-floating mb-3">
-                      <input
+                      <input th:field="*{email}"
                         type="email"
                         class="form-control"
                         id="email"
@@ -188,6 +178,7 @@
                     </div>
                     <div class="form-floating mb-3">
                       <input
+                              th:field="*{password}"
                         type="password"
                         class="form-control"
                         id="password"
@@ -198,6 +189,7 @@
                     </div>
                     <div class="form-floating mb-3">
                       <input
+                              th:field="*{confirmPassword}"
                         type="password"
                         class="form-control"
                         id="password-repeat"
@@ -225,7 +217,7 @@
 
                   <p class="text-center text-secondary mt-4 mb-0">
                     Masz już konto?
-                    <a href="#" class="btn-link-custom">Zaloguj się</a>
+                    <a th:href="@{/logowanie}" href="#" class="btn-link-custom">Zaloguj się</a>
                   </p>
                 </div>
               </div>
@@ -319,5 +311,169 @@
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.querySelector("form");
+            const emailInput = document.querySelector("#email");
+            const passwordInput = document.querySelector("#password");
+            const confirmPasswordInput = document.querySelector("#password-repeat");
+            const checkbox = document.querySelector("#terms");
+            const submitButton = form.querySelector('button[type="submit"]');
+            const strengthContainer = document.createElement("div");
+            strengthContainer.classList.add("progress", "mb-3");
+            const strengthBar = document.createElement("div");
+            strengthBar.classList.add("progress-bar");
+            strengthBar.style.width = "0%";
+            strengthContainer.appendChild(strengthBar);
+            passwordInput.closest(".form-floating").after(strengthContainer);
+
+            [passwordInput, confirmPasswordInput].forEach(input => {
+                const wrapper = input.closest(".form-floating");
+                const toggle = document.createElement("span");
+                toggle.className = "position-absolute top-50 end-0 translate-middle-y me-3 text-muted";
+                toggle.style.cursor = "pointer";
+                toggle.innerHTML = '<i class="fa-solid fa-eye"></i>';
+                toggle.addEventListener("click", () => {
+                    const type = input.type === "password" ? "text" : "password";
+                    input.type = type;
+                    toggle.innerHTML = type === "password"
+                        ? '<i class="fa-solid fa-eye"></i>'
+                        : '<i class="fa-solid fa-eye-slash"></i>';
+                });
+                wrapper.style.position = "relative";
+                wrapper.appendChild(toggle);
+            });
+
+            function updateButtonState() {
+                const isEmailValid = emailInput.value.includes("@") && emailInput.value.length >= 3;
+                const isPasswordValid = passwordInput.value.length >= 6;
+                const isConfirmValid = passwordInput.value === confirmPasswordInput.value;
+                const isCheckboxChecked = checkbox.checked;
+
+                if (isEmailValid && isPasswordValid && isConfirmValid && isCheckboxChecked) {
+                    submitButton.disabled = false;
+                } else {
+                    submitButton.disabled = true;
+                }
+            }
+
+            function validateEmail() {
+                clearError(emailInput);
+                if (!emailInput.value.includes("@") || emailInput.value.length < 3) {
+                    showError(emailInput, "Podaj poprawny adres e-mail.");
+                    return false;
+                }
+                return true;
+            }
+
+            function validatePassword() {
+                clearError(passwordInput);
+                if (passwordInput.value.length < 6) {
+                    showError(passwordInput, "Hasło musi mieć co najmniej 6 znaków.");
+                    return false;
+                }
+                return true;
+            }
+
+            function validateConfirmPassword() {
+                clearError(confirmPasswordInput);
+                if (passwordInput.value.length > 0 || confirmPasswordInput.value.length > 0) {
+                    if (passwordInput.value !== confirmPasswordInput.value) {
+                        showError(confirmPasswordInput, "Hasła nie są identyczne.");
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function validateCheckbox() {
+                clearError(checkbox);
+                if (!checkbox.checked) {
+                    showError(checkbox);
+                    return false;
+                }
+                return true;
+            }
+            emailInput.addEventListener("input", updateButtonState);
+            checkbox.addEventListener("change", updateButtonState);
+
+            passwordInput.addEventListener("input", () => {
+                const val = passwordInput.value;
+                let strength = 0;
+                if (val.length > 5) strength += 20;
+                if (val.length > 8) strength += 20;
+                if (/[A-Z]/.test(val)) strength += 20;
+                if (/[0-9]/.test(val)) strength += 20;
+                if (/[^A-Za-z0-9]/.test(val)) strength += 20;
+                strengthBar.style.width = `${strength}%`;
+                strengthBar.className = "progress-bar";
+                if (strength <= 40) strengthBar.classList.add("bg-danger");
+                else if (strength <= 80) strengthBar.classList.add("bg-warning");
+                else strengthBar.classList.add("bg-success");
+                validateConfirmPassword();
+                updateButtonState();
+            });
+
+            confirmPasswordInput.addEventListener("input", () => {
+                validateConfirmPassword();
+                updateButtonState();
+            });
+
+            emailInput.addEventListener("blur", validateEmail);
+            passwordInput.addEventListener("blur", validatePassword);
+            confirmPasswordInput.addEventListener("blur", validateConfirmPassword);
+            checkbox.addEventListener("change", validateCheckbox);
+
+            form.addEventListener("submit", (e) => {
+                const isEmailValid = validateEmail();
+                const isPasswordValid = validatePassword();
+                const isConfirmValid = validateConfirmPassword();
+                const isCheckboxValid = validateCheckbox();
+
+                if (!isEmailValid || !isPasswordValid || !isConfirmValid || !isCheckboxValid) {
+                    e.preventDefault();
+                }
+            });
+
+            updateButtonState();
+
+            function showError(input, message) {
+                clearError(input);
+                const error = document.createElement("div");
+                error.className = "text-danger small mt-1";
+                error.textContent = message;
+                let insertTarget;
+                if (input.closest(".form-floating")) {
+                    insertTarget = input.closest(".form-floating");
+                } else if (input.id === 'terms') {
+                    insertTarget = input.closest(".form-check");
+                } else {
+                    insertTarget = input.parentElement;
+                }
+                insertTarget.after(error);
+                input.classList.add("is-invalid");
+            }
+
+            function clearError(input) {
+                let errorElement;
+                let wrapper;
+                if (input.closest(".form-floating")) {
+                    wrapper = input.closest(".form-floating");
+                } else if (input.id === 'terms') {
+                    wrapper = input.closest(".form-check");
+                } else {
+                    wrapper = input.parentElement;
+                }
+                errorElement = wrapper.nextElementSibling;
+                if (errorElement && errorElement.classList.contains("text-danger")) {
+                    errorElement.remove();
+                }
+                input.classList.remove("is-invalid");
+            }
+        });
+    </script>
+
+
+
   </body>
 </html>
