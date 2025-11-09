@@ -39,7 +39,7 @@ public class UserService {
         user.setEmail(email);
         String passwordHash = passwordEncoder.encode(registration.getPassword());
         user.setPassword(passwordHash);
-        user.setRole("ROLE_USER");
+        user.setRole("USER");
         userRepository.save(user);
 
     }

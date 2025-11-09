@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -16,5 +17,9 @@ public class User {
     private String email;
     private String password;
     private String role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auth_provider")
+    private AuthProvider authProvider;
 
 }
