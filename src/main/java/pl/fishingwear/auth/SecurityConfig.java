@@ -1,15 +1,18 @@
 package pl.fishingwear.auth;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import pl.fishingwear.service.CustomOAuth2UserService;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http.authorizeHttpRequests(request -> request
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/rejestracja", "/logowanie", "/register").permitAll()
@@ -20,6 +23,11 @@ public class SecurityConfig {
                 .formLogin(login -> login
                         .loginPage("/logowanie")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                         .loginPage("/logowanie")
+                        .defaultSuccessUrl("/", true)
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**")
