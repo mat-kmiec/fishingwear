@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.fishingwear.model.AuthProvider;
 import pl.fishingwear.model.User;
 import pl.fishingwear.repository.UserRepository;
 import pl.fishingwear.service.MailService;
@@ -77,6 +78,7 @@ public class PasswordResetController {
         var user = resetToken.getUser();
 
         user.setPassword(passwordResetService.encodePassword(password));
+        user.setAuthProvider(AuthProvider.LOCAL);
         userRepository.save(user);
         passwordResetService.deleteToken(resetToken);
 

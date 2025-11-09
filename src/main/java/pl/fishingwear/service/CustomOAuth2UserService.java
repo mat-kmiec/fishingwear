@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import pl.fishingwear.model.AuthProvider;
 import pl.fishingwear.model.User;
 import pl.fishingwear.repository.UserRepository;
 
@@ -35,17 +36,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String email = null;
         String name = null;
+        AuthProvider provider = AuthProvider.LOCAL;
 
         // === Google ===
         if ("google".equals(registrationId)) {
             email = (String) attributes.get("email");
             name = (String) attributes.get("name");
+            provider = AuthProvider.GOOGLE;
         }
 
         // === GitHub ===
         else if ("github".equals(registrationId)) {
             name = (String) attributes.get("login");
             email = (String) attributes.get("email");
+            provider = AuthProvider.GITHUB;
 
             if (email == null) {
                 String token = userRequest.getAccessToken().getTokenValue();
@@ -57,13 +61,23 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("Nie udało się pobrać adresu e-mail użytkownika OAuth2");
         }
 
-        final String finalEmail = email;
+        String finalEmail = email.toLowerCase().trim();
+        AuthProvider finalProvider = provider;
+
         userRepository.findByEmail(finalEmail)
+                .map(user -> {
+                    if (user.getAuthProvider() == null) {
+                        user.setAuthProvider(finalProvider);
+                        userRepository.save(user);
+                    }
+                    return user;
+                })
                 .orElseGet(() -> {
                     User newUser = new User();
                     newUser.setEmail(finalEmail);
                     newUser.setPassword("OAUTH2");
-                    newUser.setRole("ROLE_USER");
+                    newUser.setRole("USER");
+                    newUser.setAuthProvider(finalProvider);
                     return userRepository.save(newUser);
                 });
 
