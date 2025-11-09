@@ -5,4 +5,5 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
     <include file="changelog/0001_create_user.xml" relativeToChangelogFile="true" />
+    <include file="changelog/0002_create_reset_token.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
