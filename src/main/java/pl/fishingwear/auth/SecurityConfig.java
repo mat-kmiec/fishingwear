@@ -15,7 +15,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http.authorizeHttpRequests(request -> request
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/rejestracja", "/logowanie", "/register", "/resetowanie-hasla", "/forgot-password").permitAll()
+                        .requestMatchers("/rejestracja", "/logowanie", "/register", "/resetowanie-hasla", "/forgot-password", "/reset-password").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/libs/**").permitAll()
                         .requestMatchers("/login",  "/h2-console/**").permitAll()
                         .anyRequest().authenticated()

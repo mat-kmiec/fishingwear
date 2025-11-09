@@ -44,4 +44,43 @@ public class PasswordResetController {
         model.addAttribute("message", "Link do resetu hasła został wysłany na e-mail.");
         return "auth/forgot-password";
     }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
+        if (!passwordResetService.isTokenValid(token)) {
+            model.addAttribute("error", "Token jest nieprawidłowy lub wygasł.");
+            return "auth/reset-password";
+        }
+
+        model.addAttribute("token", token);
+        return "auth/reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String processResetPassword(@RequestParam("token") String token,
+                                       @RequestParam("password") String password,
+                                       @RequestParam("confirmPassword") String confirmPassword,
+                                       Model model) {
+        if (!password.equals(confirmPassword)) {
+            model.addAttribute("error", "Hasła nie są takie same.");
+            model.addAttribute("token", token);
+            return "auth/reset-password";
+        }
+
+        var resetOpt = passwordResetService.getValidToken(token);
+        if (resetOpt.isEmpty()) {
+            model.addAttribute("error", "Token jest nieprawidłowy lub wygasł.");
+            return "auth/reset-password";
+        }
+
+        var resetToken = resetOpt.get();
+        var user = resetToken.getUser();
+
+        user.setPassword(passwordResetService.encodePassword(password));
+        userRepository.save(user);
+        passwordResetService.deleteToken(resetToken);
+
+        model.addAttribute("message", "Hasło zostało zmienione pomyślnie.");
+        return "auth/reset-password";
+    }
 }
