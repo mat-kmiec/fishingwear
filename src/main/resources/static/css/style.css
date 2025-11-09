@@ -108,14 +108,14 @@ body {
   color: var(--color-header-text);
 }
 
-.btn-facebook {
-  background-color: #3b5998;
-  border-color: #3b5998;
+.btn-github {
+  background-color: #0d1117;
+  border-color: #30363d;
   color: white;
 }
-.btn-facebook:hover {
-  background-color: #334d84;
-  border-color: #334d84;
+.btn-github:hover {
+    background-color: #2d2d30;
+    border-color: #3c3e42;
   color: white;
 }
 
