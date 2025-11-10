@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<footer th:fragment="footer" class="footer-custom py-5 ">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-4 mb-4 mb-md-0">
+                <a class="navbar-brand d-flex align-items-center mb-3" href="#">
+                    <img th:src="@{/images/logo/logo.png}" src="../static/images/logo/logo.png" alt="Logo FishingWear" class="footer-logo me-2">
+                    <span class="footer-brand-name">FishingWear</span>
+                </a>
+                <p class="text-white-50 small">
+                    Twoje źródło profesjonalnej odzieży i akcesoriów wędkarskich.
+                    Przygotuj się na każdą przygodę nad wodą z FishingWear.
+                </p>
+                <div class="social-icons mt-3">
+                    <a href="#" class="text-white me-3"><i class="fa-brands fa-facebook-f fa-lg"></i></a>
+                    <a href="#" class="text-white me-3"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                    <a href="#" class="text-white"><i class="fa-brands fa-youtube fa-lg"></i></a>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
+                <h5 class="text-white mb-3">Informacje</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#" class="text-white-50">O nas</a></li>
+                    <li><a href="#" class="text-white-50">Kontakt</a></li>
+                    <li><a href="#" class="text-white-50">Regulamin</a></li>
+                    <li><a href="#" class="text-white-50">Polityka prywatności</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
+                <h5 class="text-white mb-3">Pomoc</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#" class="text-white-50">Dostawa i płatność</a></li>
+                    <li><a href="#" class="text-white-50">Zwroty i reklamacje</a></li>
+                    <li><a href="#" class="text-white-50">Najczęściej zadawane pytania</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4 mb-md-0">
+                <h5 class="text-white mb-3">Skontaktuj się z nami</h5>
+                <ul class="list-unstyled text-white-50">
+                    <li><i class="fa-solid fa-location-dot me-2"></i> ul. Przykładowa 123, 00-001 Miasto</li>
+                    <li><i class="fa-solid fa-phone me-2"></i> +48 123 456 789</li>
+                    <li><i class="fa-solid fa-envelope me-2"></i> info@fishingwear.pl</li>
+                    <li><i class="fa-solid fa-clock me-2"></i> Pn-Pt: 9:00 - 17:00</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <hr class="footer-divider my-4">
+
+        <div class="align-items-center">
+            <div class=" text-center  mb-3 mb-md-0">
+                <p class="text-white-50 small mb-0">&copy; 2025 FishingWear. Wszelkie prawa zastrzeżone.</p>
+            </div>
+        </div>
+
+    </div>
+</footer>
+</html>
