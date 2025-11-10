@@ -13,11 +13,14 @@ import java.util.Locale;
 @Getter
 @Setter
 public class ProductDto {
+    private Long id;
     private String name;
     private String description;
+    private String details;
     private BigDecimal price;
     private List<ColorDto> colors;
     private List<SizeDto> sizes;
+    private List<ProductVariantDto> variants;
 
     public String getFormattedPrice() {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));

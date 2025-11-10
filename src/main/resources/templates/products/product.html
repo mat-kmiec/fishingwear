@@ -25,6 +25,39 @@
       href="../../static/css/slider.css"
     />
 
+
+      <style>
+          .color-swatch.disabled,
+          .btn.disabled {
+              opacity: 0.5;
+              pointer-events: none;
+              cursor: not-allowed;
+          }
+          .color-swatch.active {
+              outline: 2px solid #000;
+              outline-offset: 2px;
+          }
+
+          .product-price-detail {
+              transition: opacity 0.3s ease;
+          }
+
+          .color-swatch.disabled {
+              opacity: 0.4;
+              cursor: not-allowed;
+              position: relative;
+          }
+
+          .color-swatch.disabled::after {
+              content: "✖";
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              font-size: 0.8rem;
+              color: #000;
+          }
+      </style>
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
@@ -177,24 +210,26 @@
 
             <a href="#" class="product-category-link">Odzież / Spodnie</a>
             <h1 class="product-title-detail mt-2" th:text="${product.name}">Spodnie dresowe super premium</h1>
-            <h2 class="product-price-detail" th:text="${product.getFormattedPrice()}">199,99 zł</h2>
+              <div id="product-unavailable-message" class="text-danger fw-semibold mt-1"></div>
+              <h2 class="product-price-detail" th:text="${product.getFormattedPrice()}"></h2>
             <p class="text-secondary mb-4" th:text="${product.description}">
               Wysokiej jakości spodnie dresowe wykonane z najlepszej bawełny,
               idealne na chłodniejsze dni nad wodą.
             </p>
 
 
-              <div class="filter-group">
+              <div id="size-section" class="filter-group">
                   <h5 class="filter-group-title mb-2">Wybierz rozmiar</h5>
 
                   <div class="size-options d-flex flex-wrap gap-2">
                       <div th:each="size : ${product.sizes}">
-                          <input type="radio"
-                                 class="btn-check"
-                                 name="size-options"
-                                 th:id="'size-' + ${size.name}"
-                                 autocomplete="off" />
-
+                          <input
+                                  type="radio"
+                                  class="btn-check size-option"
+                                  name="size-options"
+                                  th:id="'size-' + ${size.name}"
+                                  th:attr="data-size-id=${size.id}"
+                                  autocomplete="off" />
                           <label class="btn btn-sm btn-outline-secondary"
                                  th:for="'size-' + ${size.name}"
                                  th:text="${size.name}">
@@ -205,16 +240,16 @@
 
 
 
-              <div class="filter-group">
+              <div id="color-section" class="filter-group">
                   <h5 class="filter-group-title">Wybierz kolor</h5>
                   <div class="color-swatch-list">
                     <span
                             class="color-swatch"
                             th:each="color : ${product.colors}"
                             th:style="'background-color:' + ${color.hexCode}"
-                            th:attr="title=${color.name}"
+                            th:attr="title=${color.name}, data-color-id=${color.id}"
                             data-bs-toggle="tooltip">
-                    </span>
+</span>
                   </div>
               </div>
 
@@ -227,9 +262,9 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary-custom btn-lg w-100 mt-4">
-                <i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka
-            </button>
+              <button id="add-to-cart-btn" class="btn btn-primary-custom btn-lg w-100 mt-4">
+                  <i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka
+              </button>
 
             <div class="accordion accordion-flush mt-4" id="productDetailsAccordion">
                 <div class="accordion-item">
@@ -239,7 +274,7 @@
                     </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#productDetailsAccordion">
-                    <div class="accordion-body text-secondary small pt-2">
+                    <div class="accordion-body text-secondary small pt-2" th:utext="${product.details}">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
                         scelerisque, sapien velcs.
                         <ul>
@@ -392,6 +427,196 @@
 
       });
     </script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const variants = /*[[${product.variants}]]*/ [];
+        let selectedColor = null;
+        let selectedSize = null;
+
+        function checkProductAvailability() {
+            const messageEl = document.getElementById('product-unavailable-message');
+            const colorSection = document.getElementById('color-section');
+            const sizeSection = document.getElementById('size-section');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+            if (!variants || variants.length === 0) return;
+
+            const isAvailable = variants.some(v => v.stockQuantity > 0);
+
+            if (!isAvailable) {
+                messageEl.textContent = 'Produkt niedostępny';
+                messageEl.classList.add('text-danger', 'fw-bold');
+
+                if (colorSection) colorSection.style.display = 'none';
+                if (sizeSection) sizeSection.style.display = 'none';
+
+                if (addToCartBtn) {
+                    addToCartBtn.disabled = true;
+                    addToCartBtn.classList.add('disabled');
+                    addToCartBtn.innerHTML = '<i class="fa-solid fa-ban me-2"></i> Niedostępny';
+                }
+            } else {
+                messageEl.textContent = '';
+                messageEl.classList.remove('text-danger', 'fw-bold');
+
+                if (colorSection) colorSection.style.display = '';
+                if (sizeSection) sizeSection.style.display = '';
+
+                if (addToCartBtn) {
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.classList.remove('disabled');
+                    addToCartBtn.innerHTML = '<i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka';
+                }
+            }
+        }
+
+        function initializeAvailableOptions() {
+            const availableSizeIds = [...new Set(variants.filter(v => v.stockQuantity > 0).map(v => v.sizeId))];
+            const availableColorIds = [...new Set(variants.filter(v => v.stockQuantity > 0).map(v => v.colorId))];
+
+            document.querySelectorAll('.size-option').forEach(btn => {
+                const sizeId = parseInt(btn.dataset.sizeId);
+                const label = document.querySelector(`label[for="${btn.id}"]`);
+                const available = availableSizeIds.includes(sizeId);
+                btn.style.display = available ? '' : 'none';
+                if (label) label.style.display = available ? '' : 'none';
+            });
+
+            document.querySelectorAll('.color-swatch').forEach(btn => {
+                const colorId = parseInt(btn.dataset.colorId);
+                const available = availableColorIds.includes(colorId);
+                btn.style.display = available ? '' : 'none';
+                btn.classList.toggle('disabled', !available);
+            });
+        }
+
+        function preselectSingleAvailableVariant() {
+            const availableVariants = variants.filter(v => v.stockQuantity > 0);
+            if (availableVariants.length === 1) {
+                const variant = availableVariants[0];
+                selectedColor = variant.colorId;
+                selectedSize = variant.sizeId;
+
+                const colorEl = document.querySelector(`.color-swatch[data-color-id="${selectedColor}"]`);
+                if (colorEl) colorEl.classList.add('active');
+
+                const sizeEl = document.querySelector(`.size-option[data-size-id="${selectedSize}"]`);
+                if (sizeEl) sizeEl.classList.add('active');
+
+                updateVariantInfo();
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('pl-PL', {
+                style: 'currency',
+                currency: 'PLN'
+            }).format(price);
+        }
+
+        function updateAvailableSizes() {
+            document.querySelectorAll('.size-option').forEach(btn => {
+                const sizeId = parseInt(btn.dataset.sizeId);
+                const available = variants.some(v =>
+                    (!selectedColor || v.colorId === selectedColor) &&
+                    v.sizeId === sizeId &&
+                    v.stockQuantity > 0
+                );
+                const label = document.querySelector(`label[for="${btn.id}"]`);
+                btn.style.display = available ? '' : 'none';
+                if (label) label.style.display = available ? '' : 'none';
+            });
+        }
+
+        function updateAvailableColors() {
+            document.querySelectorAll('.color-swatch').forEach(btn => {
+                const colorId = parseInt(btn.dataset.colorId);
+                const available = variants.some(v =>
+                    (!selectedSize || v.sizeId === selectedSize) &&
+                    v.colorId === colorId &&
+                    v.stockQuantity > 0
+                );
+                btn.style.display = available ? '' : 'none';
+                btn.classList.toggle('disabled', !available);
+            });
+        }
+
+        function updateVariantInfo() {
+            const priceElement = document.querySelector('.product-price-detail');
+            const stockElement = document.getElementById('variant-stock');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+            if (!priceElement || !variants.length) return;
+
+            const variant = selectedColor && selectedSize
+                ? variants.find(v => v.colorId === selectedColor && v.sizeId === selectedSize)
+                : null;
+
+            priceElement.style.opacity = 0;
+
+            setTimeout(() => {
+                if (variant) {
+                    if (variant.discountPrice && variant.discountPrice < variant.price) {
+                        priceElement.innerHTML = `
+                    <span class="text-danger small fs-2 fw-bold">${formatPrice(variant.discountPrice)}</span><br>
+                    <small class="text-muted text-decoration-line-through">${formatPrice(variant.price)}</small><br>
+                `;
+                    } else {
+                        priceElement.textContent = formatPrice(variant.price);
+                    }
+
+                    if (stockElement) {
+                        if (variant.stockQuantity > 0) {
+                            stockElement.textContent = 'Dostępny';
+                            stockElement.classList.add('text-success');
+                            stockElement.classList.remove('text-danger');
+                            if (addToCartBtn) addToCartBtn.disabled = false;
+                        } else {
+                            stockElement.textContent = 'Brak w magazynie';
+                            stockElement.classList.add('text-danger');
+                            stockElement.classList.remove('text-success');
+                            if (addToCartBtn) addToCartBtn.disabled = true;
+                        }
+                    }
+                } else {
+                    priceElement.innerHTML = /*[[${product.getFormattedPrice()}]]*/ "";
+                    if (stockElement) stockElement.textContent = '';
+                    if (addToCartBtn) addToCartBtn.disabled = false;
+                }
+                priceElement.style.opacity = 1;
+            }, 150);
+        }
+
+        document.querySelectorAll('.color-swatch').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.color-swatch').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                selectedColor = parseInt(el.dataset.colorId);
+                updateAvailableSizes();
+                updateVariantInfo();
+            });
+        });
+
+        document.querySelectorAll('.size-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.size-option').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                selectedSize = parseInt(el.dataset.sizeId);
+                updateAvailableColors();
+                updateVariantInfo();
+            });
+        });
+
+        checkProductAvailability();
+        initializeAvailableOptions();
+        preselectSingleAvailableVariant();
+        /*]]>*/
+    </script>
+
+
+
+
 
   </body>
 </html>

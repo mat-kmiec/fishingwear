@@ -16,8 +16,8 @@ public class Color {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name; // np. "White"
+    private String name;
 
     @Column(name = "hex_code")
-    private String hexCode; // np. "#FFFFFF" – przydatne w UI
+    private String hexCode;
 }

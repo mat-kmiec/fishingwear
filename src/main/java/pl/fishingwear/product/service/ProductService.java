@@ -33,7 +33,7 @@ public class ProductService {
                 .map(ProductVariant::getColor)
                 .filter(Objects::nonNull)
                 .distinct()
-                .map(c -> new ColorDto(c.getName(), c.getHexCode()))
+                .map(c -> new ColorDto(c.getId(),c.getName(), c.getHexCode()))
                 .toList();
 
         productDto.setColors(colors);
@@ -42,7 +42,7 @@ public class ProductService {
                 .map(v -> v.getSize())
                 .filter(Objects::nonNull)
                 .distinct()
-                .map(s -> new SizeDto(s.getName(), s.getDescription()))
+                .map(s -> new SizeDto(s.getId() ,s.getName(), s.getDescription()))
                 .toList();
 
         productDto.setSizes(sizes);
