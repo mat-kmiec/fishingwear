@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,115 +25,42 @@
       href="../../static/css/slider.css"
     />
 
+
+      <style>
+          .color-swatch.disabled,
+          .btn.disabled {
+              opacity: 0.5;
+              pointer-events: none;
+              cursor: not-allowed;
+          }
+          .color-swatch.active {
+              outline: 2px solid #000;
+              outline-offset: 2px;
+          }
+
+          .product-price-detail {
+              transition: opacity 0.3s ease;
+          }
+
+          .color-swatch.disabled {
+              opacity: 0.4;
+              cursor: not-allowed;
+              position: relative;
+          }
+
+          .color-swatch.disabled::after {
+              content: "✖";
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              font-size: 0.8rem;
+              color: #000;
+          }
+      </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
-      <div class="container">
-        <a class="navbar-brand" href="#">
-          <img
-            src="../static/images/logo/logo.png"
-            alt="Logo"
-            class="d-inline-block align-text-top"
-          />
-          <span class="brand-name">FishingWear</span>
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdownKurtki"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Odzież
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdownKurtki">
-                <li><a class="dropdown-item" href="#">T-shirt</a></li>
-                <li><a class="dropdown-item" href="#">Bluzy</a></li>
-                <li><a class="dropdown-item" href="#">Czapki</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#">Zobacz wszystko</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Gadżety</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Akcesoria</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Promocje</a>
-            </li>
-          </ul>
-          <form class="d-flex mx-auto my-2 my-lg-0" role="search">
-            <div class="input-group search-group">
-              <input
-                class="form-control"
-                type="search"
-                placeholder="Szukaj produktu..."
-                aria-label="Szukaj"
-              />
-              <button class="btn btn-search" type="submit">
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </button>
-            </div>
-          </form>
-          <div
-            class="navbar-actions d-flex align-items-center justify-content-center justify-content-lg-end ms-lg-3 mt-4 mt-lg-0"
-          >
-            <a
-              class="nav-link position-relative fs-4"
-              href="/koszyk"
-              aria-label="Koszyk"
-            >
-              <i class="fa-solid fa-basket-shopping"></i>
-              <span
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-small badge-accent"
-              >
-                5
-                <span class="visually-hidden">przedmioty w koszyku</span>
-              </span>
-            </a>
-            <div class="nav-item dropdown ms-3">
-              <a
-                class="nav-link dropdown-toggle fs-4"
-                href="#"
-                id="profileDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                aria-label="Mój profil"
-              >
-                <i class="fa-solid fa-user"></i>
-              </a>
-              <ul
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="profileDropdown"
-              >
-                <li><a class="dropdown-item" href="#">Moje konto</a></li>
-                <li><a class="dropdown-item" href="#">Historia zamówień</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <nav th:insert="~{fragments/nav :: nav}"></nav>
 
     <div class="container my-5">
       <div class="row g-5">
@@ -174,85 +101,51 @@
 
         <div class="col-lg-5">
           <div class="product-info-card">
-            
+
             <a href="#" class="product-category-link">Odzież / Spodnie</a>
-            <h1 class="product-title-detail mt-2">Spodnie dresowe super premium</h1>
-            <h2 class="product-price-detail">199,99 zł</h2>
-            <p class="text-secondary mb-4">
+            <h1 class="product-title-detail mt-2" th:text="${product.name}">Spodnie dresowe super premium</h1>
+              <div id="product-unavailable-message" class="text-danger fw-semibold mt-1"></div>
+              <h2 class="product-price-detail" th:text="${product.getFormattedPrice()}"></h2>
+            <p class="text-secondary mb-4" th:text="${product.description}">
               Wysokiej jakości spodnie dresowe wykonane z najlepszej bawełny,
               idealne na chłodniejsze dni nad wodą.
             </p>
 
-            <div class="filter-group">
-              <h5 class="filter-group-title">Wybierz rozmiar</h5>
-              <div class="size-options d-flex flex-wrap gap-2">
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-s"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-s"
-                  >S</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-m"
-                  autocomplete="off"
-                  checked
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-m"
-                  >M</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-l"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-l"
-                  >L</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-xl"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-xl"
-                  >XL</label
-                >
-              </div>
-            </div>
 
-            <div class="filter-group">
-              <h5 class="filter-group-title">Wybierz kolor</h5>
-              <div class="color-swatch-list">
-                <span
-                  class="color-swatch active"
-                  style="background-color: #2e3b38"
-                  data-bs-toggle="tooltip"
-                  title="Grafitowy"
-                ></span>
-                <span
-                  class="color-swatch"
-                  style="background-color: #677525"
-                  data-bs-toggle="tooltip"
-                  title="Oliwkowy"
-                ></span>
-                <span
-                  class="color-swatch"
-                  style="background-color: #222222"
-                  data-bs-toggle="tooltip"
-                  title="Czarny"
-                ></span>
+              <div id="size-section" class="filter-group">
+                  <h5 class="filter-group-title mb-2">Wybierz rozmiar</h5>
+
+                  <div class="size-options d-flex flex-wrap gap-2">
+                      <div th:each="size : ${product.sizes}">
+                          <input
+                                  type="radio"
+                                  class="btn-check size-option"
+                                  name="size-options"
+                                  th:id="'size-' + ${size.name}"
+                                  th:attr="data-size-id=${size.id}"
+                                  autocomplete="off" />
+                          <label class="btn btn-sm btn-outline-secondary"
+                                 th:for="'size-' + ${size.name}"
+                                 th:text="${size.name}">
+                          </label>
+                      </div>
+                  </div>
               </div>
-            </div>
+
+
+
+              <div id="color-section" class="filter-group">
+                  <h5 class="filter-group-title">Wybierz kolor</h5>
+                  <div class="color-swatch-list">
+                    <span
+                            class="color-swatch"
+                            th:each="color : ${product.colors}"
+                            th:style="'background-color:' + ${color.hexCode}"
+                            th:attr="title=${color.name}, data-color-id=${color.id}"
+                            data-bs-toggle="tooltip">
+</span>
+                  </div>
+              </div>
 
             <div class="filter-group">
                 <h5 class="filter-group-title">Ilość</h5>
@@ -263,9 +156,9 @@
                 </div>
             </div>
 
-            <button class="btn btn-primary-custom btn-lg w-100 mt-4">
-                <i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka
-            </button>
+              <button id="add-to-cart-btn" class="btn btn-primary-custom btn-lg w-100 mt-4">
+                  <i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka
+              </button>
 
             <div class="accordion accordion-flush mt-4" id="productDetailsAccordion">
                 <div class="accordion-item">
@@ -275,7 +168,7 @@
                     </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#productDetailsAccordion">
-                    <div class="accordion-body text-secondary small pt-2">
+                    <div class="accordion-body text-secondary small pt-2" th:utext="${product.details}">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
                         scelerisque, sapien velcs.
                         <ul>
@@ -294,7 +187,7 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#productDetailsAccordion">
                     <div class="accordion-body text-secondary small pt-2">
-                        Darmowa dostawa od 200 zł. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Darmowa dostawa od 200 zł. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Darmowy zwrot do 30 dni.
                     </div>
                     </div>
@@ -307,84 +200,7 @@
       </div>
     </div>
 
-    <footer class="footer-custom py-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4 mb-4 mb-md-0">
-            <a class="navbar-brand d-flex align-items-center mb-3" href="#">
-              <img
-                src="../static/images/logo/logo.png"
-                alt="Logo FishingWear"
-                class="footer-logo me-2"
-              />
-              <span class="footer-brand-name">FishingWear</span>
-            </a>
-            <p class="text-white-50 small">
-              Twoje źródło profesjonalnej odzieży i akcesoriów wędkarskich.
-              Przygotuj się na każdą przygodę nad wodą z FishingWear.
-            </p>
-            <div class="social-icons mt-3">
-              <a href="#" class="text-white me-3"
-                ><i class="fa-brands fa-facebook-f fa-lg"></i
-              ></a>
-              <a href="#" class="text-white me-3"
-                ><i class="fa-brands fa-instagram fa-lg"></i
-              ></a>
-              <a href="#" class="text-white"
-                ><i class="fa-brands fa-youtube fa-lg"></i
-              ></a>
-            </div>
-          </div>
-          <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
-            <h5 class="text-white mb-3">Informacje</h5>
-            <ul class="list-unstyled footer-links">
-              <li><a href="#" class="text-white-50">O nas</a></li>
-              <li><a href="#" class="text-white-50">Kontakt</a></li>
-              <li><a href="#" class="text-white-50">Regulamin</a></li>
-              <li>
-                <a href="#" class="text-white-50">Polityka prywatności</a>
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-2 col-sm-6 mb-4 mb-md-0">
-            <h5 class="text-white mb-3">Pomoc</h5>
-            <ul class="list-unstyled footer-links">
-              <li><a href="#" class="text-white-50">Dostawa i płatność</a></li>
-              <li><a href="#" class="text-white-50">Zwroty i reklamacje</a></li>
-              <li>
-                <a href="#" class="text-white-50"
-                  >Najczęściej zadawane pytania</a
-                >
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-4 mb-4 mb-md-0">
-            <h5 class="text-white mb-3">Skontaktuj się z nami</h5>
-            <ul class="list-unstyled text-white-50">
-              <li>
-                <i class="fa-solid fa-location-dot me-2"></i> ul. Przykładowa
-                123, 00-001 Miasto
-              </li>
-              <li><i class="fa-solid fa-phone me-2"></i> +48 123 456 789</li>
-              <li>
-                <i class="fa-solid fa-envelope me-2"></i> info@fishingwear.pl
-              </li>
-              <li>
-                <i class="fa-solid fa-clock me-2"></i> Pn-Pt: 9:00 - 17:00
-              </li>
-            </ul>
-          </div>
-        </div>
-        <hr class="footer-divider my-4" />
-        <div class="align-items-center">
-          <div class="text-center mb-3 mb-md-0">
-            <p class="text-white-50 small mb-0">
-              &copy; 2025 FishingWear. Wszelkie prawa zastrzeżone.
-            </p>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <footer th:insert="~{fragments/footer :: footer}"></footer>
 
     <script
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
@@ -428,6 +244,196 @@
 
       });
     </script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const variants = /*[[${product.variants}]]*/ [];
+        let selectedColor = null;
+        let selectedSize = null;
+
+        function checkProductAvailability() {
+            const messageEl = document.getElementById('product-unavailable-message');
+            const colorSection = document.getElementById('color-section');
+            const sizeSection = document.getElementById('size-section');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+            if (!variants || variants.length === 0) return;
+
+            const isAvailable = variants.some(v => v.stockQuantity > 0);
+
+            if (!isAvailable) {
+                messageEl.textContent = 'Produkt niedostępny';
+                messageEl.classList.add('text-danger', 'fw-bold');
+
+                if (colorSection) colorSection.style.display = 'none';
+                if (sizeSection) sizeSection.style.display = 'none';
+
+                if (addToCartBtn) {
+                    addToCartBtn.disabled = true;
+                    addToCartBtn.classList.add('disabled');
+                    addToCartBtn.innerHTML = '<i class="fa-solid fa-ban me-2"></i> Niedostępny';
+                }
+            } else {
+                messageEl.textContent = '';
+                messageEl.classList.remove('text-danger', 'fw-bold');
+
+                if (colorSection) colorSection.style.display = '';
+                if (sizeSection) sizeSection.style.display = '';
+
+                if (addToCartBtn) {
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.classList.remove('disabled');
+                    addToCartBtn.innerHTML = '<i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka';
+                }
+            }
+        }
+
+        function initializeAvailableOptions() {
+            const availableSizeIds = [...new Set(variants.filter(v => v.stockQuantity > 0).map(v => v.sizeId))];
+            const availableColorIds = [...new Set(variants.filter(v => v.stockQuantity > 0).map(v => v.colorId))];
+
+            document.querySelectorAll('.size-option').forEach(btn => {
+                const sizeId = parseInt(btn.dataset.sizeId);
+                const label = document.querySelector(`label[for="${btn.id}"]`);
+                const available = availableSizeIds.includes(sizeId);
+                btn.style.display = available ? '' : 'none';
+                if (label) label.style.display = available ? '' : 'none';
+            });
+
+            document.querySelectorAll('.color-swatch').forEach(btn => {
+                const colorId = parseInt(btn.dataset.colorId);
+                const available = availableColorIds.includes(colorId);
+                btn.style.display = available ? '' : 'none';
+                btn.classList.toggle('disabled', !available);
+            });
+        }
+
+        function preselectSingleAvailableVariant() {
+            const availableVariants = variants.filter(v => v.stockQuantity > 0);
+            if (availableVariants.length === 1) {
+                const variant = availableVariants[0];
+                selectedColor = variant.colorId;
+                selectedSize = variant.sizeId;
+
+                const colorEl = document.querySelector(`.color-swatch[data-color-id="${selectedColor}"]`);
+                if (colorEl) colorEl.classList.add('active');
+
+                const sizeEl = document.querySelector(`.size-option[data-size-id="${selectedSize}"]`);
+                if (sizeEl) sizeEl.classList.add('active');
+
+                updateVariantInfo();
+            }
+        }
+
+        function formatPrice(price) {
+            return new Intl.NumberFormat('pl-PL', {
+                style: 'currency',
+                currency: 'PLN'
+            }).format(price);
+        }
+
+        function updateAvailableSizes() {
+            document.querySelectorAll('.size-option').forEach(btn => {
+                const sizeId = parseInt(btn.dataset.sizeId);
+                const available = variants.some(v =>
+                    (!selectedColor || v.colorId === selectedColor) &&
+                    v.sizeId === sizeId &&
+                    v.stockQuantity > 0
+                );
+                const label = document.querySelector(`label[for="${btn.id}"]`);
+                btn.style.display = available ? '' : 'none';
+                if (label) label.style.display = available ? '' : 'none';
+            });
+        }
+
+        function updateAvailableColors() {
+            document.querySelectorAll('.color-swatch').forEach(btn => {
+                const colorId = parseInt(btn.dataset.colorId);
+                const available = variants.some(v =>
+                    (!selectedSize || v.sizeId === selectedSize) &&
+                    v.colorId === colorId &&
+                    v.stockQuantity > 0
+                );
+                btn.style.display = available ? '' : 'none';
+                btn.classList.toggle('disabled', !available);
+            });
+        }
+
+        function updateVariantInfo() {
+            const priceElement = document.querySelector('.product-price-detail');
+            const stockElement = document.getElementById('variant-stock');
+            const addToCartBtn = document.getElementById('add-to-cart-btn');
+
+            if (!priceElement || !variants.length) return;
+
+            const variant = selectedColor && selectedSize
+                ? variants.find(v => v.colorId === selectedColor && v.sizeId === selectedSize)
+                : null;
+
+            priceElement.style.opacity = 0;
+
+            setTimeout(() => {
+                if (variant) {
+                    if (variant.discountPrice && variant.discountPrice < variant.price) {
+                        priceElement.innerHTML = `
+                    <span class="text-danger small fs-2 fw-bold">${formatPrice(variant.discountPrice)}</span><br>
+                    <small class="text-muted text-decoration-line-through">${formatPrice(variant.price)}</small><br>
+                `;
+                    } else {
+                        priceElement.textContent = formatPrice(variant.price);
+                    }
+
+                    if (stockElement) {
+                        if (variant.stockQuantity > 0) {
+                            stockElement.textContent = 'Dostępny';
+                            stockElement.classList.add('text-success');
+                            stockElement.classList.remove('text-danger');
+                            if (addToCartBtn) addToCartBtn.disabled = false;
+                        } else {
+                            stockElement.textContent = 'Brak w magazynie';
+                            stockElement.classList.add('text-danger');
+                            stockElement.classList.remove('text-success');
+                            if (addToCartBtn) addToCartBtn.disabled = true;
+                        }
+                    }
+                } else {
+                    priceElement.innerHTML = /*[[${product.getFormattedPrice()}]]*/ "";
+                    if (stockElement) stockElement.textContent = '';
+                    if (addToCartBtn) addToCartBtn.disabled = false;
+                }
+                priceElement.style.opacity = 1;
+            }, 150);
+        }
+
+        document.querySelectorAll('.color-swatch').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.color-swatch').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                selectedColor = parseInt(el.dataset.colorId);
+                updateAvailableSizes();
+                updateVariantInfo();
+            });
+        });
+
+        document.querySelectorAll('.size-option').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.size-option').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+                selectedSize = parseInt(el.dataset.sizeId);
+                updateAvailableColors();
+                updateVariantInfo();
+            });
+        });
+
+        checkProductAvailability();
+        initializeAvailableOptions();
+        preselectSingleAvailableVariant();
+        /*]]>*/
+    </script>
+
+
+
+
 
   </body>
 </html>
