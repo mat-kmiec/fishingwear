@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-create-product" author="matkmiec">
+        <createTable tableName="product">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="details" type="TEXT"/>
+            <column name="price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="discount_price" type="DECIMAL(10,2)"/>
+            <column name="sku" type="VARCHAR(100)"/>
+            <column name="slug" type="VARCHAR(255)"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2-create-size" author="matkmiec">
+        <createTable tableName="size">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3-create-product-stock" author="matkmiec">
+        <createTable tableName="product_stock">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_product_stock_product"
+                             references="product(id)"/>
+            </column>
+            <column name="size_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_product_stock_size"
+                             references="size(id)"/>
+            </column>
+            <column name="quantity" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4-create-product-image" author="dev">
+        <createTable tableName="product_image">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_product_image_product"
+                             references="product(id)"/>
+            </column>
+            <column name="image_url" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_main" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="sort_order" type="INT" defaultValueNumeric="0"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5-create-category" author="dev">
+        <createTable tableName="category">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="slug" type="VARCHAR(150)">
+                <constraints unique="true"/>
+            </column>
+            <column name="parent_id" type="BIGINT"/>
+            <column name="description" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="category"
+                baseColumnNames="parent_id"
+                constraintName="fk_category_parent"
+                referencedTableName="category"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="6-create-product-category" author="dev">
+        <createTable tableName="product_category">
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_pc_product"
+                             references="product(id)"/>
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_pc_category"
+                             references="category(id)"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="product_category"
+                columnNames="product_id, category_id"
+                constraintName="pk_product_category"/>
+    </changeSet>
+</databaseChangeLog>
