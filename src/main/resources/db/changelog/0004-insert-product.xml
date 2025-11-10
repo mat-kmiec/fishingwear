@@ -4,28 +4,32 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="100-insert-sizes" author="dev">
-        <insert tableName="size">
-            <column name="name" value="XS"/>
+    <changeSet id="0-insert-sizes" author="dev">
+        <insert tableName="size"><column name="name" value="XS"/></insert>
+        <insert tableName="size"><column name="name" value="S"/></insert>
+        <insert tableName="size"><column name="name" value="M"/></insert>
+        <insert tableName="size"><column name="name" value="L"/></insert>
+        <insert tableName="size"><column name="name" value="XL"/></insert>
+        <insert tableName="size"><column name="name" value="XXL"/></insert>
+    </changeSet>
+
+
+    <changeSet id="1-insert-colors" author="dev">
+        <insert tableName="color">
+            <column name="name" value="White"/>
+            <column name="hex_code" value="#FFFFFF"/>
         </insert>
-        <insert tableName="size">
-            <column name="name" value="S"/>
+        <insert tableName="color">
+            <column name="name" value="Black"/>
+            <column name="hex_code" value="#000000"/>
         </insert>
-        <insert tableName="size">
-            <column name="name" value="M"/>
-        </insert>
-        <insert tableName="size">
-            <column name="name" value="L"/>
-        </insert>
-        <insert tableName="size">
-            <column name="name" value="XL"/>
-        </insert>
-        <insert tableName="size">
-            <column name="name" value="XXL"/>
+        <insert tableName="color">
+            <column name="name" value="Blue"/>
+            <column name="hex_code" value="#0000FF"/>
         </insert>
     </changeSet>
 
-    <changeSet id="101-insert-category" author="dev">
+    <changeSet id="2-insert-category" author="dev">
         <insert tableName="category">
             <column name="name" value="T-shirty"/>
             <column name="slug" value="t-shirty"/>
@@ -33,7 +37,8 @@
         </insert>
     </changeSet>
 
-    <changeSet id="102-insert-product" author="dev">
+
+    <changeSet id="3-insert-product" author="dev">
         <insert tableName="product">
             <column name="name" value="T-shirt Basic White"/>
             <column name="description" value="Biały, klasyczny T-shirt z miękkiej bawełny. Idealny na co dzień."/>
@@ -45,14 +50,14 @@
         </insert>
     </changeSet>
 
-    <changeSet id="103-assign-product-category" author="dev">
+    <changeSet id="4-assign-product-category" author="dev">
         <insert tableName="product_category">
             <column name="product_id" valueNumeric="1"/>
             <column name="category_id" valueNumeric="1"/>
         </insert>
     </changeSet>
 
-    <changeSet id="104-insert-product-images" author="dev">
+    <changeSet id="5-insert-product-images" author="dev">
         <insert tableName="product_image">
             <column name="product_id" valueNumeric="1"/>
             <column name="image_url" value="https://cdn.example.com/images/tshirt_white_front.jpg"/>
@@ -67,21 +72,54 @@
         </insert>
     </changeSet>
 
-    <changeSet id="105-insert-product-stock" author="dev">
-        <insert tableName="product_stock">
+    <changeSet id="6-insert-product-variants" author="dev">
+        <!-- White T-shirt -->
+        <insert tableName="product_variant">
             <column name="product_id" valueNumeric="1"/>
             <column name="size_id" valueNumeric="2"/> <!-- S -->
+            <column name="color_id" valueNumeric="1"/> <!-- White -->
+            <column name="sku" value="TSHIRT-WHITE-S"/>
+            <column name="price" valueNumeric="59.99"/>
             <column name="quantity" valueNumeric="15"/>
         </insert>
-        <insert tableName="product_stock">
+
+        <insert tableName="product_variant">
             <column name="product_id" valueNumeric="1"/>
             <column name="size_id" valueNumeric="3"/> <!-- M -->
+            <column name="color_id" valueNumeric="1"/> <!-- White -->
+            <column name="sku" value="TSHIRT-WHITE-M"/>
+            <column name="price" valueNumeric="59.99"/>
             <column name="quantity" valueNumeric="25"/>
         </insert>
-        <insert tableName="product_stock">
+
+        <insert tableName="product_variant">
             <column name="product_id" valueNumeric="1"/>
             <column name="size_id" valueNumeric="4"/> <!-- L -->
+            <column name="color_id" valueNumeric="1"/> <!-- White -->
+            <column name="sku" value="TSHIRT-WHITE-L"/>
+            <column name="price" valueNumeric="59.99"/>
             <column name="quantity" valueNumeric="10"/>
         </insert>
+
+        <!-- Black T-shirt variant -->
+        <insert tableName="product_variant">
+            <column name="product_id" valueNumeric="1"/>
+            <column name="size_id" valueNumeric="3"/> <!-- M -->
+            <column name="color_id" valueNumeric="2"/> <!-- Black -->
+            <column name="sku" value="TSHIRT-BLACK-M"/>
+            <column name="price" valueNumeric="59.99"/>
+            <column name="quantity" valueNumeric="18"/>
+        </insert>
+
+        <!-- Blue T-shirt variant -->
+        <insert tableName="product_variant">
+            <column name="product_id" valueNumeric="1"/>
+            <column name="size_id" valueNumeric="3"/> <!-- M -->
+            <column name="color_id" valueNumeric="3"/> <!-- Blue -->
+            <column name="sku" value="TSHIRT-BLUE-M"/>
+            <column name="price" valueNumeric="64.99"/>
+            <column name="quantity" valueNumeric="12"/>
+        </insert>
     </changeSet>
+
 </databaseChangeLog>

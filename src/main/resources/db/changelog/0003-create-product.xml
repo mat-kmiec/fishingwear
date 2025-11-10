@@ -38,22 +38,22 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="3-create-product-stock" author="matkmiec">
-        <createTable tableName="product_stock">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="product_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_product_stock_product"
-                             references="product(id)"/>
-            </column>
-            <column name="size_id" type="BIGINT">
-                <constraints nullable="false" foreignKeyName="fk_product_stock_size"
-                             references="size(id)"/>
-            </column>
-            <column name="quantity" type="INT" defaultValueNumeric="0"/>
-        </createTable>
-    </changeSet>
+<!--    <changeSet id="3-create-product-stock" author="matkmiec">-->
+<!--        <createTable tableName="product_stock">-->
+<!--            <column name="id" type="BIGINT" autoIncrement="true">-->
+<!--                <constraints primaryKey="true" nullable="false"/>-->
+<!--            </column>-->
+<!--            <column name="product_id" type="BIGINT">-->
+<!--                <constraints nullable="false" foreignKeyName="fk_product_stock_product"-->
+<!--                             references="product(id)"/>-->
+<!--            </column>-->
+<!--            <column name="size_id" type="BIGINT">-->
+<!--                <constraints nullable="false" foreignKeyName="fk_product_stock_size"-->
+<!--                             references="size(id)"/>-->
+<!--            </column>-->
+<!--            <column name="quantity" type="INT" defaultValueNumeric="0"/>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
 
     <changeSet id="4-create-product-image" author="dev">
         <createTable tableName="product_image">
@@ -111,5 +111,44 @@
                 tableName="product_category"
                 columnNames="product_id, category_id"
                 constraintName="pk_product_category"/>
+    </changeSet>
+
+    <changeSet id="7-create-color" author="dev">
+        <createTable tableName="color">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="hex_code" type="VARCHAR(7)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="8-create-product-variant" author="dev">
+        <createTable tableName="product_variant">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_variant_product"
+                             references="product(id)"/>
+            </column>
+            <column name="size_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_variant_size"
+                             references="size(id)"/>
+            </column>
+            <column name="color_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_variant_color"
+                             references="color(id)"/>
+            </column>
+            <column name="sku" type="VARCHAR(100)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(10,2)"/>
+            <column name="discount_price" type="DECIMAL(10,2)"/>
+            <column name="quantity" type="INT" defaultValueNumeric="0"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+        </createTable>
     </changeSet>
 </databaseChangeLog>
