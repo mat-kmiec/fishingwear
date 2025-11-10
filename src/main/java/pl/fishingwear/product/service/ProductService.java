@@ -1,55 +1,54 @@
 package pl.fishingwear.product.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.fishingwear.product.dto.ProductResponseDto;
-import pl.fishingwear.product.dto.ProductVariantDto;
-import pl.fishingwear.product.model.Category;
+import org.springframework.transaction.annotation.Transactional;
+import pl.fishingwear.product.dto.ColorDto;
+import pl.fishingwear.product.dto.ProductDto;
+import pl.fishingwear.product.dto.SizeDto;
+import pl.fishingwear.product.exception.ProductNotFoundException;
+import pl.fishingwear.product.mapper.ProductMapper;
 import pl.fishingwear.product.model.Product;
-import pl.fishingwear.product.model.ProductImage;
+import pl.fishingwear.product.model.ProductVariant;
 import pl.fishingwear.product.repository.ProductRepository;
+import pl.fishingwear.product.repository.ProductVariantRepository;
 
-import java.util.Comparator;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
 
+
     private final ProductRepository productRepository;
+    private final ProductVariantRepository productVariantRepository;
 
-    public ProductResponseDto getProductBySlug(String slug) {
-        Product product = productRepository.findBySlug(slug)
-                .orElseThrow(() -> new EntityNotFoundException("Produkt nie znaleziony"));
+    @Transactional
+    public ProductDto getProductBySlug(String slug){
+        Product product = productRepository.findBySlug(slug).orElseThrow(ProductNotFoundException::new);
 
-        return mapToDto(product);
-    }
+        ProductDto productDto = ProductMapper.toDto(product);
+        var variants = productVariantRepository.findByProduct(product);
+        var colors = variants.stream()
+                .map(ProductVariant::getColor)
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(c -> new ColorDto(c.getName(), c.getHexCode()))
+                .toList();
 
-    private ProductResponseDto mapToDto(Product product) {
-        return ProductResponseDto.builder()
-                .id(product.getId())
-                .name(product.getName())
-                .description(product.getDescription())
-                .details(product.getDetails())
-                .price(product.getPrice())
-                .discountPrice(product.getDiscountPrice())
-                .slug(product.getSlug())
-                .images(product.getImages().stream()
-                        .sorted(Comparator.comparingInt(ProductImage::getSortOrder))
-                        .map(ProductImage::getImageUrl)
-                        .toList())
-                .categories(product.getCategories().stream()
-                        .map(Category::getName)
-                        .toList())
-                .variants(product.getVariants().stream()
-                        .map(variant -> ProductVariantDto.builder()
-                                .sku(variant.getSku())
-                                .size(variant.getSize() != null ? variant.getSize().getName() : null)
-                                .color(variant.getColor() != null ? variant.getColor().getName() : null)
-                                .price(variant.getPrice())
-                                .quantity(variant.getQuantity())
-                                .build())
-                        .toList())
-                .build();
+        productDto.setColors(colors);
+
+        var sizes = variants.stream()
+                .map(v -> v.getSize())
+                .filter(Objects::nonNull)
+                .distinct()
+                .map(s -> new SizeDto(s.getName(), s.getDescription()))
+                .toList();
+
+        productDto.setSizes(sizes);
+
+        return productDto;
+
+
     }
 }

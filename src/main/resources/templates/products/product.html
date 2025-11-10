@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -174,85 +174,49 @@
 
         <div class="col-lg-5">
           <div class="product-info-card">
-            
+
             <a href="#" class="product-category-link">Odzież / Spodnie</a>
-            <h1 class="product-title-detail mt-2">Spodnie dresowe super premium</h1>
-            <h2 class="product-price-detail">199,99 zł</h2>
-            <p class="text-secondary mb-4">
+            <h1 class="product-title-detail mt-2" th:text="${product.name}">Spodnie dresowe super premium</h1>
+            <h2 class="product-price-detail" th:text="${product.getFormattedPrice()}">199,99 zł</h2>
+            <p class="text-secondary mb-4" th:text="${product.description}">
               Wysokiej jakości spodnie dresowe wykonane z najlepszej bawełny,
               idealne na chłodniejsze dni nad wodą.
             </p>
 
-            <div class="filter-group">
-              <h5 class="filter-group-title">Wybierz rozmiar</h5>
-              <div class="size-options d-flex flex-wrap gap-2">
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-s"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-s"
-                  >S</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-m"
-                  autocomplete="off"
-                  checked
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-m"
-                  >M</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-l"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-l"
-                  >L</label
-                >
-                <input
-                  type="radio"
-                  class="btn-check"
-                  name="size-options"
-                  id="size-xl"
-                  autocomplete="off"
-                />
-                <label class="btn btn-sm btn-outline-secondary" for="size-xl"
-                  >XL</label
-                >
-              </div>
-            </div>
 
-            <div class="filter-group">
-              <h5 class="filter-group-title">Wybierz kolor</h5>
-              <div class="color-swatch-list">
-                <span
-                  class="color-swatch active"
-                  style="background-color: #2e3b38"
-                  data-bs-toggle="tooltip"
-                  title="Grafitowy"
-                ></span>
-                <span
-                  class="color-swatch"
-                  style="background-color: #677525"
-                  data-bs-toggle="tooltip"
-                  title="Oliwkowy"
-                ></span>
-                <span
-                  class="color-swatch"
-                  style="background-color: #222222"
-                  data-bs-toggle="tooltip"
-                  title="Czarny"
-                ></span>
+              <div class="filter-group">
+                  <h5 class="filter-group-title mb-2">Wybierz rozmiar</h5>
+
+                  <div class="size-options d-flex flex-wrap gap-2">
+                      <div th:each="size : ${product.sizes}">
+                          <input type="radio"
+                                 class="btn-check"
+                                 name="size-options"
+                                 th:id="'size-' + ${size.name}"
+                                 autocomplete="off" />
+
+                          <label class="btn btn-sm btn-outline-secondary"
+                                 th:for="'size-' + ${size.name}"
+                                 th:text="${size.name}">
+                          </label>
+                      </div>
+                  </div>
               </div>
-            </div>
+
+
+
+              <div class="filter-group">
+                  <h5 class="filter-group-title">Wybierz kolor</h5>
+                  <div class="color-swatch-list">
+                    <span
+                            class="color-swatch"
+                            th:each="color : ${product.colors}"
+                            th:style="'background-color:' + ${color.hexCode}"
+                            th:attr="title=${color.name}"
+                            data-bs-toggle="tooltip">
+                    </span>
+                  </div>
+              </div>
 
             <div class="filter-group">
                 <h5 class="filter-group-title">Ilość</h5>
@@ -294,7 +258,7 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#productDetailsAccordion">
                     <div class="accordion-body text-secondary small pt-2">
-                        Darmowa dostawa od 200 zł. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Darmowa dostawa od 200 zł. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                         Darmowy zwrot do 30 dni.
                     </div>
                     </div>
