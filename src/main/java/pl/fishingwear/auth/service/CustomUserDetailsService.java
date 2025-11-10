@@ -1,4 +1,4 @@
-package pl.fishingwear.service;
+package pl.fishingwear.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -6,7 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import pl.fishingwear.dto.UserCredentialsDto;
+import pl.fishingwear.user.dto.UserCredentialsDto;
+import pl.fishingwear.user.service.UserService;
 
 @Service
 @RequiredArgsConstructor

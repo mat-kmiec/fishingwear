@@ -1,4 +1,4 @@
-package pl.fishingwear.exception;
+package pl.fishingwear.common.exception;
 
 public class PasswordNotMatchException extends RuntimeException{
     public PasswordNotMatchException() {

@@ -1,4 +1,4 @@
-package pl.fishingwear.exception;
+package pl.fishingwear.common.exception;
 
 public class EmailAlreadyExistException extends RuntimeException{
     public EmailAlreadyExistException(String message) {

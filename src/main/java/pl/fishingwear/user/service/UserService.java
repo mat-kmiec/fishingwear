@@ -1,16 +1,16 @@
-package pl.fishingwear.service;
+package pl.fishingwear.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.fishingwear.dto.UserCredentialsDto;
-import pl.fishingwear.dto.UserRegistrationDto;
-import pl.fishingwear.exception.EmailAlreadyExistException;
-import pl.fishingwear.exception.PasswordNotMatchException;
-import pl.fishingwear.mapper.UserCredentialsDtoMapper;
-import pl.fishingwear.model.User;
-import pl.fishingwear.repository.UserRepository;
+import pl.fishingwear.user.dto.UserCredentialsDto;
+import pl.fishingwear.user.dto.UserRegistrationDto;
+import pl.fishingwear.common.exception.EmailAlreadyExistException;
+import pl.fishingwear.common.exception.PasswordNotMatchException;
+import pl.fishingwear.user.mapper.UserCredentialsDtoMapper;
+import pl.fishingwear.user.model.User;
+import pl.fishingwear.user.repository.UserRepository;
 
 import java.util.Optional;
 
@@ -39,7 +39,7 @@ public class UserService {
         user.setEmail(email);
         String passwordHash = passwordEncoder.encode(registration.getPassword());
         user.setPassword(passwordHash);
-        user.setRole("ROLE_USER");
+        user.setRole("USER");
         userRepository.save(user);
 
     }

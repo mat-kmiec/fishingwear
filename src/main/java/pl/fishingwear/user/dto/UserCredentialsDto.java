@@ -1,4 +1,4 @@
-package pl.fishingwear.dto;
+package pl.fishingwear.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

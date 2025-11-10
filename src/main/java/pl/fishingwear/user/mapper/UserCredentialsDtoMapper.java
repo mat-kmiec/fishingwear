@@ -1,7 +1,7 @@
-package pl.fishingwear.mapper;
+package pl.fishingwear.user.mapper;
 
-import pl.fishingwear.dto.UserCredentialsDto;
-import pl.fishingwear.model.User;
+import pl.fishingwear.user.dto.UserCredentialsDto;
+import pl.fishingwear.user.model.User;
 
 public class UserCredentialsDtoMapper {
     public static UserCredentialsDto toDto(User user){

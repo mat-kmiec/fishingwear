@@ -1,8 +1,8 @@
-package pl.fishingwear.repository;
+package pl.fishingwear.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.fishingwear.model.User;
+import pl.fishingwear.user.model.User;
 import java.util.Optional;
 
 @Repository

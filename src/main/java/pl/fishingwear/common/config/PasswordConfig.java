@@ -1,4 +1,4 @@
-package pl.fishingwear.config;
+package pl.fishingwear.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
