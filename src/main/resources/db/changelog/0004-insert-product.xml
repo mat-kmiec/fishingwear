@@ -60,13 +60,13 @@
     <changeSet id="5-insert-product-images" author="dev">
         <insert tableName="product_image">
             <column name="product_id" valueNumeric="1"/>
-            <column name="image_url" value="https://cdn.example.com/images/tshirt_white_front.jpg"/>
+            <column name="image_url" value="/products/1/bluza.png"/>
             <column name="is_main" valueBoolean="true"/>
             <column name="sort_order" valueNumeric="1"/>
         </insert>
         <insert tableName="product_image">
             <column name="product_id" valueNumeric="1"/>
-            <column name="image_url" value="https://cdn.example.com/images/tshirt_white_back.jpg"/>
+            <column name="image_url" value="/products/1/tshirt.png"/>
             <column name="is_main" valueBoolean="false"/>
             <column name="sort_order" valueNumeric="2"/>
         </insert>

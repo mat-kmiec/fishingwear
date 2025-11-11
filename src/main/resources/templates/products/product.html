@@ -64,42 +64,23 @@
 
     <div class="container my-5">
       <div class="row g-5">
-        <div class="col-lg-7">
-          <img
-            src="../../static/images/products/dresy.png"
-            alt="Główne zdjęcie produktu"
-            class="main-product-image"
-            id="mainProductImage"
-          />
-          <div class="thumbnail-gallery">
-            <img
-              src="../../static/images/products/dresy.png"
-              alt="Miniaturka produktu 1"
-              class="thumbnail-img active"
-              data-src="../../static/images/products/dresy.png"
-            />
-            <img
-              src="../../static/images/products/tshirt.png"
-              alt="Miniaturka produktu 2"
-              class="thumbnail-img"
-              data-src="../../static/images/products/tshirt.png"
-            />
-            <img
-              src="../../static/images/products/bluza.png"
-              alt="Miniaturka produktu 3"
-              class="thumbnail-img"
-              data-src="../../static/images/products/bluza.png"
-            />
-             <img
-              src="../../static/images/products/czapka.png"
-              alt="Miniaturka produktu 4"
-              class="thumbnail-img"
-              data-src="../../static/images/products/czapka.png"
-            />
-            </div>
-        </div>
+          <div class="col-lg-7">
+              <img th:src="@{${product.images[0].url}}"
+                   alt="Główne zdjęcie produktu"
+                   class="main-product-image"
+                   id="mainProductImage"/>
+              <div class="thumbnail-gallery">
+                  <img th:each="img : ${product.images}"
+                       th:src="@{${img.url}}"
+                       th:alt="'Miniaturka produktu ' + ${img.id}"
+                       class="thumbnail-img"
+                       th:classappend="${img.mainImage} ? ' active' : ''"
+                       th:attr="data-src=${img.url}"/>
+              </div>
+          </div>
 
-        <div class="col-lg-5">
+
+          <div class="col-lg-5">
           <div class="product-info-card">
 
             <a href="#" class="product-category-link">Odzież / Spodnie</a>

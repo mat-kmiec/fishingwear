@@ -1,11 +1,11 @@
 package pl.fishingwear.product.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Getter @Setter
+
+@Data
 public class ProductVariantDto {
     private Long colorId;
     private Long sizeId;

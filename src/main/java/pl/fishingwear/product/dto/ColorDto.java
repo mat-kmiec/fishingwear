@@ -1,16 +1,3 @@
 package pl.fishingwear.product.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ColorDto {
-    private Long id;
-    private String name;
-    private String hexCode;
-}
+public record ColorDto(Long id, String name, String hexCode) {}
