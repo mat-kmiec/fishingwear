@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.fishingwear.product.dto.ProductDto;
+import pl.fishingwear.product.service.CategoryService;
 import pl.fishingwear.product.service.ColorService;
 import pl.fishingwear.product.service.ProductService;
 import pl.fishingwear.product.service.SizeService;
@@ -21,6 +22,7 @@ public class ProductController {
     private final ProductService productService;
     private final ColorService colorService;
     private final SizeService sizeService;
+    private final CategoryService categoryService;
 
     @GetMapping("/{slug}")
     public String getProduct(@PathVariable String slug, Model model) {
@@ -43,6 +45,10 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             Model model) {
+        if (page < 0) {
+            page = 0;
+        }
+
 
         Page<ProductDto> productPage = productService.getFilteredProducts(
                 page, size, sortBy, sortDir, categorySlug,
@@ -50,8 +56,19 @@ public class ProductController {
         );
 
         model.addAttribute("productPage", productPage);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", productPage.getTotalPages());
+
+        int totalPages = productPage.getTotalPages();
+        int currentPage = page;
+
+        if (totalPages == 0) {
+            currentPage = 0;
+            totalPages = 1;
+        }
+
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", totalPages);
+
+
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("sizes", sizeService.getAllSizes());
@@ -61,6 +78,7 @@ public class ProductController {
         model.addAttribute("selectedCategory", categorySlug);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("categories", categoryService.getAllCategories());
 
         return "products/product-list";
     }

@@ -142,7 +142,7 @@
                         <a th:href="@{'/produkty/' + ${product.slug}}" class="text-decoration-none">
                             <div class="product-image-wrapper position-relative">
                                 <img th:if="${product.images != null and !product.images.isEmpty()}"
-                                     th:src="${product.images[0].url}"
+                                     th:src="@{'uploads' + ${product.images[0].url}}"
                                      th:alt="${product.name}"
                                      class="card-img-top object-fit-cover"
                                      >
@@ -170,33 +170,64 @@
         </div>
       </div>
     </div>
-     <nav aria-label="Paginacja" class="mt-5 d-flex justify-content-center">
+     <!-- Paginacja (pokazuje się tylko jeśli są produkty i więcej niż 1 strona) -->
+     <nav aria-label="Paginacja"
+          class="mt-5 d-flex justify-content-center"
+          th:if="${productPage.totalPages > 1 and !productPage.empty}">
          <ul class="pagination">
 
+             <!-- Poprzednia -->
              <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
                  <a class="page-link"
-                    th:href="@{/produkty(page=${productPage.number - 1}, size=${productPage.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                    th:href="${productPage.first} ? '#' :
+                        @{/produkty(page=${productPage.number - 1}, size=${productPage.size},
+                                   sortBy=${sortBy}, sortDir=${sortDir},
+                                   categorySlug=${selectedCategory},
+                                   color=${selectedColors},
+                                   sizeFilter=${selectedSizes},
+                                   minPrice=${minPrice},
+                                   maxPrice=${maxPrice},
+                                   search=${param.search})}">
                      Poprzednia
                  </a>
              </li>
 
+             <!-- Numery stron -->
              <li class="page-item"
                  th:each="pageNum : ${#numbers.sequence(0, productPage.totalPages - 1)}"
                  th:classappend="${pageNum == currentPage} ? 'active'">
                  <a class="page-link"
                     th:text="${pageNum + 1}"
-                    th:href="@{/produkty(page=${pageNum}, size=${productPage.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                    th:href="@{/produkty(page=${pageNum}, size=${productPage.size},
+                                    sortBy=${sortBy}, sortDir=${sortDir},
+                                    categorySlug=${selectedCategory},
+                                    color=${selectedColors},
+                                    sizeFilter=${selectedSizes},
+                                    minPrice=${minPrice},
+                                    maxPrice=${maxPrice},
+                                    search=${param.search})}">
                  </a>
              </li>
 
+             <!-- Następna -->
              <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
                  <a class="page-link"
-                    th:href="@{/produkty(page=${productPage.number + 1}, size=${productPage.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                    th:href="${productPage.last} ? '#' :
+                        @{/produkty(page=${productPage.number + 1}, size=${productPage.size},
+                                   sortBy=${sortBy}, sortDir=${sortDir},
+                                   categorySlug=${selectedCategory},
+                                   color=${selectedColors},
+                                   sizeFilter=${selectedSizes},
+                                   minPrice=${minPrice},
+                                   maxPrice=${maxPrice},
+                                   search=${param.search})}">
                      Następna
                  </a>
              </li>
+
          </ul>
      </nav>
+
 
 
      <footer th:insert="~{fragments/footer :: footer}"></footer>
