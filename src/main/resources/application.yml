@@ -1,7 +1,4 @@
 spring:
-  web:
-    resources:
-      static-locations: file:./uploads/,classpath:/static/
   application:
     name: fishingwear
   datasource:

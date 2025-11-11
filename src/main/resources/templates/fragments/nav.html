@@ -2,7 +2,7 @@
 <html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <nav th:fragment="nav" class="navbar navbar-expand-lg navbar-dark navbar-custom">
     <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="#" th:href="@{/}">
             <img
                     th:src="@{/images/logo/logo.png}"
                     src="../static/images/logo/logo.png"
@@ -26,34 +26,27 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" th:href="@{/produkty}">Produkty</a>
+                </li>
                 <li class="nav-item dropdown">
-                    <a
-                            class="nav-link dropdown-toggle"
-                            href="#"
-                            id="navbarDropdownKurtki"
-                            role="button"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                    >
-                        Odzież
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownKategorie"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Kategorie
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownKurtki">
-                        <li><a class="dropdown-item" href="#">T-shirt</a></li>
-                        <li><a class="dropdown-item" href="#">Bluzy</a></li>
-                        <li><a class="dropdown-item" href="#">Czapki</a></li>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownKategorie">
+                        <li th:each="cat : ${category}">
+                            <a class="dropdown-item"
+                               th:href="@{/produkty(categorySlug=${cat.slug})}"
+                               th:text="${cat.name}"></a>
+                        </li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#">Zobacz wszystko</a></li>
+                        <li><a class="dropdown-item" th:href="@{/produkty}">Wszystkie produkty</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Gadżety</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Akcesoria</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Promocje</a>
-                </li>
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="#">Promocje</a>-->
+<!--                </li>-->
             </ul>
 
             <form class="d-flex mx-auto my-2 my-lg-0" role="search">
@@ -76,6 +69,7 @@
                 <a
                         class="nav-link position-relative fs-4"
                         href="#"
+                        th:href="@{/koszyk}"
                         aria-label="Koszyk"
                 >
                     <i class="fa-solid fa-basket-shopping"></i>
@@ -104,8 +98,10 @@
                         class="dropdown-menu dropdown-menu-end"
                         aria-labelledby="profileDropdown"
                     >
-                        <li><a class="dropdown-item" href="#">Moje konto</a></li>
-                        <li><a class="dropdown-item" href="#">Historia zamówień</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/moje-konto}">Moje konto</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/historia-zamowien}">Historia zamówień</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/adresy}">Adresy</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/ustawienia-profilu}">Ustawienia</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
                     </ul>

@@ -12,7 +12,6 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
-    Optional<Product> findBySlug(String slug);
     @Query("SELECT DISTINCT p FROM Product p " +
             "LEFT JOIN FETCH p.variants v " +
             "LEFT JOIN FETCH v.color " +
@@ -20,5 +19,4 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
             "LEFT JOIN FETCH p.images " +
             "WHERE p.slug = :slug")
     Optional<Product> findBySlugWithVariantsAndImages(@Param("slug") String slug);
-    Page<Product> findByIsActiveTrue(Pageable pageable);
 }
