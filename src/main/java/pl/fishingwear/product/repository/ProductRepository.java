@@ -1,14 +1,16 @@
 package pl.fishingwear.product.repository;
 
-import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.fishingwear.product.model.Product;
 
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
     Optional<Product> findBySlug(String slug);
     @Query("SELECT DISTINCT p FROM Product p " +
@@ -18,4 +20,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "LEFT JOIN FETCH p.images " +
             "WHERE p.slug = :slug")
     Optional<Product> findBySlugWithVariantsAndImages(@Param("slug") String slug);
+    Page<Product> findByIsActiveTrue(Pageable pageable);
 }

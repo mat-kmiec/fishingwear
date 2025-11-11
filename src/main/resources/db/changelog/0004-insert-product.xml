@@ -4,6 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <!-- === ROZMIARY === -->
     <changeSet id="0-insert-sizes" author="dev">
         <insert tableName="size"><column name="name" value="XS"/></insert>
         <insert tableName="size"><column name="name" value="S"/></insert>
@@ -13,7 +14,7 @@
         <insert tableName="size"><column name="name" value="XXL"/></insert>
     </changeSet>
 
-
+    <!-- === KOLORY === -->
     <changeSet id="1-insert-colors" author="dev">
         <insert tableName="color">
             <column name="name" value="White"/>
@@ -27,17 +28,41 @@
             <column name="name" value="Blue"/>
             <column name="hex_code" value="#0000FF"/>
         </insert>
-    </changeSet>
-
-    <changeSet id="2-insert-category" author="dev">
-        <insert tableName="category">
-            <column name="name" value="T-shirty"/>
-            <column name="slug" value="t-shirty"/>
-            <column name="description" value="Klasyczne i modne T-shirty dla każdego"/>
+        <insert tableName="color">
+            <column name="name" value="Olive"/>
+            <column name="hex_code" value="#808000"/>
+        </insert>
+        <insert tableName="color">
+            <column name="name" value="Gray"/>
+            <column name="hex_code" value="#808080"/>
         </insert>
     </changeSet>
 
+    <!-- === KATEGORIE === -->
+    <changeSet id="2-insert-category" author="dev">
+        <insert tableName="category">
+            <column name="name" value="T-shirty"/>
+            <column name="slug" value="tshirty"/>
+            <column name="description" value="Klasyczne i modne T-shirty dla każdego"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Bluzy"/>
+            <column name="slug" value="bluzy"/>
+            <column name="description" value="Wygodne bluzy z bawełny i materiałów premium"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Spodnie"/>
+            <column name="slug" value="spodnie"/>
+            <column name="description" value="Stylowe i komfortowe spodnie do każdej stylizacji"/>
+        </insert>
+        <insert tableName="category">
+            <column name="name" value="Kurtki"/>
+            <column name="slug" value="kurtki"/>
+            <column name="description" value="Kurtki i okrycia wierzchnie na każdą pogodę"/>
+        </insert>
+    </changeSet>
 
+    <!-- === PRODUKT 1: T-shirt Basic White === -->
     <changeSet id="3-insert-product" author="dev">
         <insert tableName="product">
             <column name="name" value="T-shirt Basic White"/>
@@ -60,65 +85,140 @@
     <changeSet id="5-insert-product-images" author="dev">
         <insert tableName="product_image">
             <column name="product_id" valueNumeric="1"/>
-            <column name="image_url" value="/products/1/bluza.png"/>
+            <column name="image_url" value="/products/1/tshirt.png"/>
             <column name="is_main" valueBoolean="true"/>
             <column name="sort_order" valueNumeric="1"/>
-        </insert>
-        <insert tableName="product_image">
-            <column name="product_id" valueNumeric="1"/>
-            <column name="image_url" value="/products/1/tshirt.png"/>
-            <column name="is_main" valueBoolean="false"/>
-            <column name="sort_order" valueNumeric="2"/>
         </insert>
     </changeSet>
 
     <changeSet id="6-insert-product-variants" author="dev">
-        <!-- White T-shirt -->
         <insert tableName="product_variant">
             <column name="product_id" valueNumeric="1"/>
-            <column name="size_id" valueNumeric="2"/> <!-- S -->
-            <column name="color_id" valueNumeric="1"/> <!-- White -->
-            <column name="sku" value="TSHIRT-WHITE-S"/>
-            <column name="price" valueNumeric="59.99"/>
-            <column name="quantity" valueNumeric="15"/>
-        </insert>
-
-        <insert tableName="product_variant">
-            <column name="product_id" valueNumeric="1"/>
-            <column name="size_id" valueNumeric="3"/> <!-- M -->
-            <column name="color_id" valueNumeric="1"/> <!-- White -->
+            <column name="size_id" valueNumeric="3"/>
+            <column name="color_id" valueNumeric="1"/>
             <column name="sku" value="TSHIRT-WHITE-M"/>
             <column name="price" valueNumeric="59.99"/>
-            <column name="quantity" valueNumeric="25"/>
+            <column name="quantity" valueNumeric="20"/>
         </insert>
+    </changeSet>
 
+    <!-- === PRODUKT 2: Bluza Classic Black === -->
+    <changeSet id="7-insert-product" author="dev">
+        <insert tableName="product">
+            <column name="name" value="Bluza Classic Black"/>
+            <column name="description" value="Czarna bluza z kapturem, wygodna i ciepła."/>
+            <column name="details" value="100% bawełna, krój regular fit, kieszeń kangurka"/>
+            <column name="price" valueNumeric="129.99"/>
+            <column name="sku" value="BLUZA-BLACK-001"/>
+            <column name="slug" value="bluza-classic-black"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="8-assign-product-category" author="dev">
+        <insert tableName="product_category">
+            <column name="product_id" valueNumeric="2"/>
+            <column name="category_id" valueNumeric="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="9-insert-product-images" author="dev">
+        <insert tableName="product_image">
+            <column name="product_id" valueNumeric="2"/>
+            <column name="image_url" value="/products/1/bluza.png"/>
+            <column name="is_main" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="10-insert-product-variants" author="dev">
         <insert tableName="product_variant">
-            <column name="product_id" valueNumeric="1"/>
-            <column name="size_id" valueNumeric="4"/> <!-- L -->
-            <column name="color_id" valueNumeric="1"/> <!-- White -->
-            <column name="sku" value="TSHIRT-WHITE-L"/>
-            <column name="price" valueNumeric="59.99"/>
+            <column name="product_id" valueNumeric="2"/>
+            <column name="size_id" valueNumeric="3"/>
+            <column name="color_id" valueNumeric="2"/>
+            <column name="sku" value="BLUZA-BLACK-M"/>
+            <column name="price" valueNumeric="129.99"/>
+            <column name="quantity" valueNumeric="15"/>
+        </insert>
+    </changeSet>
+
+    <!-- === PRODUKT 3: Spodnie Jogger Olive === -->
+    <changeSet id="11-insert-product" author="dev">
+        <insert tableName="product">
+            <column name="name" value="Spodnie Jogger Olive"/>
+            <column name="description" value="Wygodne spodnie typu jogger w kolorze oliwkowym."/>
+            <column name="details" value="97% bawełna, 3% elastan, elastyczny pas, zwężane nogawki"/>
+            <column name="price" valueNumeric="149.99"/>
+            <column name="sku" value="JOGGER-OLIVE-001"/>
+            <column name="slug" value="spodnie-jogger-olive"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="12-assign-product-category" author="dev">
+        <insert tableName="product_category">
+            <column name="product_id" valueNumeric="3"/>
+            <column name="category_id" valueNumeric="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="13-insert-product-images" author="dev">
+        <insert tableName="product_image">
+            <column name="product_id" valueNumeric="3"/>
+            <column name="image_url" value="/products/1/dresy.png"/>
+            <column name="is_main" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="14-insert-product-variants" author="dev">
+        <insert tableName="product_variant">
+            <column name="product_id" valueNumeric="3"/>
+            <column name="size_id" valueNumeric="4"/>
+            <column name="color_id" valueNumeric="4"/>
+            <column name="sku" value="JOGGER-OLIVE-L"/>
+            <column name="price" valueNumeric="149.99"/>
             <column name="quantity" valueNumeric="10"/>
         </insert>
+    </changeSet>
 
-        <!-- Black T-shirt variant -->
-        <insert tableName="product_variant">
-            <column name="product_id" valueNumeric="1"/>
-            <column name="size_id" valueNumeric="3"/> <!-- M -->
-            <column name="color_id" valueNumeric="2"/> <!-- Black -->
-            <column name="sku" value="TSHIRT-BLACK-M"/>
-            <column name="price" valueNumeric="59.99"/>
-            <column name="quantity" valueNumeric="18"/>
+    <!-- === PRODUKT 4: Kurtka Street Denim === -->
+    <changeSet id="15-insert-product" author="dev">
+        <insert tableName="product">
+            <column name="name" value="Kurtka Street Denim"/>
+            <column name="description" value="Jeansowa kurtka typu streetwear, klasyczny krój."/>
+            <column name="details" value="Denim 100%, metalowe guziki, kieszenie boczne i na piersi"/>
+            <column name="price" valueNumeric="219.99"/>
+            <column name="sku" value="KURTKA-DENIM-001"/>
+            <column name="slug" value="kurtka-street-denim"/>
+            <column name="is_active" valueBoolean="true"/>
         </insert>
+    </changeSet>
 
-        <!-- Blue T-shirt variant -->
+    <changeSet id="16-assign-product-category" author="dev">
+        <insert tableName="product_category">
+            <column name="product_id" valueNumeric="4"/>
+            <column name="category_id" valueNumeric="4"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="17-insert-product-images" author="dev">
+        <insert tableName="product_image">
+            <column name="product_id" valueNumeric="4"/>
+            <column name="image_url" value="/products/1/kurtka.png"/>
+            <column name="is_main" valueBoolean="true"/>
+            <column name="sort_order" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="18-insert-product-variants" author="dev">
         <insert tableName="product_variant">
-            <column name="product_id" valueNumeric="1"/>
-            <column name="size_id" valueNumeric="3"/> <!-- M -->
-            <column name="color_id" valueNumeric="3"/> <!-- Blue -->
-            <column name="sku" value="TSHIRT-BLUE-M"/>
-            <column name="price" valueNumeric="64.99"/>
-            <column name="quantity" valueNumeric="12"/>
+            <column name="product_id" valueNumeric="4"/>
+            <column name="size_id" valueNumeric="3"/>
+            <column name="color_id" valueNumeric="5"/>
+            <column name="sku" value="KURTKA-DENIM-M"/>
+            <column name="price" valueNumeric="219.99"/>
+            <column name="quantity" valueNumeric="8"/>
         </insert>
     </changeSet>
 

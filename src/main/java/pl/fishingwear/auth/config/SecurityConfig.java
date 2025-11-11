@@ -17,7 +17,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/rejestracja", "/logowanie", "/register", "/resetowanie-hasla", "/forgot-password", "/reset-password").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/libs/**").permitAll()
-                        .requestMatchers("/lista-produktow", "/produkt").permitAll()
+                        .requestMatchers("/lista-produktow", "/produkty").permitAll()
                         .requestMatchers("/login",  "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )

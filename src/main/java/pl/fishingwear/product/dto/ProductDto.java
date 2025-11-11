@@ -13,10 +13,12 @@ public class ProductDto {
     private String description;
     private String details;
     private BigDecimal price;
+    private String slug;
     private List<ColorDto> colors;
     private List<SizeDto> sizes;
     private List<ProductVariantDto> variants;
     private List<ProductImageDto> images;
+    private String mainImageUrl;
 
     public String getFormattedPrice() {
         if (price == null) return "";
