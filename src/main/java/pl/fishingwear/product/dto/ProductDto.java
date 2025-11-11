@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+@Data
 @Getter
 @Setter
 public class ProductDto {
@@ -21,6 +22,7 @@ public class ProductDto {
     private List<ColorDto> colors;
     private List<SizeDto> sizes;
     private List<ProductVariantDto> variants;
+    private List<ProductImageDto> images;
 
     public String getFormattedPrice() {
         NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pl", "PL"));

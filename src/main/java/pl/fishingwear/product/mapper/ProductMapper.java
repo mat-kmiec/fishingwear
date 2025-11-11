@@ -1,10 +1,7 @@
 package pl.fishingwear.product.mapper;
 
 import org.springframework.security.core.parameters.P;
-import pl.fishingwear.product.dto.ColorDto;
-import pl.fishingwear.product.dto.ProductDto;
-import pl.fishingwear.product.dto.ProductVariantDto;
-import pl.fishingwear.product.dto.SizeDto;
+import pl.fishingwear.product.dto.*;
 import pl.fishingwear.product.model.Color;
 import pl.fishingwear.product.model.Product;
 import pl.fishingwear.product.model.ProductVariant;
@@ -56,6 +53,14 @@ public class ProductMapper {
             varDto.setStockQuantity(v.getQuantity());
             varDto.setDiscountPrice(v.getDiscountPrice());
             return varDto;
+        }).toList());
+
+        dto.setImages(product.getImages().stream().map(img -> {
+            ProductImageDto imgDto = new ProductImageDto();
+            imgDto.setId(img.getId());
+            imgDto.setUrl(img.getImageUrl());
+            imgDto.setMainImage(img.getIsMain());
+            return imgDto;
         }).toList());
 
         return dto;

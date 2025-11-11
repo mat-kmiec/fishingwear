@@ -1,4 +1,7 @@
 spring:
+  web:
+    resources:
+      static-locations: file:./uploads/,classpath:/static/
   application:
     name: fishingwear
   datasource:
@@ -44,3 +47,6 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+
+file:
+  upload-dir: /uploads/
