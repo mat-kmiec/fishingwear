@@ -65,13 +65,10 @@
     <div class="container my-5">
       <div class="row g-5">
           <div class="col-lg-7">
-              <!-- główne zdjęcie -->
               <img th:src="@{${product.images[0].url}}"
                    alt="Główne zdjęcie produktu"
                    class="main-product-image"
                    id="mainProductImage"/>
-
-              <!-- miniatury -->
               <div class="thumbnail-gallery">
                   <img th:each="img : ${product.images}"
                        th:src="@{${img.url}}"

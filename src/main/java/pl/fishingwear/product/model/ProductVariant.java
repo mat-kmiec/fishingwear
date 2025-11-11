@@ -18,14 +18,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString(exclude = {"product", "color", "size"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class ProductVariant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,15 +39,20 @@ public class ProductVariant {
     @JoinColumn(name = "color_id")
     private Color color;
 
-    @Column(name = "sku", unique = true)
+    @Column(name = "sku", unique = true, length = 100)
     private String sku;
 
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "discount_price")
+    @Column(name = "discount_price", precision = 10, scale = 2)
     private BigDecimal discountPrice;
 
+    @Column(nullable = false)
+    @Builder.Default
     private Integer quantity = 0;
 
+    @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private Boolean isActive = true;
 }
