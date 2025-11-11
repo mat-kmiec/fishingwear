@@ -170,13 +170,11 @@
         </div>
       </div>
     </div>
-     <!-- Paginacja (pokazuje się tylko jeśli są produkty i więcej niż 1 strona) -->
      <nav aria-label="Paginacja"
           class="mt-5 d-flex justify-content-center"
           th:if="${productPage.totalPages > 1 and !productPage.empty}">
          <ul class="pagination">
 
-             <!-- Poprzednia -->
              <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
                  <a class="page-link"
                     th:href="${productPage.first} ? '#' :
@@ -192,7 +190,6 @@
                  </a>
              </li>
 
-             <!-- Numery stron -->
              <li class="page-item"
                  th:each="pageNum : ${#numbers.sequence(0, productPage.totalPages - 1)}"
                  th:classappend="${pageNum == currentPage} ? 'active'">
@@ -209,7 +206,6 @@
                  </a>
              </li>
 
-             <!-- Następna -->
              <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
                  <a class="page-link"
                     th:href="${productPage.last} ? '#' :

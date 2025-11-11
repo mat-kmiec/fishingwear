@@ -67,8 +67,6 @@ public class ProductController {
 
         model.addAttribute("currentPage", currentPage);
         model.addAttribute("totalPages", totalPages);
-
-
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("sizes", sizeService.getAllSizes());
