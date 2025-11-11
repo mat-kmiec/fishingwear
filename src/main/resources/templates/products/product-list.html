@@ -44,181 +44,70 @@
           </button>
 
           <div class="collapse d-lg-block" id="filterCollapse">
-            <div class="filter-card p-4">
-              <h4 class="mb-3">Filtry</h4>
+              <form method="get" th:action="@{/produkty}">
+                  <div class="filter-card p-4">
+                      <h4 class="mb-3">Filtry</h4>
 
-              <div class="filter-group">
-                <h5 class="filter-group-title">Rozmiar</h5>
-                <div class="size-options d-flex flex-wrap gap-2">
-                  <input
-                    type="checkbox"
-                    class="btn-check"
-                    id="size-s"
-                    autocomplete="off"
-                  />
-                  <label class="btn btn-sm btn-outline-secondary" for="size-s"
-                    >S</label
-                  >
+                      <div class="filter-group">
+                          <h5 class="filter-group-title">Rozmiar</h5>
+                          <div class="size-options d-flex flex-wrap gap-2">
+                              <div th:each="size : ${sizes}">
+                                  <input type="checkbox"
+                                         name="sizeFilter"
+                                         th:id="'size-' + ${size.name}"
+                                         th:value="${size.name}"
+                                         th:checked="${selectedSizes != null and selectedSizes.contains(size.name)}" />
+                                  <label class="btn btn-sm btn-outline-secondary"
+                                         th:for="'size-' + ${size.name}"
+                                         th:text="${size.name}"></label>
+                              </div>
+                          </div>
+                      </div>
 
-                  <input
-                    type="checkbox"
-                    class="btn-check"
-                    id="size-m"
-                    autocomplete="off"
-                  />
-                  <label class="btn btn-sm btn-outline-secondary" for="size-m"
-                    >M</label
-                  >
+                      <div class="filter-group">
+                          <h5 class="filter-group-title">Kolor</h5>
+                          <div class="color-swatch-list d-flex flex-wrap gap-2">
+                              <label th:each="color : ${colors}"
+                                     class="color-swatch"
+                                     th:style="'background-color:' + ${color.hexCode}"
+                                     th:title="${color.name}">
+                                  <input type="checkbox"
+                                         hidden
+                                         name="color"
+                                         th:value="${color.name}"
+                                         th:checked="${selectedColors != null and selectedColors.contains(color.name)}">
+                              </label>
+                          </div>
+                      </div>
 
-                  <input
-                    type="checkbox"
-                    class="btn-check"
-                    id="size-l"
-                    autocomplete="off"
-                  />
-                  <label class="btn btn-sm btn-outline-secondary" for="size-l"
-                    >L</label
-                  >
+                      <div class="filter-group">
+                          <h5 class="filter-group-title">Kategorie</h5>
+                          <div class="form-check mb-2" th:each="cat : ${categories}">
+                              <input class="form-check-input" type="radio" name="categorySlug"
+                                     th:id="${'cat-' + cat.slug}"
+                                     th:value="${cat.slug}"
+                                     th:checked="${selectedCategory == cat.slug}" />
+                              <label class="form-check-label"
+                                     th:for="${'cat-' + cat.slug}"
+                                     th:text="${cat.name}"></label>
+                          </div>
+                      </div>
 
-                  <input
-                    type="checkbox"
-                    class="btn-check"
-                    id="size-xl"
-                    autocomplete="off"
-                  />
-                  <label class="btn btn-sm btn-outline-secondary" for="size-xl"
-                    >XL</label
-                  >
+                      <div class="filter-group">
+                          <h5 class="filter-group-title">Cena (zł)</h5>
+                          <div class="d-flex align-items-center">
+                              <input type="number" class="form-control" name="minPrice"
+                                     th:value="${minPrice}" placeholder="Od" />
+                              <span class="mx-2">–</span>
+                              <input type="number" class="form-control" name="maxPrice"
+                                     th:value="${maxPrice}" placeholder="Do" />
+                          </div>
+                      </div>
 
-                  <input
-                    type="checkbox"
-                    class="btn-check"
-                    id="size-xxl"
-                    autocomplete="off"
-                  />
-                  <label class="btn btn-sm btn-outline-secondary" for="size-xxl"
-                    >XXL</label
-                  >
-                </div>
-              </div>
-
-              <div class="filter-group">
-                <h5 class="filter-group-title">Kolor</h5>
-                <div class="color-swatch-list">
-                  <span
-                    class="color-swatch"
-                    style="background-color: #222222"
-                    data-bs-toggle="tooltip"
-                    title="Czarny"
-                  ></span>
-                  <span
-                    class="color-swatch"
-                    style="background-color: #f5f5f5"
-                    data-bs-toggle="tooltip"
-                    title="Biały"
-                  ></span>
-                  <span
-                    class="color-swatch"
-                    style="background-color: #677525"
-                    data-bs-toggle="tooltip"
-                    title="Oliwkowy"
-                  ></span>
-                  <span
-                    class="color-swatch"
-                    style="background-color: #2e3b38"
-                    data-bs-toggle="tooltip"
-                    title="Grafitowy"
-                  ></span>
-                  <span
-                    class="color-swatch"
-                    style="background-color: #0d6efd"
-                    data-bs-toggle="tooltip"
-                    title="Niebieski"
-                  ></span>
-                  <span
-                    class="color-swatch"
-                    style="background-color: #dc3545"
-                    data-bs-toggle="tooltip"
-                    title="Czerwony"
-                  ></span>
-                </div>
-              </div>
-
-              <div class="filter-group">
-                <h5 class="filter-group-title">Kategorie</h5>
-                <div class="filter-options">
-                  <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="cat1"
-                      checked
-                    />
-                    <label class="form-check-label" for="cat1">
-                      Koszulki (12)
-                    </label>
+                      <button class="btn btn-primary-custom w-100 mt-3" type="submit">Filtruj</button>
+                      <a class="btn btn-link-custom w-100 mt-2" th:href="@{/produkty}">Wyczyść filtry</a>
                   </div>
-                  <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="cat2"
-                    />
-                    <label class="form-check-label" for="cat2">
-                      Bluzy (8)
-                    </label>
-                  </div>
-                  <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="cat3"
-                    />
-                    <label class="form-check-label" for="cat3">
-                      Czapki (35)
-                    </label>
-                  </div>
-                  <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      value=""
-                      id="cat4"
-                    />
-                    <label class="form-check-label" for="cat4">
-                      Akcesoria (22)
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="filter-group">
-                <h5 class="filter-group-title">Cena (zł)</h5>
-                <div class="d-flex align-items-center">
-                  <input
-                    type="number"
-                    class="form-control"
-                    placeholder="Od"
-                    aria-label="Cena minimalna"
-                  />
-                  <span class="mx-2">–</span>
-                  <input
-                    type="number"
-                    class="form-control"
-                    placeholder="Do"
-                    aria-label="Cena maksymalna"
-                  />
-                </div>
-              </div>
-
-              <button class="btn btn-primary-custom w-100 mt-3">Filtruj</button>
-              <button class="btn btn-link-custom w-100 mt-2">
-                Wyczyść filtry
-              </button>
-            </div>
+              </form>
           </div>
         </div>
 
@@ -227,94 +116,87 @@
             class="d-flex justify-content-between align-items-center mb-3 sort-bar"
           >
             <h5 class="mb-0">Nasze produkty</h5>
-            <select class="form-select" aria-label="Sortuj produkty">
-              <option selected>Sortuj domyślnie</option>
-              <option value="1">Cena: Rosnąco</option>
-              <option value="2">Cena: Malejąco</option>
-              <option value="3">Nazwa: A-Z</option>
-              <option value="4">Nazwa: Z-A</option>
-            </select>
+              <select class="form-select"
+                      onchange="
+          const params = new URLSearchParams(window.location.search);
+          const selected = this.options[this.selectedIndex];
+          params.set('sortBy', selected.dataset.sortby);
+          params.set('sortDir', selected.dataset.sortdir);
+          params.set('page', 0);
+          window.location.search = params.toString();
+        ">
+                  <option data-sortby="name" data-sortdir="asc"
+                          th:selected="${sortBy == 'name' and sortDir == 'asc'}">Nazwa: A–Z</option>
+                  <option data-sortby="name" data-sortdir="desc"
+                          th:selected="${sortBy == 'name' and sortDir == 'desc'}">Nazwa: Z–A</option>
+                  <option data-sortby="price" data-sortdir="asc"
+                          th:selected="${sortBy == 'price' and sortDir == 'asc'}">Cena: Rosnąco</option>
+                  <option data-sortby="price" data-sortdir="desc"
+                          th:selected="${sortBy == 'price' and sortDir == 'desc'}">Cena: Malejąco</option>
+              </select>
           </div>
 
-          <div class="row g-4">
-            <div class="col-6 col-md-4 col-lg-3">
-              <div class="card product-card h-100">
-                <div class="product-link-wrapper">
-                  <a
-                    href="/produkt/1"
-                    class="product-link text-decoration-none text-dark d-block"
-                  >
-                    <img
-                      src="../../../../../uploads/products/1/dresy.png"
-                      class="card-img-top product-img"
-                      alt="Zdjęcie produktu"
-                    />
-                    <h5 class="card-title">
-                      Spodnie dresowe super premium gsgf sgsgfsd
-                    </h5>
-                  </a>
-                </div>
+            <div class="row g-4">
+                <div th:each="product : ${productPage.content}" class="col-6 col-md-4 col-lg-3">
+                    <div class="card product-card h-100">
+                        <a th:href="@{'/produkty/' + ${product.slug}}" class="text-decoration-none">
+                            <div class="product-image-wrapper position-relative">
+                                <img th:if="${product.images != null and !product.images.isEmpty()}"
+                                     th:src="${product.images[0].url}"
+                                     th:alt="${product.name}"
+                                     class="card-img-top object-fit-cover"
+                                     >
 
-                <div class="card-body d-flex flex-column pt-0">
-                  <h6 class="product-price mb-2">199,99 zł</h6>
-                  <div class="mt-auto">
-                    <a href="#" class="btn btn-primary-custom w-100"
-                      >Do koszyka</a
-                    >
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-3">
-              <div class="card product-card h-100">
-                <div class="product-link-wrapper">
-                  <a
-                    href="/produkt/1"
-                    class="product-link text-decoration-none text-dark d-block"
-                  >
-                    <img
-                      src="../../../../../uploads/products/1/dresy.png"
-                      class="card-img-top product-img"
-                      alt="Zdjęcie produktu"
-                    />
-                    <h5 class="card-title">
-                      Spodnie dresowe gsg s dfg sgf sg sgf sfg sf
-                    </h5>
-                  </a>
-                </div>
+                                <img th:unless="${product.images != null and !product.images.isEmpty()}"
+                                     th:src="@{/images/noimg.png}"
+                                     alt="Brak zdjęcia"
+                                     class="card-img-top object-fit-cover"
+                                     >
+                            </div>
+                        </a>
+                        <div class="card-body">
+                            <h6 th:text="${product.name}"></h6>
+                            <span th:text="${product.formattedPrice}"></span>
+                            <div class="mt-auto">
+                                <a th:href="@{'/produkty/' + ${product.slug}}" class="btn btn-primary-custom w-100">
+                                    Zobacz
+                                </a>
+                            </div>
+                        </div>
 
-                <div class="card-body d-flex flex-column pt-0">
-                  <div class="mt-auto">
-                    <h6 class="product-price mb-2">199,99 zł</h6>
-                    <a href="#" class="btn btn-primary-custom w-100"
-                      >Do koszyka</a
-                    >
-                  </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
-    <nav
-      aria-label="Nawigacja po stronie"
-      class="mt-5 d-flex justify-content-center"
-    >
-      <ul class="pagination">
-        <li class="page-item disabled">
-          <a class="page-link" href="#">Poprzednia</a>
-        </li>
-        <li class="page-item active" aria-current="page">
-          <a class="page-link" href="#">1</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Następna</a>
-        </li>
-      </ul>
-    </nav>
+     <nav aria-label="Paginacja" class="mt-5 d-flex justify-content-center">
+         <ul class="pagination">
+
+             <li class="page-item" th:classappend="${productPage.first} ? 'disabled'">
+                 <a class="page-link"
+                    th:href="@{/produkty(page=${productPage.number - 1}, size=${productPage.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                     Poprzednia
+                 </a>
+             </li>
+
+             <li class="page-item"
+                 th:each="pageNum : ${#numbers.sequence(0, productPage.totalPages - 1)}"
+                 th:classappend="${pageNum == currentPage} ? 'active'">
+                 <a class="page-link"
+                    th:text="${pageNum + 1}"
+                    th:href="@{/produkty(page=${pageNum}, size=${productPage.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                 </a>
+             </li>
+
+             <li class="page-item" th:classappend="${productPage.last} ? 'disabled'">
+                 <a class="page-link"
+                    th:href="@{/produkty(page=${productPage.number + 1}, size=${productPage.size}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                     Następna
+                 </a>
+             </li>
+         </ul>
+     </nav>
 
 
      <footer th:insert="~{fragments/footer :: footer}"></footer>

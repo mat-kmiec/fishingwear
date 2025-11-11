@@ -25,6 +25,7 @@ public class ProductMapperImpl implements ProductMapper {
         dto.setPrice(product.getPrice());
         dto.setDetails(product.getDetails());
         dto.setColors(mapColors(product));
+        dto.setSlug(product.getSlug());
         dto.setSizes(mapSizes(product));
         dto.setVariants(mapVariants(product));
         dto.setImages(mapImages(product));
