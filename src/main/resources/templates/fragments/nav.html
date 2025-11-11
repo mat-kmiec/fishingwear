@@ -69,6 +69,7 @@
                 <a
                         class="nav-link position-relative fs-4"
                         href="#"
+                        th:href="@{/koszyk}"
                         aria-label="Koszyk"
                 >
                     <i class="fa-solid fa-basket-shopping"></i>
@@ -97,8 +98,10 @@
                         class="dropdown-menu dropdown-menu-end"
                         aria-labelledby="profileDropdown"
                     >
-                        <li><a class="dropdown-item" href="#">Moje konto</a></li>
-                        <li><a class="dropdown-item" href="#">Historia zamówień</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/moje-konto}">Moje konto</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/historia-zamowien}">Historia zamówień</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/adresy}">Adresy</a></li>
+                        <li><a class="dropdown-item" href="#" th:href="@{/ustawienia-profilu}">Ustawienia</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="#">Wyloguj się</a></li>
                     </ul>

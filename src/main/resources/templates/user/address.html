@@ -31,20 +31,8 @@
 
     <div class="container my-5">
       <div class="row g-4">
-        
-        <div class="col-lg-4">
-          <div class="account-card p-4">
-            <h3 class="h5 mb-3" style="color: var(--color-accent);">Witaj, Jan!</h3>
-            <nav class="nav nav-pills flex-column account-nav">
-              <a class="nav-link" href="#">Przegląd</a>
-              <a class="nav-link" href="#">Historia zamówień</a>
-              <a class="nav-link active" aria-current="page" href="#">Moje dane i adresy</a>
-              <a class="nav-link" href="#">Ustawienia konta</a>
-              <hr class="my-2">
-              <a class="nav-link" href="#">Wyloguj się</a>
-            </nav>
-          </div>
-        </div>
+
+          <div th:replace="fragments/user-sidebar :: accountSidebar('data')"></div>
 
         <div class="col-lg-8">
           <h2 class="h3 mb-4">Moje dane i adresy</h2>

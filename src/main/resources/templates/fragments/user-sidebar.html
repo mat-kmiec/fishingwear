@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<div class="col-lg-4" th:fragment="accountSidebar(activeTab)">
+    <div class="account-card p-4">
+        <h3 class="h5 mb-3" style="color: var(--color-accent);">Witaj, Jan!</h3>
+        <nav class="nav nav-pills flex-column account-nav">
+            <a class="nav-link"
+               th:classappend="${activeTab == 'overview'} ? ' active'"
+               href="#">Przegląd</a>
+
+            <a class="nav-link"
+               th:classappend="${activeTab == 'orders'} ? ' active'"
+               href="#">Historia zamówień</a>
+
+            <a class="nav-link"
+               th:classappend="${activeTab == 'data'} ? ' active'"
+               href="#">Moje dane i adresy</a>
+
+            <a class="nav-link"
+               th:classappend="${activeTab == 'settings'} ? ' active'"
+               href="#">Ustawienia konta</a>
+
+            <hr class="my-2">
+
+            <a class="nav-link" href="#">Wyloguj się</a>
+        </nav>
+    </div>
+</div>
+</html>
