@@ -4,10 +4,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
-    <changeSet id="0001-1" author="matkmiec">
+    <changeSet id="1" author="matkmiec">
         <createTable tableName="users">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="true" unique="false"/>
             </column>
 
             <column name="email" type="VARCHAR(255)">
@@ -16,6 +22,10 @@
 
             <column name="password" type="VARCHAR(255)">
                 <constraints nullable="false"/>
+            </column>
+
+            <column name="phone_number" type="VARCHAR(30)">
+                <constraints nullable="true"/>
             </column>
 
             <column name="role" type="VARCHAR(50)">
@@ -31,7 +41,51 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet id="0001-2" author="matkmiec">
+    <changeSet id="2" author="matkmiec">
+        <createTable tableName="addresses">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_addresses_user" references="users(id)"/>
+            </column>
+
+            <column name="label" type="VARCHAR(100)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="street" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="house_number" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="apartment_number" type="VARCHAR(20)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="postal_code" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="city" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="country" type="VARCHAR(100)" defaultValue="Polska">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="matkmiec">
         <insert tableName="users">
             <column name="email" value="test@test.pl"/>
             <!-- Hasło zakodowane BCryptem dla 'test123' -->
@@ -41,5 +95,7 @@
             <column name="created_at" valueDate="2025-11-08T00:00:00"/>
         </insert>
     </changeSet>
+
+
 
 </databaseChangeLog>

@@ -36,70 +36,92 @@
 
         <div class="col-lg-8">
           <h2 class="h3 mb-4">Moje dane i adresy</h2>
-
-          <div class="account-card p-4 p-md-5 mb-4">
-            <h3 class="h5 mb-4">Dane osobowe</h3>
-            <form class="row g-3">
-              <div class="col-md-6 form-floating">
-                <input type="text" class="form-control" id="firstName" placeholder="Imię" value="Jan">
-                <label for="firstName" class="ms-2">Imię</label>
-              </div>
-              <div class="col-md-6 form-floating">
-                <input type="text" class="form-control" id="lastName" placeholder="Nazwisko" value="Kowalski">
-                <label for="lastName" class="ms-2">Nazwisko</label>
-              </div>
-              <div class="col-12 form-floating">
-                <input type="email" class="form-control" id="email" placeholder="E-mail" value="jan.kowalski@example.com">
-                <label for="email" class="ms-2">E-mail</label>
-              </div>
-              <div class="col-12 form-floating">
-                <input type="tel" class="form-control" id="phone" placeholder="Telefon" value="123 456 789">
-                <label for="phone" class="ms-2">Telefon</label>
-              </div>
-              <div class="col-12 text-end">
-                <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
-              </div>
-            </form>
-          </div>
-          
-          <div class="account-card p-4 p-md-5">
-            <h3 class="h5 mb-4">Zarządzaj adresami</h3>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <div class="address-block">
-                  <h6>Adres rozliczeniowy</h6>
-                  <p>
-                    Jan Kowalski<br>
-                    ul. Przykładowa 123<br>
-                    00-001 Miasto
-                  </p>
-                  <div>
-                    <a href="#" class="btn-link-custom me-3"><i class="fa-solid fa-pen-to-square me-1"></i>Edytuj</a>
-                    <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can me-1"></i>Usuń</a>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="col-md-6">
-                <div class="address-block">
-                  <h6>Adres wysyłkowy</h6>
-                  <p>
-                    Jan Kowalski<br>
-                    Paczkomat INP01A<br>
-                    ul. Dworcowa 1, 00-001 Miasto
-                  </p>
-                  <div>
-                    <a href="#" class="btn-link-custom me-3"><i class="fa-solid fa-pen-to-square me-1"></i>Edytuj</a>
-                    <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can me-1"></i>Usuń</a>
-                  </div>
-                </div>
-              </div>
+            <div th:if="${param.addressSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                Adres został zapisany pomyślnie.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
             </div>
-            
-            <a href="#" class="btn btn-primary-custom mt-4">
-              <i class="fa-solid fa-plus me-2"></i>Dodaj nowy adres
-            </a>
-          </div>
+            <div th:if="${param.addressError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                Wystąpił błąd podczas operacji na adresie. Spróbuj ponownie.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+            </div>
+            <div th:if="${param.deleted}" class="alert alert-success alert-dismissible fade show" role="alert">
+                Adres został usunięty pomyślnie.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+            </div>
+            <div th:if="${param.unauthorized}" class="alert alert-warning alert-dismissible fade show" role="alert">
+                Nie masz uprawnień do tej operacji.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+            </div>
+
+            <div class="account-card p-4 p-md-5 mb-4">
+                <h3 class="h5 mb-4">Dane osobowe</h3>
+
+                <form class="row g-3" th:action="@{/user/update}" th:object="${user}" method="post">
+                    <div class="col-md-6 form-floating">
+                        <input type="text" th:field="*{firstName}" class="form-control" id="firstName" placeholder="Imię">
+                        <label for="firstName" class="ms-2">Imię</label>
+                    </div>
+                    <div class="col-md-6 form-floating">
+                        <input type="text" th:field="*{lastName}" class="form-control" id="lastName" placeholder="Nazwisko">
+                        <label for="lastName" class="ms-2">Nazwisko</label>
+                    </div>
+                    <div class="col-12 form-floating">
+                        <input type="email" th:field="*{email}" class="form-control" id="email" placeholder="E-mail" readonly>
+                        <label for="email" class="ms-2">E-mail</label>
+                    </div>
+                    <div class="col-12 form-floating">
+                        <input type="tel" th:field="*{phoneNumber}" class="form-control" id="phoneNumber" placeholder="Telefon">
+                        <label for="phoneNumber" class="ms-2">Telefon</label>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="account-card p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="h5 mb-0">Zarządzaj adresami</h3>
+                    <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                        <i class="fa-solid fa-plus me-1"></i> Dodaj adres
+                    </button>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Pętla po adresach użytkownika -->
+                    <div class="col-md-6" th:each="address : ${addresses}">
+                        <div class="address-block border rounded p-3 h-100">
+                            <h6 th:text="${address.label} ?: 'Adres bez nazwy'"></h6>
+                            <p class="mb-2">
+                                <span th:text="${address.street}">ul. Przykładowa</span>
+                                <span th:text="${address.houseNumber}">123</span>
+                                <span th:if="${address.apartmentNumber != null}" th:text="'/' + ${address.apartmentNumber}"></span><br>
+                                <span th:text="${address.postalCode}">00-001</span>
+                                <span th:text="${address.city}">Miasto</span><br>
+                                <span th:text="${address.country}">Polska</span>
+                            </p>
+                            <div>
+<!--                                <a href="#" class="btn-link-custom me-3"-->
+<!--                                   data-bs-toggle="modal"-->
+<!--                                   th:attr="data-bs-target='#editAddressModal__${address.id}'">-->
+<!--                                    <i class="fa-solid fa-pen-to-square me-1"></i>Edytuj-->
+<!--                                </a>-->
+
+                                <a href="#" class="btn-link-custom text-danger"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#deleteConfirmModal"
+                                   th:attr="data-id=${address.id}">
+                                    <i class="fa-solid fa-trash-can me-1"></i>Usuń
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center py-4" th:if="${#lists.isEmpty(addresses)}">
+                        <p>Nie dodałeś jeszcze żadnych adresów.</p>
+                    </div>
+                </div>
+            </div>
 
         </div>
       </div>
@@ -107,9 +129,97 @@
 
     <footer th:insert="~{fragments/footer :: footer}"></footer>
 
+    <!-- Modal -->
+    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addAddressModalLabel">Dodaj nowy adres</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                </div>
+
+                <form th:action="@{/adresy/add}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="label" class="form-label">Etykieta (np. Dom, Praca)</label>
+                            <input type="text" class="form-control" id="label" name="label" placeholder="Dom">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="street" class="form-label">Ulica</label>
+                            <input type="text" class="form-control" id="street" name="street" placeholder="ul. Długa">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="houseNumber" class="form-label">Numer domu</label>
+                                <input type="text" class="form-control" id="houseNumber" name="houseNumber" placeholder="12A">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="apartmentNumber" class="form-label">Numer mieszkania</label>
+                                <input type="text" class="form-control" id="apartmentNumber" name="apartmentNumber" placeholder="5">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="postalCode" class="form-label">Kod pocztowy</label>
+                            <input type="text" class="form-control" id="postalCode" name="postalCode" placeholder="00-000">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="city" class="form-label">Miasto</label>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Warszawa">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="country" class="form-label">Kraj</label>
+                            <input type="text" class="form-control" id="country" name="country" value="Polska">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary-custom">Zapisz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header text-dark">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">
+                        Potwierdź usunięcie adresu
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                </div>
+                <div class="modal-body">
+                    Czy na pewno chcesz usunąć ten adres? <br>
+                    <span class="text-muted small">Tej operacji nie można cofnąć.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <a href="#" id="confirmDeleteBtn" class="btn btn-danger">Usuń</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
+
+    <script>
+        const deleteModal = document.getElementById('deleteConfirmModal');
+        deleteModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const addressId = button.getAttribute('data-id');
+            const confirmBtn = deleteModal.querySelector('#confirmDeleteBtn');
+            confirmBtn.href = `/adresy/delete/${addressId}`;
+        });
+    </script>
+
   </body>
 </html>

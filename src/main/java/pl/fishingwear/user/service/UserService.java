@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.user.dto.UserCredentialsDto;
 import pl.fishingwear.user.dto.UserRegistrationDto;
 import pl.fishingwear.common.exception.EmailAlreadyExistException;
@@ -41,6 +42,17 @@ public class UserService {
         user.setPassword(passwordHash);
         user.setRole("USER");
         userRepository.save(user);
+    }
 
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+    }
+
+    public void updateUserData(String email, User updatedData) {
+        User user = findByEmail(email);
+        user.setFirstName(updatedData.getFirstName());
+        user.setLastName(updatedData.getLastName());
+        user.setPhoneNumber(updatedData.getPhoneNumber());
+        userRepository.save(user);
     }
 }
