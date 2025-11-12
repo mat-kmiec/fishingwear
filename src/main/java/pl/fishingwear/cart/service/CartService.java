@@ -84,7 +84,8 @@ public class CartService {
     }
 
 
-    private Cart getOrCreateCart() {
+    @Transactional
+    public Cart getOrCreateCart() {
         Optional<User> currentUser = getCurrentUser();
 
         if (currentUser.isPresent()) {
@@ -117,7 +118,7 @@ public class CartService {
         return guestId;
     }
 
-    private Optional<String> getGuestCartIdFromCookie() {
+    public Optional<String> getGuestCartIdFromCookie() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         if (request.getCookies() == null) {
             return Optional.empty();
@@ -137,7 +138,7 @@ public class CartService {
         response.addCookie(cookie);
     }
 
-    private Optional<User> getCurrentUser() {
+    public Optional<User> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
             return Optional.empty();
@@ -200,5 +201,46 @@ public class CartService {
                 unitPrice,
                 totalPrice
         );
+    }
+
+    @Transactional
+    public CartViewDto removeItemFromCart(Long itemId) {
+        Cart cart = getOrCreateCart();
+
+        cart.getItems().removeIf(item -> item.getId().equals(itemId));
+        Cart saved = cartRepository.save(cart);
+
+        return mapToCartViewDto(saved);
+    }
+
+    @Transactional
+    public CartViewDto updateItemQuantity(Long itemId, int newQuantity) {
+        Cart cart = getOrCreateCart();
+
+        cart.getItems().stream()
+                .filter(item -> item.getId().equals(itemId))
+                .findFirst()
+                .ifPresent(item -> {
+                    if (newQuantity <= 0) {
+                        cart.removeItem(item);
+                    } else if (item.getProductVariant().getQuantity() >= newQuantity) {
+                        item.setQuantity(newQuantity);
+                    } else {
+                        throw new RuntimeException("Niewystarczająca ilość produktu w magazynie");
+                    }
+                });
+
+        Cart saved = cartRepository.save(cart);
+        return mapToCartViewDto(saved);
+    }
+
+    public void clearGuestCartCookie() {
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getResponse();
+        Cookie cookie = new Cookie(GUEST_CART_ID_COOKIE, null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        assert response != null;
+        response.addCookie(cookie);
     }
 }

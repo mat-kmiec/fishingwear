@@ -1,96 +1,86 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FishingWear - Potwierdź płatność</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FishingWear - Potwierdzenie</title>
 
-    <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/slider.css}"/>
 
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-    <nav th:insert="~{fragments/nav :: nav}"></nav>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container my-5">
-      <div class="row justify-content-center">
+<div class="container my-5">
+    <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-          <div class="account-card p-4 p-md-5 text-center">
-            
-            <div class="payment-icon mb-3">
-              <i class="fa-solid fa-file-invoice-dollar"></i>
-            </div>
-            
-            <h2 class="h3 fw-bold mb-3">Dziękujemy!</h2>
-            <p class="fs-5 text-secondary">
-              Twoje zamówienie zostało złożone.
-            </p>
-            <p class="fs-4">
-              Numer zamówienia: <strong style="color: var(--color-accent);">#10025</strong>
-            </p>
-            <p class="text-secondary mb-4">
-              Prosimy o dokonanie płatności, abyśmy mogli rozpocząć realizację.
-            </p>
+            <div class="account-card p-4 p-md-5 text-center">
 
-            <div class="order-summary-box text-start mb-4">
-              <div class="d-flex justify-content-between mb-2">
-                <span class="text-secondary">Suma produktów:</span>
-                <span class="fw-bold">299,98 zł</span>
-              </div>
-              <div class="d-flex justify-content-between mb-3">
-                <span class="text-secondary">Dostawa:</span>
-                <span class="fw-bold">15,99 zł</span>
-              </div>
-              <hr>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="fs-5 fw-bold">Do zapłaty (Łącznie):</span>
-                <span class="order-total-amount">315,97 zł</span>
-              </div>
-            </div>
+                <div class="payment-icon mb-3">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                </div>
 
-            <div class="mb-4">
-              <span class="text-secondary d-block">Wybrana metoda płatności:</span>
-              <span class="selected-method">
-                <i class="fa-solid fa-bolt me-1"></i> BLIK
-              </span>
-            </div>
+                <h2 class="h3 fw-bold mb-3">Dziękujemy!</h2>
+                <p class="fs-5 text-secondary">
+                    Twoje zamówienie zostało złożone.
+                </p>
+                <p class="fs-4">
+                    Numer zamówienia:
+                    <strong style="color: var(--color-accent);" th:text="'#' + ${order.orderId}">#10025</strong>
+                </p>
+                <p class="text-secondary mb-4">
+                    Prosimy o dokonanie płatności, abyśmy mogli rozpocząć realizację.
+                </p>
 
-            <a href="#" class="btn btn-primary-custom btn-lg w-100">
-              <i class="fa-solid fa-shield-halved me-2"></i>
-              Zapłać teraz (315,97 zł)
-            </a>
-            
-            <a href="#" class="btn-link-custom mt-4 d-block">
-              Anuluj zamówienie
-            </a>
-          </div>
+                <div class="order-summary-box text-start mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">Suma produktów:</span>
+                        <span class="fw-bold"
+                              th:text="${#numbers.formatDecimal(order.subtotal, 0, 'COMMA', 2, 'POINT')} + ' zł'">299,98 zł</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-secondary">Dostawa:</span>
+                        <span class="fw-bold"
+                              th:text="${#numbers.formatDecimal(order.shippingCost, 0, 'COMMA', 2, 'POINT')} + ' zł'">15,99 zł</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fs-5 fw-bold">Do zapłaty (Łącznie):</span>
+                        <span class="order-total-amount"
+                              th:text="${#numbers.formatDecimal(order.total, 0, 'COMMA', 2, 'POINT')} + ' zł'">315,97 zł</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <span class="text-secondary d-block">Wybrana metoda płatności:</span>
+                    <span class="selected-method" th:switch="${order.paymentMethod}">
+                        <i th:case="'BLIK'" class="fa-solid fa-bolt me-1"></i>
+                        <i th:case="'Karta płatnicza'" class="fa-solid fa-credit-card me-1"></i>
+                        <i th:case="'Przelew online'" class="fa-solid fa-university me-1"></i>
+                        <span th:text="${order.paymentMethod}">BLIK</span>
+                    </span>
+                </div>
+
+                <a th:href="@{/zamowienie/symulacja-platnosci(orderId=${order.orderId})}" class="btn btn-primary-custom btn-lg w-100">
+                    <i class="fa-solid fa-shield-halved me-2"></i>
+                    <span th:text="'Zapłać teraz (' + ${#numbers.formatDecimal(order.total, 0, 'COMMA', 2, 'POINT')} + ' zł)'">
+                        Zapłać teraz (315,97 zł)
+                    </span>
+                </a>
+                <a th:href="@{/}" class="btn btn-outline-secondary btn-lg w-100 mt-3">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Kontynuuj zakupy
+                </a>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
-    
-  </body>
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
+
+</body>
 </html>

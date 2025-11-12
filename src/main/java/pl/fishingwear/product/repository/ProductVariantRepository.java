@@ -8,7 +8,6 @@ import pl.fishingwear.product.model.ProductVariant;
 import java.util.Optional;
 
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
-    // Ta metoda jest kluczowa dla wydajności mappera
     @Query("SELECT pv FROM ProductVariant pv " +
             "LEFT JOIN FETCH pv.product p " +
             "LEFT JOIN FETCH p.images " +

@@ -19,7 +19,7 @@
 <body style="background-color: var(--color-neutral-light)">
 <nav th:insert="~{fragments/nav :: nav}"></nav>
 
-<div class="container my-5">
+<div class="container my-5" style="min-height: 50vh;">
     <div class="row g-4">
         <div class="col-lg-8">
             <div class="cart-card p-4">
@@ -123,10 +123,65 @@
         tooltipTriggerList.map(function (el) {
             return new bootstrap.Tooltip(el)
         });
+    });
+</script>
 
-        // TODO: Dodać tutaj logikę AJAX (fetch) do przycisków
-        // btn-decrease-qty, btn-increase-qty, btn-remove-item
-        // tak jak zrobiliśmy to na stronie produktu.
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        document.querySelectorAll(".btn-remove-item").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const itemId = btn.getAttribute("data-item-id");
+
+                const res = await fetch(`/api/v1/cart/items/${itemId}`, {
+                    method: "DELETE",
+                    headers: { [csrfHeader]: csrfToken }
+                });
+
+                if (res.ok) {
+                    location.reload();
+                } else {
+                    alert("Nie udało się usunąć produktu z koszyka.");
+                }
+            });
+        });
+
+        document.querySelectorAll(".btn-increase-qty").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const row = btn.closest("[data-variant-id]");
+                const input = row.querySelector(".quantity-input");
+                const itemId = row.querySelector(".btn-remove-item").getAttribute("data-item-id");
+
+                const newQty = parseInt(input.value) + 1;
+                await updateQuantity(itemId, newQty);
+            });
+        });
+
+        document.querySelectorAll(".btn-decrease-qty").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const row = btn.closest("[data-variant-id]");
+                const input = row.querySelector(".quantity-input");
+                const itemId = row.querySelector(".btn-remove-item").getAttribute("data-item-id");
+
+                const newQty = parseInt(input.value) - 1;
+                await updateQuantity(itemId, newQty);
+            });
+        });
+
+        async function updateQuantity(itemId, quantity) {
+            const res = await fetch(`/api/v1/cart/items/${itemId}?quantity=${quantity}`, {
+                method: "PATCH",
+                headers: { [csrfHeader]: csrfToken }
+            });
+
+            if (res.ok) {
+                location.reload(); // 💡
+            } else {
+                alert("Nie udało się zmienić ilości produktu.");
+            }
+        }
     });
 </script>
 </body>

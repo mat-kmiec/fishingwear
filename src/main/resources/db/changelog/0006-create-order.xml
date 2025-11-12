@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+
+        <!-- ====================================== -->
+        <!--  ORDER TABLE                          -->
+        <!-- ====================================== -->
+        <changeSet id="20251112-01-create-order-table" author="fishingwear">
+            <comment>Create the 'order' table for storing placed orders (both user and guest)</comment>
+
+            <createTable tableName="orders">
+                <column name="id" type="BIGINT" autoIncrement="true">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+
+                <column name="user_id" type="BIGINT">
+                    <constraints foreignKeyName="fk_orders_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 nullable="true"/>
+                </column>
+
+                <column name="guest_cart_id" type="VARCHAR(255)">
+                    <constraints nullable="true"/>
+                </column>
+
+                <column name="email" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="first_name" type="VARCHAR(100)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="last_name" type="VARCHAR(100)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="phone" type="VARCHAR(50)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="shipping_address" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="zip_code" type="VARCHAR(20)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="city" type="VARCHAR(100)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="shipping_method" type="VARCHAR(50)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="payment_method" type="VARCHAR(50)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="subtotal" type="DECIMAL(10,2)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="shipping_cost" type="DECIMAL(10,2)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="total" type="DECIMAL(10,2)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="status" type="VARCHAR(50)" defaultValue="PENDING">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+
+            <createIndex indexName="idx_orders_user_id" tableName="orders">
+                <column name="user_id"/>
+            </createIndex>
+
+            <createIndex indexName="idx_orders_guest_cart_id" tableName="orders">
+                <column name="guest_cart_id"/>
+            </createIndex>
+        </changeSet>
+
+        <!-- ====================================== -->
+        <!--  ORDER ITEM TABLE                     -->
+        <!-- ====================================== -->
+        <changeSet id="20251112-02-create-order-item-table" author="fishingwear">
+            <comment>Create the 'order_item' table to store products in each order</comment>
+
+            <createTable tableName="order_item">
+                <column name="id" type="BIGINT" autoIncrement="true">
+                    <constraints primaryKey="true" nullable="false"/>
+                </column>
+
+                <column name="order_id" type="BIGINT">
+                    <constraints foreignKeyName="fk_order_item_order"
+                                 referencedTableName="orders"
+                                 referencedColumnNames="id"
+                                 nullable="false"/>
+                </column>
+
+                <column name="product_variant_id" type="BIGINT">
+                    <constraints foreignKeyName="fk_order_item_product_variant"
+                                 referencedTableName="product_variant"
+                                 referencedColumnNames="id"
+                                 nullable="false"/>
+                </column>
+
+                <column name="product_name" type="VARCHAR(255)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="quantity" type="INT">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="unit_price" type="DECIMAL(10,2)">
+                    <constraints nullable="false"/>
+                </column>
+
+                <column name="total_price" type="DECIMAL(10,2)">
+                    <constraints nullable="false"/>
+                </column>
+            </createTable>
+
+            <createIndex indexName="idx_order_item_order_id" tableName="order_item">
+                <column name="order_id"/>
+            </createIndex>
+
+            <createIndex indexName="idx_order_item_product_variant_id" tableName="order_item">
+                <column name="product_variant_id"/>
+            </createIndex>
+        </changeSet>
+
+
+</databaseChangeLog>

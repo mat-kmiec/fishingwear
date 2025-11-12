@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sandbox Płatności</title>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="account-card p-4 p-md-5 text-center">
+
+                <h2 class="h3 fw-bold mb-3">Symulator Płatności (Sandbox)</h2>
+                <p class="text-secondary">To jest fałszywa strona bramki płatności.</p>
+
+                <hr>
+
+                <p class="fs-5">
+                    Zamówienie nr:
+                    <strong style="color: var(--color-accent);" th:text="'#' + ${orderId}">#10025</strong>
+                </p>
+                <p class="fs-4">
+                    Kwota do zapłaty:
+                    <strong th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' zł'">315,97 zł</strong>
+                </p>
+
+                <p class="text-secondary small mt-4">
+                    Kliknięcie przycisku symuluje wysłanie przez bramkę płatności
+                    powiadomienia "serwer-do-serwera" (webhook), które
+                    automatycznie zmieni status Twojego zamówienia w systemie.
+                </p>
+
+                <div id="payment-result" class="alert d-none mt-3" role="alert"></div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button id="approve-btn" class="btn btn-success btn-lg">
+                        <i class="fa-solid fa-check me-2"></i>
+                        Zatwierdź Płatność (Symulacja SUKCES)
+                    </button>
+                    <button id="reject-btn" class="btn btn-danger btn-lg">
+                        <i class="fa-solid fa-times me-2"></i>
+                        Odrzuć Płatność (Symulacja BŁĄD)
+                    </button>
+                </div>
+
+                <a th:href="@{/}" class="btn-link-custom mt-4 d-block">
+                    Wróć do sklepu
+                </a>
+                <p class="text-secondary small">(Powrót nie wpływa na płatność)</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const orderId = [[${orderId}]];
+        const approveBtn = document.getElementById('approve-btn');
+        const rejectBtn = document.getElementById('reject-btn');
+        const resultBox = document.getElementById('payment-result');
+
+        async function sendWebhook(status) {
+            approveBtn.disabled = true;
+            rejectBtn.disabled = true;
+
+            const payload = {
+                orderId: orderId,
+                status: status
+            };
+
+            try {
+                const response = await fetch('/api/v1/payments/webhook-symulator', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    showResult(
+                        `Wysłano powiadomienie: ${status}. Status zamówienia w bazie został automatycznie zmieniony.`,
+                        'success'
+                    );
+                } else {
+                    showResult('Błąd serwera przy próbie wysłania webhooka.', 'danger');
+                }
+            } catch (error) {
+                showResult('Błąd sieci: ' + error.message, 'danger');
+            }
+        }
+
+        function showResult(message, type) {
+            resultBox.textContent = message;
+            resultBox.className = `alert alert-${type} mt-3`;
+            resultBox.classList.remove('d-none');
+        }
+
+        approveBtn.addEventListener('click', () => sendWebhook('COMPLETED'));
+        rejectBtn.addEventListener('click', () => sendWebhook('FAILED'));
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
+</body>
+</html>

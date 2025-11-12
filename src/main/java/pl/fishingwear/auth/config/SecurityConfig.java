@@ -23,9 +23,11 @@ public class SecurityConfig {
                         .requestMatchers("/rejestracja", "/logowanie", "/register", "/resetowanie-hasla", "/forgot-password", "/reset-password").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/libs/**", "/uploads/**").permitAll()
                         .requestMatchers("/lista-produktow", "/produkty/**", "/produkt/**").permitAll()
-                        .requestMatchers("/koszyk/**").permitAll()
                         .requestMatchers("/login",  "/h2-console/**").permitAll()
+                        .requestMatchers("/koszyk/**").permitAll()
+                        .requestMatchers("/zamowienie/**").permitAll()
                         .requestMatchers("/api/v1/cart/**").permitAll()
+                        .requestMatchers("/api/v1/orders/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
@@ -40,7 +42,7 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
+                                .ignoringRequestMatchers("/h2-console/**", "/api/v1/**")
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)

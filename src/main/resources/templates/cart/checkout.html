@@ -1,188 +1,366 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>FishingWear - Kasa</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
 
-    <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
-    />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-    <nav th:insert="~{fragments/nav :: nav}"></nav>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/slider.css}"/>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container my-5">
-      <div class="row g-4">
-        
+<div class="container my-5" th:data-is-logged-in="${isLoggedIn}">
+    <div class="row g-4">
+
         <div class="col-lg-8">
-          
-          <h2 class="h4 mb-4">Szczegóły zamówienia</h2>
+            <h2 class="h4 mb-4">Szczegóły zamówienia</h2>
 
-          <div class="checkout-card p-4 p-md-5 mb-4">
-            <h3 class="h5 mb-3">Adres dostawy</h3>
-            <p class="text-secondary mb-3">
-                Masz już konto? <a href="#" class="btn-link-custom">Zaloguj się</a>, aby wczytać dane.
-            </p>
-            <form class="row g-3">
-              <div class="col-md-6 form-floating">
-                <input type="text" class="form-control" id="firstName" placeholder="Imię" required>
-                <label for="firstName" class="ms-2">Imię</label>
-              </div>
-              <div class="col-md-6 form-floating">
-                <input type="text" class="form-control" id="lastName" placeholder="Nazwisko" required>
-                <label for="lastName" class="ms-2">Nazwisko</label>
-              </div>
-              <div class="col-12 form-floating">
-                <input type="email" class="form-control" id="email" placeholder="E-mail" required>
-                <label for="email" class="ms-2">E-mail</label>
-              </div>
-              <div class="col-12 form-floating">
-                <input type="tel" class="form-control" id="phone" placeholder="Telefon" required>
-                <label for="phone" class="ms-2">Telefon</label>
-              </div>
-              <div class="col-12 form-floating">
-                <input type="text" class="form-control" id="address" placeholder="Ulica i numer domu" required>
-                <label for="address" class="ms-2">Ulica i numer domu</label>
-              </div>
-              <div class="col-md-5 form-floating">
-                <input type="text" class="form-control" id="zipCode" placeholder="Kod pocztowy (np. 00-001)" required>
-                <label for="zipCode" class="ms-2">Kod pocztowy</label>
-              </div>
-              <div class="col-md-7 form-floating">
-                <input type="text" class="form-control" id="city" placeholder="Miejscowość" required>
-                <label for="city" class="ms-2">Miejscowość</label>
-              </div>
-            </form>
-          </div>
+            <div class="checkout-card p-4 p-md-5 mb-4">
+                <h3 class="h5 mb-3">Adres dostawy</h3>
 
-          <div class="checkout-card p-4 p-md-5 mb-4">
-            <h3 class="h5 mb-3">Metoda dostawy</h3>
-            
-            <div class="form-check mb-3">
-              <input type="radio" class="method-card-input" name="shipping-method" id="shipping1" checked>
-              <label class="method-card" for="shipping1">
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <i class="fa-solid fa-truck fa-lg me-3" style="color: var(--color-primary)"></i>
-                    <span class="fw-bold">Kurier DPD</span>
-                  </div>
-                  <span class="fw-bold">15,99 zł</span>
+                <div th:if="${isLoggedIn}">
+                    <div th:if="${!addresses.isEmpty()}">
+                        <p class="text-secondary mb-3">Wybierz adres dostawy:</p>
+
+                        <div th:each="addr, iter : ${addresses}" class="form-check mb-3">
+                            <input type="radio" class="form-check-input" name="addressSelection"
+                                   th:id="'addr-' + ${addr.id}"
+                                   th:value="${addr.id}"
+                                   th:checked="${iter.index == 0}"
+                                   th:data-first-name="${user.firstName}"
+                                   th:data-last-name="${user.lastName}"
+                                   th:data-email="${user.email}"
+                                   th:data-phone="${user.phoneNumber != null ? user.phoneNumber : ''}"
+                                   th:data-address="${addr.street} + ' ' + ${addr.houseNumber} + (${addr.apartmentNumber != null} ? ' m. ' + ${addr.apartmentNumber} : '')"
+                                   th:data-zip-code="${addr.postalCode}"
+                                   th:data-city="${addr.city}">
+                            <label class="form-check-label" th:for="'addr-' + ${addr.id}">
+                                <strong th:text="${addr.label != null ? addr.label : 'Adres'}"></strong><br>
+                                <span th:text="${addr.street} + ' ' + ${addr.houseNumber} + (${addr.apartmentNumber != null} ? ' m. ' + ${addr.apartmentNumber} : '')"></span><br>
+                                <span th:text="${addr.postalCode} + ' ' + ${addr.city}"></span>
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input type="radio" class="form-check-input" name="addressSelection" id="new-address-radio" value="new">
+                            <label class="form-check-label" for="new-address-radio">
+                                <strong>Użyj nowego adresu</strong>
+                            </label>
+                        </div>
+                    </div>
+                    <p th:if="${addresses.isEmpty()}" class="text-secondary mb-3">
+                        Nie masz jeszcze zapisanych adresów. Wypełnij poniższy formularz, aby kontynuować.
+                    </p>
                 </div>
-              </label>
-            </div>
-            
-            <div class="form-check">
-              <input type="radio" class="method-card-input" name="shipping-method" id="shipping2">
-              <label class="method-card" for="shipping2">
-                <div class="d-flex justify-content-between">
-                  <div>
-                    <i class="fa-solid fa-box-open fa-lg me-3" style="color: var(--color-primary)"></i>
-                    <span class="fw-bold">Paczkomat InPost 24/7</span>
-                  </div>
-                  <span class="fw-bold">12,99 zł</span>
+
+                <div id="address-form-wrapper" class="mt-4">
+                    <p th:if="${isLoggedIn}" class="text-secondary mb-3">Wprowadź dane dla nowego adresu:</p>
+
+                    <p th:if="${!isLoggedIn}" class="text-secondary mb-3">
+                        Masz już konto?
+                        <a th:href="@{/login}" class="btn-link-custom">Zaloguj się</a>, aby wczytać dane.
+                    </p>
+
+                    <form class="row g-3" id="checkout-form">
+                        <div class="col-md-6 form-floating">
+                            <input type="text" class="form-control" id="firstName" placeholder="Imię" required
+                                   th:value="${isLoggedIn ? user.firstName : ''}"
+                                   name="firstName">
+                            <label for="firstName" class="ms-2">Imię</label>
+                        </div>
+                        <div class="col-md-6 form-floating">
+                            <input type="text" class="form-control" id="lastName" placeholder="Nazwisko" required
+                                   th:value="${isLoggedIn ? user.lastName : ''}"
+                                   name="lastName">
+                            <label for="lastName" class="ms-2">Nazwisko</label>
+                        </div>
+                        <div class="col-12 form-floating">
+                            <input type="email" class="form-control" id="email" placeholder="E-mail" required
+                                   th:value="${isLoggedIn ? user.email : ''}"
+                                   name="email">
+                            <label for="email" class="ms-2">E-mail</label>
+                        </div>
+                        <div class="col-12 form-floating">
+                            <input type="tel" class="form-control" id="phone" placeholder="Telefon" required
+                                   th:value="${isLoggedIn && user.phoneNumber != null ? user.phoneNumber : ''}"
+                                   name="phone">
+                            <label for="phone" class="ms-2">Telefon</label>
+                        </div>
+                        <div class="col-12 form-floating">
+                            <input type="text" class="form-control" id="address" placeholder="Ulica i numer domu" required
+                                   name="address">
+                            <label for="address" class="ms-2">Ulica i numer domu</label>
+                        </div>
+                        <div class="col-md-5 form-floating">
+                            <input type="text" class="form-control" id="zipCode" placeholder="Kod pocztowy" required
+                                   name="zipCode">
+                            <label for="zipCode" class="ms-2">Kod pocztowy</label>
+                        </div>
+                        <div class="col-md-7 form-floating">
+                            <input type="text" class="form-control" id="city" placeholder="Miejscowość" required
+                                   name="city">
+                            <label for="city" class="ms-2">Miejscowość</label>
+                        </div>
+                    </form>
                 </div>
-              </label>
             </div>
-          </div>
-          
-          <div class="checkout-card p-4 p-md-5">
-            <h3 class="h5 mb-3">Metoda płatności</h3>
-            
-            <div class="form-check mb-3">
-              <input type="radio" class="method-card-input" name="payment-method" id="payment1" checked>
-              <label class="method-card" for="payment1">
-                <i class="fa-solid fa-bolt fa-lg me-3" style="color: var(--color-primary)"></i>
-                <span class="fw-bold">BLIK</span>
-              </label>
+
+            <div class="checkout-card p-4 p-md-5 mb-4">
+                <h3 class="h5 mb-3">Metoda dostawy</h3>
+
+                <div class="form-check mb-3">
+                    <input type="radio" class="method-card-input shipping-method-input" name="shipping-method" id="shipping1"
+                           value="Kurier DPD" data-cost="15.99" checked>
+                    <label class="method-card" for="shipping1">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <i class="fa-solid fa-truck fa-lg me-3" style="color: var(--color-primary)"></i>
+                                <span class="fw-bold">Kurier DPD</span>
+                            </div>
+                            <span class="fw-bold">15,99 zł</span>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input type="radio" class="method-card-input shipping-method-input" name="shipping-method" id="shipping2"
+                           value="Paczkomat InPost 24/7" data-cost="12.99">
+                    <label class="method-card" for="shipping2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <i class="fa-solid fa-box-open fa-lg me-3" style="color: var(--color-primary)"></i>
+                                <span class="fw-bold">Paczkomat InPost 24/7</span>
+                            </div>
+                            <span class="fw-bold">12,99 zł</span>
+                        </div>
+                    </label>
+                </div>
             </div>
-            
-            <div class="form-check mb-3">
-              <input type="radio" class="method-card-input" name="payment-method" id="payment2">
-              <label class="method-card" for="payment2">
-                <i class="fa-solid fa-credit-card fa-lg me-3" style="color: var(--color-primary)"></i>
-                <span class="fw-bold">Karta płatnicza (Visa / Mastercard)</span>
-              </label>
+
+            <div class="checkout-card p-4 p-md-5">
+                <h3 class="h5 mb-3">Metoda płatności</h3>
+
+                <div class="form-check mb-3">
+                    <input type="radio" class="method-card-input" name="payment-method" id="payment1" value="BLIK" checked>
+                    <label class="method-card" for="payment1">
+                        <i class="fa-solid fa-bolt fa-lg me-3" style="color: var(--color-primary)"></i>
+                        <span class="fw-bold">BLIK</span>
+                    </label>
+                </div>
+                <div class="form-check mb-3">
+                    <input type="radio" class="method-card-input" name="payment-method" id="payment2" value="Karta płatnicza">
+                    <label class="method-card" for="payment2">
+                        <i class="fa-solid fa-credit-card fa-lg me-3" style="color: var(--color-primary)"></i>
+                        <span class="fw-bold">Karta płatnicza</span>
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input type="radio" class="method-card-input" name="payment-method" id="payment3" value="Przelew online">
+                    <label class="method-card" for="payment3">
+                        <i class="fa-solid fa-university fa-lg me-3" style="color: var(--color-primary)"></i>
+                        <span class="fw-bold">Przelew online</span>
+                    </label>
+                </div>
             </div>
-            
-            <div class="form-check">
-              <input type="radio" class="method-card-input" name="payment-method" id="payment3">
-              <label class="method-card" for="payment3">
-                <i class="fa-solid fa-university fa-lg me-3" style="color: var(--color-primary)"></i>
-                <span class="fw-bold">Przelew online (Przelewy24)</span>
-              </label>
-            </div>
-          </div>
         </div>
 
         <div class="col-lg-4">
-          <div class="checkout-card p-4" style="position: sticky; top: 2rem;">
-            <h3 class="h5 mb-4">Twoje podsumowanie</h3>
+            <div class="checkout-card p-4" style="position: sticky; top: 2rem;">
+                <h3 class="h5 mb-4">Twoje podsumowanie</h3>
 
-            <div class="summary-product-item d-flex justify-content-between mb-2">
-              <span class="text-secondary">Spodnie dresowe x 1</span>
-              <span class="fw-bold">199,99 zł</span>
-            </div>
-            <div class="summary-product-item d-flex justify-content-between mb-3">
-              <span class="text-secondary">Koszulka T-shirt x 2</span>
-              <span class="fw-bold">199,98 zł</span>
-            </div>
-            
-            <hr>
+                <span id="cart-subtotal" class="d-none" th:data-subtotal="${cart.subtotalPrice}"></span>
 
-            <div class="d-flex justify-content-between mb-2">
-              <span class="text-secondary">Suma produktów:</span>
-              <span class="fw-bold">399,97 zł</span>
-            </div>
-            <div class="d-flex justify-content-between mb-3">
-              <span class="text-secondary">Dostawa:</span>
-              <span class="fw-bold">15,99 zł</span>
-            </div>
+                <div id="checkout-error" class="alert alert-danger d-none" role="alert">
+                    Wystąpił błąd. Spróbuj ponownie.
+                </div>
 
-            <hr>
+                <div th:each="item : ${cart.items}" class="summary-product-item d-flex justify-content-between mb-2">
+                    <span class="text-secondary" th:text="${item.productName} + ' x ' + ${item.quantity}"></span>
+                    <span class="fw-bold"
+                          th:text="${#numbers.formatDecimal(item.unitPrice * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' zł'"></span>
+                </div>
 
-            <div class="d-flex justify-content-between summary-total mb-4">
-              <span>Łącznie (z VAT):</span>
-              <span>415,96 zł</span>
+                <hr>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary">Suma produktów:</span>
+                    <span class="fw-bold"
+                          th:text="${#numbers.formatDecimal(cart.subtotalPrice, 0, 'COMMA', 2, 'POINT')} + ' zł'"></span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-secondary">Dostawa:</span>
+                    <span class="fw-bold" id="summary-shipping-cost">15,99 zł</span>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between summary-total mb-4">
+                    <span>Łącznie (z VAT):</span>
+                    <span id="summary-total-price"
+                          th:text="${#numbers.formatDecimal(cart.subtotalPrice + 15.99, 0, 'COMMA', 2, 'POINT')} + ' zł'"></span>
+                </div>
+
+                <button type="submit" form="checkout-form" id="submit-order-btn" class="btn btn-primary-custom btn-lg w-100">
+                    <i class="fa-solid fa-shield-halved me-2"></i>
+                    <span class="btn-text">Zamawiam i płacę</span>
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+
+                <p class="text-secondary small text-center mt-3 mb-0">
+                    Klikając przycisk, akceptujesz
+                    <a th:href="@{/regulamin}" class="btn-link-custom">Regulamin</a>.
+                </p>
             </div>
-
-            <a href="#" class="btn btn-primary-custom btn-lg w-100">
-              <i class="fa-solid fa-shield-halved me-2"></i>
-              Zamawiam i płacę
-            </a>
-            
-            <p class="text-secondary small text-center mt-3 mb-0">
-                Klikając przycisk, akceptujesz <a href="#" class="btn-link-custom">Regulamin</a>
-                i potwierdzasz zakup.
-            </p>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
 
-  </body>
+        const isLoggedIn = document.querySelector('.container[data-is-logged-in]').dataset.isLoggedIn === 'true';
+        const subtotalElement = document.getElementById('cart-subtotal');
+        const cartSubtotal = parseFloat(subtotalElement.dataset.subtotal);
+        const summaryShippingCost = document.getElementById('summary-shipping-cost');
+        const summaryTotalPrice = document.getElementById('summary-total-price');
+        const shippingInputs = document.querySelectorAll('.shipping-method-input');
+        const addressFormWrapper = document.getElementById('address-form-wrapper');
+        const addressForm = document.getElementById('checkout-form');
+        const addressSelectionRadios = document.querySelectorAll('input[name="addressSelection"]');
+        const submitButton = document.getElementById('submit-order-btn');
+        const submitButtonText = submitButton.querySelector('.btn-text');
+        const submitButtonSpinner = submitButton.querySelector('.spinner-border');
+        const errorAlert = document.getElementById('checkout-error');
+        const currencyFormatter = new Intl.NumberFormat('pl-PL', {
+            style: 'currency',
+            currency: 'PLN'
+        });
+
+        function updateSummary() {
+            const selectedShipping = document.querySelector('input[name="shipping-method"]:checked');
+            const shippingCost = parseFloat(selectedShipping.dataset.cost);
+            const total = cartSubtotal + shippingCost;
+
+            summaryShippingCost.textContent = currencyFormatter.format(shippingCost);
+            summaryTotalPrice.textContent = currencyFormatter.format(total);
+        }
+
+
+        function handleAddressSelection() {
+            if (!isLoggedIn) return;
+
+            const selectedAddressRadio = document.querySelector('input[name="addressSelection"]:checked');
+
+            if (!selectedAddressRadio || selectedAddressRadio.value === 'new') {
+                addressFormWrapper.style.display = 'block';
+                document.getElementById('address').value = '';
+                document.getElementById('zipCode').value = '';
+                document.getElementById('city').value = '';
+            } else {
+                // Wybrano zapisany adres
+                addressFormWrapper.style.display = 'none';
+
+                const data = selectedAddressRadio.dataset;
+                document.getElementById('firstName').value = data.firstName;
+                document.getElementById('lastName').value = data.lastName;
+                document.getElementById('email').value = data.email;
+                document.getElementById('phone').value = data.phone;
+                document.getElementById('address').value = data.address;
+                document.getElementById('zipCode').value = data.zipCode;
+                document.getElementById('city').value = data.city;
+            }
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            setLoading(true);
+
+            const formData = new FormData(addressForm);
+            const checkoutData = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                shippingAddress: formData.get('address'),
+                zipCode: formData.get('zipCode'),
+                city: formData.get('city'),
+                shippingMethod: document.querySelector('input[name="shipping-method"]:checked').value,
+                paymentMethod: document.querySelector('input[name="payment-method"]:checked').value
+            };
+
+            try {
+                const response = await fetch('/api/v1/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(checkoutData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = `/zamowienie/potwierdzenie?orderId=${data.orderId}`;
+                } else {
+                    showError(data.error || 'Wystąpił błąd. Sprawdź dane i spróbuj ponownie.');
+                }
+
+            } catch (error) {
+                // Błąd sieci
+                showError('Błąd sieci. Nie można połączyć się z serwerem.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function setLoading(isLoading) {
+            if (isLoading) {
+                submitButton.disabled = true;
+                submitButtonText.classList.add('d-none');
+                submitButtonSpinner.classList.remove('d-none');
+                errorAlert.classList.add('d-none');
+            } else {
+                submitButton.disabled = false;
+                submitButtonText.classList.remove('d-none');
+                submitButtonSpinner.classList.add('d-none');
+            }
+        }
+
+        function showError(message) {
+            errorAlert.textContent = message;
+            errorAlert.classList.remove('d-none');
+        }
+
+        shippingInputs.forEach(input => {
+            input.addEventListener('change', updateSummary);
+        });
+
+        if (isLoggedIn) {
+            addressSelectionRadios.forEach(radio => {
+                radio.addEventListener('change', handleAddressSelection);
+            });
+
+            handleAddressSelection();
+        } else {
+
+            addressFormWrapper.style.display = 'block';
+        }
+
+        addressForm.addEventListener('submit', handleFormSubmit);
+
+        updateSummary();
+    });
+</script>
+
+</body>
 </html>

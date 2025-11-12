@@ -1,6 +1,8 @@
 package pl.fishingwear.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,5 +56,25 @@ public class UserService {
         user.setLastName(updatedData.getLastName());
         user.setPhoneNumber(updatedData.getPhoneNumber());
         userRepository.save(user);
+    }
+
+    public Optional<User> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return Optional.empty();
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof org.springframework.security.core.userdetails.User springUser) {
+            return userRepository.findByEmail(springUser.getUsername());
+        }
+
+        if (principal instanceof User appUser) {
+            return Optional.of(appUser);
+        }
+
+        return Optional.empty();
     }
 }

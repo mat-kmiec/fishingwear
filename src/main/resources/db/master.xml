@@ -9,4 +9,5 @@
     <include file="changelog/0003-create-product.xml" relativeToChangelogFile="true" />
     <include file="changelog/0004-insert-product.xml" relativeToChangelogFile="true" />
     <include file="changelog/0005-create-cart.xml" relativeToChangelogFile="true" />
+    <include file="changelog/0006-create-order.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
