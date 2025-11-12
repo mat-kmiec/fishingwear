@@ -6,19 +6,19 @@
         <nav class="nav nav-pills flex-column account-nav">
             <a class="nav-link"
                th:classappend="${activeTab == 'overview'} ? ' active'"
-               href="#">Przegląd</a>
+               href="#" th:href="@{/moje-konto}">Przegląd</a>
 
             <a class="nav-link"
                th:classappend="${activeTab == 'orders'} ? ' active'"
-               href="#">Historia zamówień</a>
+               href="#" th:href="@{/historia-zamowien}">Historia zamówień</a>
 
             <a class="nav-link"
                th:classappend="${activeTab == 'data'} ? ' active'"
-               href="#">Moje dane i adresy</a>
+               href="#" th:href="@{/adresy}">Moje dane i adresy</a>
 
             <a class="nav-link"
                th:classappend="${activeTab == 'settings'} ? ' active'"
-               href="#">Ustawienia konta</a>
+               href="#" th:href="@{/ustawienia-profilu}">Ustawienia konta</a>
 
             <hr class="my-2">
 

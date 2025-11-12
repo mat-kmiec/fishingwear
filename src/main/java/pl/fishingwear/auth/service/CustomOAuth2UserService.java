@@ -5,9 +5,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -17,6 +19,8 @@ import pl.fishingwear.auth.model.AuthProvider;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,6 +69,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("Nie udało się pobrać adresu e-mail użytkownika OAuth2");
         }
 
+        Map<String, Object> attributesWithEmail = new HashMap<>(attributes);
+        attributesWithEmail.put("email", email);
+
         String finalEmail = email.toLowerCase().trim();
         AuthProvider finalProvider = provider;
 
@@ -85,7 +92,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     return userRepository.save(newUser);
                 });
 
-        return oAuth2User;
+        return new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                attributesWithEmail,
+                "email"
+        );
     }
 
     private String fetchEmailFromGithub(String token) {
