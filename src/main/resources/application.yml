@@ -47,3 +47,17 @@ spring:
 
 file:
   upload-dir: /uploads/
+
+logging:
+  level:
+    pl:
+      fishingwear:
+        cart:
+          service: DEBUG
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql: TRACE
+

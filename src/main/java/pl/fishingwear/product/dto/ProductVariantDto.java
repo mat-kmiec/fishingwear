@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class ProductVariantDto {
+    private Long productVariantId;
     private Long colorId;
     private Long sizeId;
     private BigDecimal price;

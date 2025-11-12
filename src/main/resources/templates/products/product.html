@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="_csrf" th:content="${_csrf.token}">
+      <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>FishingWear - Spodnie dresowe</title>
     <link
       rel="stylesheet"
@@ -138,7 +140,9 @@
                 </div>
             </div>
 
-              <button id="add-to-cart-btn" class="btn btn-primary-custom btn-lg w-100 mt-4">
+              <button id="add-to-cart-btn"
+                      class="btn btn-primary-custom btn-lg w-100 mt-4"
+                      th:data-product-id="${product.id}">
                   <i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka
               </button>
 
@@ -229,9 +233,13 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
+
+        // --- TWOJE ISTNIEJĄCE ZMIENNE ---
         const variants = /*[[${product.variants}]]*/ [];
         let selectedColor = null;
         let selectedSize = null;
+
+        // --- TWOJE ISTNIEJĄCE FUNKCJE (BEZ ZMIAN) ---
 
         function checkProductAvailability() {
             const messageEl = document.getElementById('product-unavailable-message');
@@ -241,6 +249,7 @@
 
             if (!variants || variants.length === 0) return;
 
+            // Używamy Twojej nazwy pola: stockQuantity
             const isAvailable = variants.some(v => v.stockQuantity > 0);
 
             if (!isAvailable) {
@@ -301,7 +310,8 @@
                 if (colorEl) colorEl.classList.add('active');
 
                 const sizeEl = document.querySelector(`.size-option[data-size-id="${selectedSize}"]`);
-                if (sizeEl) sizeEl.classList.add('active');
+                // Musimy aktywować input, a nie label
+                if (sizeEl) sizeEl.checked = true;
 
                 updateVariantInfo();
             }
@@ -343,14 +353,13 @@
 
         function updateVariantInfo() {
             const priceElement = document.querySelector('.product-price-detail');
-            const stockElement = document.getElementById('variant-stock');
+            const stockElement = document.getElementById('variant-stock'); // Zakładam, że możesz chcieć dodać ten element
             const addToCartBtn = document.getElementById('add-to-cart-btn');
 
             if (!priceElement || !variants.length) return;
 
-            const variant = selectedColor && selectedSize
-                ? variants.find(v => v.colorId === selectedColor && v.sizeId === selectedSize)
-                : null;
+            // Używamy nowej funkcji pomocniczej
+            const variant = getSelectedVariant();
 
             priceElement.style.opacity = 0;
 
@@ -358,11 +367,16 @@
                 if (variant) {
                     if (variant.discountPrice && variant.discountPrice < variant.price) {
                         priceElement.innerHTML = `
-                    <span class="text-danger small fs-2 fw-bold">${formatPrice(variant.discountPrice)}</span><br>
-                    <small class="text-muted text-decoration-line-through">${formatPrice(variant.price)}</small><br>
-                `;
+                <span class="text-danger small fs-2 fw-bold">${formatPrice(variant.discountPrice)}</span><br>
+                <small class="text-muted text-decoration-line-through">${formatPrice(variant.price)}</small><br>
+            `;
                     } else {
                         priceElement.textContent = formatPrice(variant.price);
+                    }
+
+                    // Obsługa dostępności przycisku i info o stanie magazynowym
+                    if (addToCartBtn) {
+                        addToCartBtn.disabled = variant.stockQuantity <= 0;
                     }
 
                     if (stockElement) {
@@ -370,25 +384,54 @@
                             stockElement.textContent = 'Dostępny';
                             stockElement.classList.add('text-success');
                             stockElement.classList.remove('text-danger');
-                            if (addToCartBtn) addToCartBtn.disabled = false;
                         } else {
                             stockElement.textContent = 'Brak w magazynie';
                             stockElement.classList.add('text-danger');
                             stockElement.classList.remove('text-success');
-                            if (addToCartBtn) addToCartBtn.disabled = true;
                         }
                     }
                 } else {
+                    // Cena bazowa produktu, gdy wariant nie jest wybrany
                     priceElement.innerHTML = /*[[${product.getFormattedPrice()}]]*/ "";
                     if (stockElement) stockElement.textContent = '';
-                    if (addToCartBtn) addToCartBtn.disabled = false;
+                    // Wyłącz przycisk, jeśli nie wybrano wariantu
+                    if (addToCartBtn) addToCartBtn.disabled = true;
                 }
                 priceElement.style.opacity = 1;
             }, 150);
         }
 
+        // --- NOWA FUNKCJA POMOCNICZA ---
+        function getSelectedVariant() {
+            if (!selectedColor || !selectedSize) {
+                return null;
+            }
+            // Znajdź wariant na podstawie wybranego koloru i rozmiaru
+            return variants.find(v =>
+                v.colorId === selectedColor &&
+                v.sizeId === selectedSize
+            );
+        }
+
+        // --- NOWA FUNKCJA POMOCNICZA ---
+        function updateCartIcon(totalItems) {
+            // Ta funkcja wymaga elementu <span id="cart-item-count"></span> w Twoim 'nav.html'
+            // Przykład: <span id="cart-item-count" class="badge bg-danger ms-1">0</span>
+            const cartCountElement = document.getElementById('cart-item-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = totalItems;
+                // Pokaż/ukryj badge, jeśli jest pusty
+                cartCountElement.style.display = totalItems > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        // --- TWOJE ISTNIEJĄCE EVENT LISTENERY ---
+
         document.querySelectorAll('.color-swatch').forEach(el => {
             el.addEventListener('click', () => {
+                // Zignoruj kliknięcie, jeśli opcja jest niedostępna
+                if (el.classList.contains('disabled')) return;
+
                 document.querySelectorAll('.color-swatch').forEach(c => c.classList.remove('active'));
                 el.classList.add('active');
                 selectedColor = parseInt(el.dataset.colorId);
@@ -399,19 +442,112 @@
 
         document.querySelectorAll('.size-option').forEach(el => {
             el.addEventListener('click', () => {
-                document.querySelectorAll('.size-option').forEach(c => c.classList.remove('active'));
-                el.classList.add('active');
+                // Zmień logikę z "active" na "checked" dla radio buttons
                 selectedSize = parseInt(el.dataset.sizeId);
                 updateAvailableColors();
                 updateVariantInfo();
             });
         });
 
+        // --- NOWA LOGIKA: OBSŁUGA "DODAJ DO KOSZYKA" (AJAX) ---
+
+        // Pobierz tokeny CSRF (z tagów <meta> w <head>)
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        const addToCartBtn = document.getElementById('add-to-cart-btn');
+        const quantityInput = document.getElementById('quantity-input');
+
+        if (addToCartBtn) { // Sprawdź czy przycisk istnieje
+
+            // Na starcie wyłącz przycisk, dopóki wariant nie zostanie wybrany
+            addToCartBtn.disabled = true;
+
+            addToCartBtn.addEventListener('click', async () => {
+
+                const selectedVariant = getSelectedVariant();
+                const quantity = parseInt(quantityInput.value);
+
+                // 1. Walidacja po stronie klienta
+                if (!selectedVariant) {
+                    alert("Proszę wybrać rozmiar i kolor.");
+                    return;
+                }
+
+                if (quantity > selectedVariant.stockQuantity) {
+                    alert("Niewystarczająca ilość produktu w magazynie.");
+                    return;
+                }
+
+                if (selectedVariant.stockQuantity <= 0) {
+                    alert("Ten wariant jest aktualnie niedostępny.");
+                    return;
+                }
+
+                // 2. Przygotuj dane do wysłania
+                // Kluczowe: wysyłamy 'productVariantId'
+                const data = {
+                    productVariantId: selectedVariant.productVariantId,
+                    quantity: quantity
+                };
+
+                // !!! DODAJ TĘ LINIĘ DO DEBUGOWANIA !!!
+                console.log('Wysyłanie danych:', data);
+
+                // 3. UI Feedback (ładowanie)
+                addToCartBtn.disabled = true;
+                addToCartBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Dodawanie...';
+
+                try {
+                    // 4. Wyślij żądanie API
+                    const response = await fetch('/api/v1/cart/items', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            [csrfHeader]: csrfToken // Nagłówek CSRF
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    // 5. Obsługa odpowiedzi
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ message: 'Nie udało się dodać produktu.' }));
+                        throw new Error(errorData.message || 'Nie udało się dodać produktu. Spróbuj ponownie.');
+                    }
+
+                    const cartData = await response.json(); // Oczekujemy zwrotki CartViewDto
+
+                    // 6. UI Feedback (sukces)
+                    addToCartBtn.innerHTML = '<i class="fa-solid fa-check me-2"></i> Dodano!';
+                    updateCartIcon(cartData.totalItemsCount); // Zaktualizuj ikonę koszyka w nawigacji
+
+                    // 7. Resetuj przycisk po chwili
+                    setTimeout(() => {
+                        // Sprawdź, czy wariant jest nadal dostępny
+                        addToCartBtn.disabled = getSelectedVariant().stockQuantity <= 0;
+                        addToCartBtn.innerHTML = '<i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka';
+                    }, 2000);
+
+                } catch (error) {
+                    console.error('Błąd dodawania do koszyka:', error);
+                    alert(error.message);
+                    // 8. UI Feedback (błąd) - resetuj przycisk
+                    addToCartBtn.disabled = false;
+                    addToCartBtn.innerHTML = '<i class="fa-solid fa-basket-shopping me-2"></i> Dodaj do koszyka';
+                }
+            });
+        }
+
+
+        // --- TWOJE ISTNIEJĄCE WYWOŁANIA INICJALIZUJĄCE ---
         checkProductAvailability();
         initializeAvailableOptions();
         preselectSingleAvailableVariant();
+
         /*]]>*/
     </script>
+
+
 
 
 

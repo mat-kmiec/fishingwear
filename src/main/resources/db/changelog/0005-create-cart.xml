@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20251111-01-create-cart-table" author="fishingwear">
+        <comment>Create the 'cart' table for storing user and guest shopping carts</comment>
+
+        <createTable tableName="cart">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="fk_cart_user"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+
+            <column name="guest_cart_id" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="cart"
+                columnNames="user_id"
+                constraintName="uk_cart_user_id"
+                deferrable="false"
+                initiallyDeferred="false"/>
+
+        <addUniqueConstraint
+                tableName="cart"
+                columnNames="guest_cart_id"
+                constraintName="uk_cart_guest_cart_id"
+                deferrable="false"
+                initiallyDeferred="false"/>
+    </changeSet>
+
+    <changeSet id="20251111-02-create-cart-item-table" author="fishingwear">
+        <comment>Create the 'cart_item' table to store items within a cart</comment>
+
+        <createTable tableName="cart_item">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="cart_id" type="BIGINT">
+                <constraints foreignKeyName="fk_cart_item_cart"
+                             referencedTableName="cart"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="product_variant_id" type="BIGINT">
+                <constraints foreignKeyName="fk_cart_item_product_variant"
+                             referencedTableName="product_variant"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="quantity" type="INT" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="added_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_cart_item_cart_id" tableName="cart_item">
+            <column name="cart_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_cart_item_product_variant_id" tableName="cart_item">
+            <column name="product_variant_id"/>
+        </createIndex>
+
+        <addUniqueConstraint
+                tableName="cart_item"
+                columnNames="cart_id, product_variant_id"
+                constraintName="uk_cart_item_cart_variant"/>
+    </changeSet>
+
+</databaseChangeLog>
