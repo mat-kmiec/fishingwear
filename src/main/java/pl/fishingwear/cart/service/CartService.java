@@ -243,4 +243,16 @@ public class CartService {
         assert response != null;
         response.addCookie(cookie);
     }
+
+    @Transactional(readOnly = true)
+    public int getCartItemCount() {
+        try {
+            Cart cart = getOrCreateCart();
+            Integer count = cartItemRepository.sumQuantityByCartId(cart.getId());
+            return (count == null) ? 0 : count;
+
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }
