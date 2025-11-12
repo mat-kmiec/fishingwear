@@ -1,147 +1,133 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+
     <title>FishingWear - Twój koszyk</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
 
-    <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
-    />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-    <nav th:insert="~{fragments/nav :: nav}"></nav>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/slider.css}"/>
+</head>
 
-    <div class="container my-5">
-      <div class="row g-4">
+<body style="background-color: var(--color-neutral-light)">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
+
+<div class="container my-5">
+    <div class="row g-4">
         <div class="col-lg-8">
-          <div class="cart-card p-4">
-            <h2 class="h4 mb-4">Twój koszyk (2 produkty)</h2>
+            <div class="cart-card p-4">
+                <h2 class="h4 mb-4">Twój koszyk (<span th:text="${#lists.size(items)}"></span> produkty)</h2>
 
-            <div class="row g-3 align-items-center py-1">
-              <div class="col-lg-2 col-md-3 col-4">
-                <img src="../../../../../uploads/products/1/dresy.png" alt="Spodnie dresowe" class="cart-item-img">
-              </div>
-              <div class="col-lg-4 col-md-5 col-8">
-                <a href="#" class="cart-item-title">Spodnie dresowe super premium</a>
-                <p class="cart-item-details mb-0">Rozmiar: XL, Kolor: Grafitowy</p>
-              </div>
-              <div class="col-lg-2 col-md-2 col-5">
-                <div class="input-group quantity-selector" style="width: 130px;">
-                    <button class="btn btn-outline-secondary" type="button">-</button>
-                    <input type="text" class="form-control" value="1">
-                    <button class="btn btn-outline-secondary" type="button">+</button>
+                <div th:if="${#lists.isEmpty(items)}" class="text-center p-5">
+                    <i class="fa-solid fa-basket-shopping fa-3x text-secondary mb-3"></i>
+                    <h3 class="h5">Twój koszyk jest pusty</h3>
+                    <p class="text-secondary">Wygląda na to, że nic jeszcze nie dodałeś.</p>
+                    <a th:href="@{/}" class="btn btn-primary-custom mt-2">Wróć do sklepu</a>
                 </div>
-              </div>
-              <div class="col-lg-2 col-md-2 col-4">
-                <span class="cart-item-price">199,99 zł</span>
-              </div>
-              <div class="col-lg-2 col-md-0 col-3 text-end">
-                <a href="#" class="btn btn-remove" data-bs-toggle="tooltip" title="Usuń z koszyka">
-                  <i class="fa-solid fa-trash-can"></i>
-                </a>
-              </div>
-              <hr classm="">
-            </div>
-        
 
-            <div class="row g-3 align-items-center py-1">
-              <div class="col-lg-2 col-md-3 col-4">
-                <img src="../../../../../uploads/products/1/tshirt.png" alt="Koszulka" class="cart-item-img">
-              </div>
-              <div class="col-lg-4 col-md-5 col-8">
-                <a href="#" class="cart-item-title">Koszulka na krótki rękaw</a>
-                <p class="cart-item-details mb-0">Rozmiar: L, Kolor: Oliwkowy</p>
-              </div>
-              <div class="col-lg-2 col-md-2 col-5">
-                <div class="input-group quantity-selector" style="width: 130px;">
-                    <button class="btn btn-outline-secondary" type="button">-</button>
-                    <input type="text" class="form-control" value="2">
-                    <button class="btn btn-outline-secondary" type="button">+</button>
+                <div th:each="item : ${items}"
+                     class="row g-3 align-items-center py-3 border-bottom"
+                     th:attr="data-variant-id=${item.productVariantId}"> <div class="col-lg-2 col-md-3 col-4">
+                    <img th:src="@{${item.imageUrl}}"
+                         th:alt="${item.productName}"
+                         class="cart-item-img"/>
                 </div>
-              </div>
-              <div class="col-lg-2 col-md-2 col-4">
-                <span class="cart-item-price">99,99 zł</span>
-              </div>
-              <div class="col-lg-2 col-md-0 col-3 text-end">
-                <a href="#" class="btn btn-remove" data-bs-toggle="tooltip" title="Usuń z koszyka">
-                  <i class="fa-solid fa-trash-can"></i>
-                </a>
-              </div>
-              <hr classm="">
+
+                    <div class="col-lg-4 col-md-5 col-8">
+                        <a th:href="@{'/produkt/' + ${item.productSlug}}"
+                           th:text="${item.productName}"
+                           class="cart-item-title"></a>
+                        <p class="cart-item-details mb-0"
+                           th:text="'Rozmiar: ' + ${item.size} + ', Kolor: ' + ${item.color}">
+                        </p>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-5">
+                        <div class="input-group quantity-selector" style="width: 130px;">
+                            <button class="btn btn-outline-secondary btn-decrease-qty" type="button">-</button>
+                            <input type="text" class="form-control text-center quantity-input"
+                                   th:value="${item.quantity}"
+                                   readonly> <button class="btn btn-outline-secondary btn-increase-qty" type="button">+</button>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-4">
+                        <span class="cart-item-price"
+                              th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 2, 'POINT')} + ' zł'">
+                        </span>
+                    </div>
+
+                    <div class="col-lg-2 col-md-0 col-3 text-end">
+                        <button class="btn btn-remove btn-remove-item"
+                                data-bs-toggle="tooltip"
+                                title="Usuń z koszyka"
+                                th:attr="data-item-id=${item.cartItemId}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-end mt-3" th:if="${not #lists.isEmpty(items)}">
+                    <a th:href="@{/}" class="btn-link-custom">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Kontynuuj zakupy
+                    </a>
+                </div>
             </div>
-            <div class="text-end mt-3">
-              <a href="#" class="btn-link-custom">
-                <i class="fa-solid fa-arrow-left me-2"></i> Kontynuuj zakupy
-              </a>
-            </div>
-          </div>
-          
         </div>
 
         <div class="col-lg-4">
-          <div class="cart-card p-4">
-            <h3 class="h5 mb-4">Podsumowanie zamówienia</h3>
+            <div class="cart-card p-4">
+                <h3 class="h5 mb-4">Podsumowanie zamówienia</h3>
 
-            <div class="d-flex justify-content-between mb-2">
-              <span class="text-secondary">Suma produktów:</span>
-              <span class="fw-bold">399,97 zł</span>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary">Suma produktów:</span>
+                    <span class="fw-bold" th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' zł'"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-secondary">Szacowana dostawa:</span>
+                    <span class="fw-bold">Darmowa</span> </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between summary-total mb-4">
+                    <span>Łącznie (z VAT):</span>
+                    <span th:text="${#numbers.formatDecimal(total, 0, 'COMMA', 2, 'POINT')} + ' zł'"></span>
+                </div>
+
+                <a th:href="@{/zamowienie}"
+                   class="btn btn-primary-custom btn-lg w-100"
+                   th:classappend="${#lists.isEmpty(items)} ? 'disabled' : ''">
+                    Przejdź do kasy
+                    <i class="fa-solid fa-arrow-right ms-2"></i>
+                </a>
             </div>
-            <div class="d-flex justify-content-between mb-3">
-              <span class="text-secondary">Szacowana dostawa:</span>
-              <span class="fw-bold">Darmowa</span>
-            </div>
-
-            <hr>
-
-            <div class="d-flex justify-content-between summary-total mb-4">
-              <span>Łącznie (z VAT):</span>
-              <span>399,97 zł</span>
-            </div>
-
-            <a href="#" class="btn btn-primary-custom btn-lg w-100">
-              Przejdź do kasy
-              <i class="fa-solid fa-arrow-right ms-2"></i>
-            </a>
-
-            
-          </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-          return new bootstrap.Tooltip(tooltipTriggerEl)
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        tooltipTriggerList.map(function (el) {
+            return new bootstrap.Tooltip(el)
         });
 
-      });
-    </script>
-  </body>
+        // TODO: Dodać tutaj logikę AJAX (fetch) do przycisków
+        // btn-decrease-qty, btn-increase-qty, btn-remove-item
+        // tak jak zrobiliśmy to na stronie produktu.
+    });
+</script>
+</body>
 </html>

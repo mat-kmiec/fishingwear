@@ -64,6 +64,7 @@ public class ProductMapperImpl implements ProductMapper {
 
     private ProductVariantDto mapVariant(ProductVariant v) {
         var dto = new ProductVariantDto();
+        dto.setProductVariantId(v.getId());
         dto.setColorId(v.getColor() != null ? v.getColor().getId() : null);
         dto.setSizeId(v.getSize() != null ? v.getSize().getId() : null);
         dto.setPrice(v.getPrice());
