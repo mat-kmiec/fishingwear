@@ -41,6 +41,14 @@ public class SecurityConfig {
                         .successHandler(loginSuccessHandler)
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
+                .logout(logout -> logout
+
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
                 .csrf(csrf -> csrf
                                 .ignoringRequestMatchers("/h2-console/**", "/api/v1/**")
                 )
