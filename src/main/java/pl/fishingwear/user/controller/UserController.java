@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.fishingwear.common.exception.UserNotFoundException;
+import pl.fishingwear.order.service.OrderService;
 import pl.fishingwear.user.model.Address;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.service.AddressService;
@@ -18,10 +19,12 @@ public class UserController {
 
     private final UserService userService;
     private final AddressService addressService;
+    private final OrderService orderService;
 
-    public UserController(UserService userService, AddressService addressService) {
+    public UserController(UserService userService, AddressService addressService, OrderService orderService) {
         this.userService = userService;
         this.addressService = addressService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/moje-konto")
@@ -30,7 +33,12 @@ public class UserController {
     }
 
     @GetMapping("/historia-zamowien")
-    public String orderHistory() {
+    public String orderHistory(Model model,  Principal principal) {
+        if (principal == null) {
+            return "redirect:/logowanie";
+        }
+        model.addAttribute("orders", orderService.findOrdersForUser(principal));
+
         return "user/orders-list";
     }
 

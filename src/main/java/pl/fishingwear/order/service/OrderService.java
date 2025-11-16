@@ -9,6 +9,8 @@ import pl.fishingwear.cart.dto.CartViewDto;
 import pl.fishingwear.order.dto.CheckoutFormDto;
 import pl.fishingwear.order.dto.OrderConfirmationDto;
 import pl.fishingwear.cart.model.Cart;
+import pl.fishingwear.order.dto.OrderDto;
+import pl.fishingwear.order.mapper.OrderMapper;
 import pl.fishingwear.order.model.Order;
 import pl.fishingwear.order.model.OrderItem;
 import pl.fishingwear.cart.repository.CartRepository;
@@ -17,11 +19,14 @@ import pl.fishingwear.cart.service.CartService;
 import pl.fishingwear.product.model.ProductVariant;
 import pl.fishingwear.product.repository.ProductVariantRepository;
 import pl.fishingwear.user.model.User;
+import pl.fishingwear.user.service.UserService;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +39,8 @@ public class OrderService {
     private static final BigDecimal SHIPPING_COST_COURIER = new BigDecimal("15.99");
     private static final BigDecimal SHIPPING_COST_PARCEL_LOCKER = new BigDecimal("12.99");
     private static final BigDecimal DEFAULT_SHIPPING_COST = new BigDecimal("15.99");
+    private final UserService userService;
+    private final OrderMapper orderMapper;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -149,4 +156,14 @@ public class OrderService {
             }
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<OrderDto> findOrdersForUser(Principal principal) {
+        User user = userService.findByEmail(principal.getName());
+        return orderRepository.findAllByUserOrderByCreatedAt(user)
+                .stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }
