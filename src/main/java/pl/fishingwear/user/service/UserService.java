@@ -12,6 +12,7 @@ import pl.fishingwear.user.dto.UserRegistrationDto;
 import pl.fishingwear.common.exception.EmailAlreadyExistException;
 import pl.fishingwear.common.exception.PasswordNotMatchException;
 import pl.fishingwear.user.mapper.UserCredentialsDtoMapper;
+import pl.fishingwear.user.model.Role;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
@@ -42,7 +43,7 @@ public class UserService {
         user.setEmail(email);
         String passwordHash = passwordEncoder.encode(registration.getPassword());
         user.setPassword(passwordHash);
-        user.setRole("USER");
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 
@@ -77,4 +78,6 @@ public class UserService {
 
         return Optional.empty();
     }
+
+
 }

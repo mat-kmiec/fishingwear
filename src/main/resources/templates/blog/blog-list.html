@@ -1,204 +1,194 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FishingWear - Blog</title>
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
     <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
+            rel="stylesheet"
+            th:href="@{/libs/bootstrap/bootstrap.min.css}"
+            href="../../static/libs/bootstrap/bootstrap.min.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
+            rel="stylesheet"
+            th:href="@{/css/style.css}"
+            href="../../static/css/style.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
+            rel="stylesheet"
+            th:href="@{/css/slider.css}"
+            href="../../static/css/slider.css"
     />
+<style>
+    .category-list .list-group-item.active {
+        background-color: var(--color-primary); /* Tło koloru akcentu */
+        color: white;
+        font-weight: 600;
+        border-color: var(--color-accent);
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
+    }
 
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-    <nav th:insert="~{fragments/nav :: nav}"></nav>
+    .category-list .list-group-item.active .badge {
+        background-color: white;
+        color: var(--color-primary);
+    }
+</style>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container my-5">
-      
-      <div class="text-center mb-5">
+<div class="container my-5">
+
+    <div class="text-center mb-5">
         <h1 class="display-4 fw-bold" style="color: var(--color-accent);">Nasz Blog</h1>
         <p class="fs-5 text-secondary">Porady, nowości i historie ze świata FishingWear.</p>
-      </div>
-      
-      <div class="row g-4 g-lg-5">
-        
+    </div>
+
+    <div class="row g-4 g-lg-5">
+
         <div class="col-lg-8">
-          <div class="row g-4">
-            
-            <div class="col-md-6">
-              <div class="card blog-card">
-                <img src="../../static/images/blog/blog-4.jpg" class="card-img-top blog-card-img" alt="Wędkarz o wschodzie słońca">
-                <div class="card-body d-flex flex-column">
-                  <div>
-                    <span class="blog-badge me-2">Poradniki</span>
-                    <small class="text-secondary">06 listopada 2025</small>
-                  </div>
-                  <h5 class="card-title my-2">
-                    <a href="#">Jak wybrać idealną wędkę na spinning?</a>
-                  </h5>
-                  <p class="card-text text-secondary small">Krótki przewodnik po najlepszych wędkach spinningowych dostępnych na rynku w tym sezonie...</p>
-                  <div class="mt-auto"> <a href="#" class="btn-link-custom">Czytaj dalej <i class="fa-solid fa-arrow-right fa-xs ms-1"></i></a>
-                  </div>
+            <div class="row g-4">
+
+                <div th:each="post : ${postsPage.content}" class="col-md-6">
+                    <div class="card blog-card">
+                        <img th:src="@{/uploads/blog/{imageName}(imageName=${post.img})}"  class="card-img-top blog-card-img" th:alt="${post.title}">
+                        <div class="card-body d-flex flex-column">
+                            <div>
+                                <span class="blog-badge me-2" th:text="${post.category.name}">Poradniki</span>
+                                <small class="text-secondary" th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}">06 listopada 2025</small>
+                            </div>
+                            <h5 class="card-title mt-2">
+                                <a th:href="@{/blog/{id}(id=${post.id})}" th:text="${post.title}">Jak wybrać idealną wędkę na spinning?</a>
+                            </h5>
+<!--                            <p class="card-text text-secondary small" th:text="${post.content}">Krótki przewodnik po najlepszych wędkach spinningowych...</p>-->
+                            <div class="mt-auto">
+                                <a th:href="@{/blog/{id}(id=${post.id})}" class="btn-link-custom">Czytaj dalej <i class="fa-solid fa-arrow-right fa-xs ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="card blog-card">
-                <img src="../../static/images/blog/blog-3.jpg" class="card-img-top blog-card-img" alt="Sprzęt wędkarski">
-                <div class="card-body d-flex flex-column">
-                  <div>
-                    <span class="blog-badge me-2">Sprzęt</span>
-                    <small class="text-secondary">03 listopada 2025</small>
-                  </div>
-                  <h5 class="card-title my-2">
-                    <a href="#">Top 5 przynęt na szczupaka jesienią</a>
-                  </h5>
-                  <p class="card-text text-secondary small">Jesień to czas wielkich drapieżników. Zobacz, które przynęty zagwarantują Ci sukces nad wodą...</p>
-                  <div class="mt-auto">
-                    <a href="#" class="btn-link-custom">Czytaj dalej <i class="fa-solid fa-arrow-right fa-xs ms-1"></i></a>
-                  </div>
+
+                <div th:if="${postsPage.content.isEmpty()}" class="col-12">
+                    <div class="alert alert-info text-center" role="alert">
+                        Brak wyników. Spróbuj zmienić frazę wyszukiwania.
+                    </div>
                 </div>
-              </div>
+
             </div>
-            
-            <div class="col-md-6">
-              <div class="card blog-card">
-                <img src="../../static/images/blog/blog-1.jpg" class="card-img-top blog-card-img" alt="Wędkarz na łodzi">
-                <div class="card-body d-flex flex-column">
-                  <div>
-                    <span class="blog-badge me-2">Nowości</span>
-                    <small class="text-secondary">01 listopada 2025</small>
-                  </div>
-                  <h5 class="card-title my-2">
-                    <a href="#">Nowa kolekcja odzieży termoaktywnej FishingWear</a>
-                  </h5>
-                  <p class="card-text text-secondary small">Przygotuj się na chłody! Przedstawiamy naszą najnowszą linię bielizny termoaktywnej...</p>
-                  <div class="mt-auto">
-                    <a href="#" class="btn-link-custom">Czytaj dalej <i class="fa-solid fa-arrow-right fa-xs ms-1"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="col-md-6">
-              <div class="card blog-card">
-                <img src="../../static/images/blog/blog-2.jpg" class="card-img-top blog-card-img" alt="Wędkarz trzymający rybę">
-                <div class="card-body d-flex flex-column">
-                  <div>
-                    <span class="blog-badge me-2">Historie</span>
-                    <small class="text-secondary">28 października 2025</small>
-                  </div>
-                  <h5 class="card-title my-2">
-                    <a href="#">Nasza filozofia "Złów i Wypuść"</a>
-                  </h5>
-                  <p class="card-text text-secondary small">Dowiedz się, dlaczego promujemy zasady C&R (Catch and Release) i jak wpływa to na nasze łowiska...</p>
-                  <div class="mt-auto">
-                    <a href="#" class="btn-link-custom">Czytaj dalej <i class="fa-solid fa-arrow-right fa-xs ms-1"></i></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-          </div>
-          
-          <nav aria-label="Nawigacja po blogu" class="mt-5 d-flex justify-content-center">
-            <ul class="pagination">
-              <li class="page-item disabled">
-                <a class="page-link" href="#">Poprzednia</a>
-              </li>
-              <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item"><a class="page-link" href="#">3</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Następna</a>
-              </li>
-            </ul>
-          </nav>
-          
+
+            <nav aria-label="Nawigacja po blogu" class="mt-5 d-flex justify-content-center" th:if="${totalPages > 1}">
+                <ul class="pagination">
+
+                    <li th:class="${postsPage.hasPrevious()} ? 'page-item' : 'page-item disabled'">
+                        <a class="page-link"
+                           th:href="@{/blog(page=${currentPage - 1}, size=${postsPage.size}, search=${search})}"
+                           aria-label="Previous">
+                            Poprzednia
+                        </a>
+                    </li>
+
+                    <li th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:class="${i == currentPage ? 'page-item active' : 'page-item'}"
+                        aria-current="${i == currentPage ? 'page' : false}">
+                        <a class="page-link" th:href="@{/blog(page=${i}, size=${postsPage.size}, search=${search})}">
+                            <span th:text="${i + 1}">1</span>
+                        </a>
+                    </li>
+
+                    <li th:class="${postsPage.hasNext()} ? 'page-item' : 'page-item disabled'">
+                        <a class="page-link"
+                           th:href="@{/blog(page=${currentPage + 1}, size=${postsPage.size}, search=${search})}"
+                           aria-label="Next">
+                            Następna
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
         </div>
 
         <div class="col-lg-4">
-          <div class="account-card p-4" style="position: sticky; top: 2rem;">
-            
-            <div class="sidebar-widget">
-              <h5 class="sidebar-widget-title">Wyszukaj na blogu</h5>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Szukaj wpisu..." aria-label="Szukaj wpisu">
-                <button class="btn btn-primary-custom" type="button">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-              </div>
-            </div>
+            <div class="account-card p-4" style=" top: 2rem;">
 
-            <div class="sidebar-widget">
-              <h5 class="sidebar-widget-title">Kategorie</h5>
-              <div class="list-group list-group-flush category-list">
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Poradniki
-                  <span class="badge rounded-pill">12</span>
-                </a>
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Sprzęt
-                  <span class="badge rounded-pill">8</span>
-                </a>
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Nowości
-                  <span class="badge rounded-pill">5</span>
-                </a>
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Historie
-                  <span class="badge rounded-pill">3</span>
-                </a>
-              </div>
-            </div>
-            
-            <div class="sidebar-widget">
-              <h5 class="sidebar-widget-title">Ostatnie wpisy</h5>
-              <div class="list-group list-group-flush recent-posts-list">
-                <div class="mb-3">
-                  <a href="#">Jak wybrać idealną wędkę na spinning?</a>
-                  <small class="text-secondary d-block">06 listopada 2025</small>
+                <div class="sidebar-widget">
+                    <h5 class="sidebar-widget-title">Wyszukaj na blogu</h5>
+                    <form method="GET" th:action="@{/blog}">
+                        <div class="input-group">
+                            <input type="text"
+                                   class="form-control"
+                                   name="search"              th:value="${search}"       placeholder="Szukaj wpisu..."
+                                   aria-label="Szukaj wpisu">
+                            <button class="btn btn-primary-custom" type="submit">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="mb-3">
-                  <a href="#">Top 5 przynęt na szczupaka jesienią</a>
-                  <small class="text-secondary d-block">03 listopada 2025</small>
-                </div>
-                <div>
-                  <a href="#">Nowa kolekcja odzieży termoaktywnej FishingWear</a>
-                  <small class="text-secondary d-block">01 listopada 2025</small>
-                </div>
-              </div>
-            </div>
 
-          </div>
+                <div class="sidebar-widget">
+                    <h5 class="sidebar-widget-title">Kategorie</h5>
+
+                    <div class="list-group list-group-flush category-list">
+
+                        <a th:href="@{/blog(search=${search})}"
+                           th:classappend="${categoryId == null ? 'active' : ''}"
+                           class="list-group-item d-flex justify-content-between align-items-center">
+                            Wszystkie Posty
+                            <span  class="badge rounded-pill" th:text="${sidebarCategoriesCount}">28</span>
+                        </a>
+
+                        <a th:each="category : ${sidebarCategories}"
+                           th:href="@{/blog(categoryId=${category.id}, search=${search})}"
+
+                           th:classappend="${categoryId != null and categoryId == category.id ? 'active' : ''}"
+
+                           class="list-group-item d-flex justify-content-between align-items-center">
+
+                            <span th:text="${category.name}">Poradniki</span>
+
+                            <span class="badge rounded-pill" th:text="${category.postCount}">12</span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="sidebar-widget">
+                    <h5 class="sidebar-widget-title">Ostatnie wpisy</h5>
+                    <div class="list-group list-group-flush recent-posts-list">
+
+                        <div th:each="post : ${recentPosts}"
+                             th:class="${postStat.last} ? '' : 'mb-3'">
+                            <a th:href="@{/blog/{id}(id=${post.id})}"
+                               th:text="${post.title}">
+                                Jak wybrać idealną wędkę na spinning?
+                            </a>
+
+
+                            <small class="text-secondary d-block"
+                                   th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}">
+                                06 listopada 2025
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
-  </body>
+<script
+        th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
+        src="../static/libs/bootstrap/bootstrap.bundle.min.js"
+></script>
+</body>
 </html>

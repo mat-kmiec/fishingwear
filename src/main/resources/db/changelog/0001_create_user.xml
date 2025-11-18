@@ -31,6 +31,12 @@
             <column name="role" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
+            <column name="reputation_points" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rank_name" type="VARCHAR(50)" defaultValue="Nowicjusz">
+                <constraints nullable="false"/>
+            </column>
 
             <column name="enabled" type="BOOLEAN" defaultValueBoolean="true">
                 <constraints nullable="false"/>
@@ -103,94 +109,6 @@
             <column name="role" value="USER"/>
             <column name="enabled" valueBoolean="true"/>
             <column name="created_at" valueDate="2025-11-08T00:00:01"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="julia.nowak@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="MOD"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:02"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="piotr.wozniak@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="USER"/>
-            <column name="enabled" valueBoolean="false"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:03"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="anna.krawczyk@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="ADMIN"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:04"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="tomasz.zielinski@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="USER"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:05"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="katarzyna.mazur@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="MOD"/>
-            <column name="enabled" valueBoolean="false"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:06"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="marcin.lewandowski@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="USER"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:07"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="paulina.stepien@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="USER"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:08"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="bartosz.wojcik@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="MOD"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:09"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="magdalena.dudek@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="USER"/>
-            <column name="enabled" valueBoolean="false"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:10"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="grzegorz.jedrzejczyk@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="ADMIN"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:11"/>
-        </insert>
-
-        <insert tableName="users">
-            <column name="email" value="aleksandra.kasprzak@example.com"/>
-            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
-            <column name="role" value="USER"/>
-            <column name="enabled" valueBoolean="true"/>
-            <column name="created_at" valueDate="2025-11-08T00:00:12"/>
         </insert>
     </changeSet>
 

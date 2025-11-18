@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,7 +26,7 @@
     />
 
     <style>
-      
+
 
     </style>
   </head>
@@ -34,7 +34,7 @@
     <nav th:insert="~{fragments/nav :: nav}"></nav>
 
     <div class="container my-5">
-      
+
       <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="#">Strona główna</a></li>
@@ -42,15 +42,15 @@
           <li class="breadcrumb-item active" aria-current="page">Jak wybrać idealną wędkę...</li>
         </ol>
       </nav>
-      
+
       <div class="row g-4 g-lg-5">
-        
+
         <div class="col-lg-8">
-          
+
           <div class="account-card">
-            
+
             <div class="post-header-img-wrapper">
-              <img src="../../static/images/blog/blog-1.jpg" alt="Wędkarz o wschodzie słońca">
+              <img src="../../../../../uploads/blog/blog-1.jpg" alt="Wędkarz o wschodzie słońca">
             </div>
 
             <div class="p-4 p-md-5">
@@ -65,7 +65,7 @@
               <h1 class="display-5 fw-bold mb-3" style="color: var(--color-accent);">
                 Jak wybrać idealną wędkę na spinning?
               </h1>
-              
+
               <p class="text-secondary fw-bold mb-4">
                 Autor: <a href="#" class="btn-link-custom">Jan Kowalski</a>
               </p>
@@ -91,7 +91,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="account-card p-4 p-md-5 mt-4">
             <h3 class="h4 mb-4">Komentarze (3)</h3>
 
@@ -148,7 +148,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="comment-pending">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="status-badge">
@@ -170,7 +170,7 @@
                 </div>
               </div>
             </div>
-            
+
             <div class="comment d-flex gap-3">
               <div class="comment-avatar">PN</div>
               <div class="comment-body">
@@ -213,7 +213,7 @@
 
         <div class="col-lg-4">
           <div class="account-card p-4" style="position: sticky; top: 2rem;">
-            
+
             <div class="sidebar-widget">
               <h5 class="sidebar-widget-title">Panel Moderatora</h5>
               <div class="alert alert-warning p-2 small">
@@ -256,7 +256,7 @@
                 </a>
               </div>
             </div>
-            
+
             <div class="sidebar-widget">
               <h5 class="sidebar-widget-title">Ostatnie wpisy</h5>
               <div class="list-group list-group-flush recent-posts-list">

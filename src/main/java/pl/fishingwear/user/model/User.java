@@ -1,8 +1,7 @@
 package pl.fishingwear.user.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import pl.fishingwear.auth.model.AuthProvider;
 
 import java.time.LocalDateTime;
@@ -14,6 +13,9 @@ import java.util.List;
 @Table(name = "users")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -23,9 +25,21 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private Role role = Role.USER;
     private String phoneNumber;
     private Boolean enabled = true;
+
+
+    @Column(name = "reputation_points")
+    @Builder.Default
+    private int reputationPoints = 0;
+
+    @Column(name = "rank_name")
+    @Builder.Default
+    private String rankName = "Nowicjusz";
 
     @Enumerated(EnumType.STRING)
     @Column(name = "auth_provider")
@@ -36,5 +50,16 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
+
+
+    public void updateRank() {
+        if (this.reputationPoints >= 100) this.rankName = "Złoty Wędkarz";
+        else if (this.reputationPoints >= 50) this.rankName = "Srebrny Wędkarz";
+        else this.rankName = "Nowicjusz";
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 
 }

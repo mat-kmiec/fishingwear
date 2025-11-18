@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import pl.fishingwear.auth.model.AuthProvider;
+import pl.fishingwear.user.model.Role;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
@@ -84,14 +85,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     User newUser = new User();
                     newUser.setEmail(finalEmail);
                     newUser.setPassword("OAUTH2");
-                    newUser.setRole("USER");
+                    newUser.setRole(Role.USER);
                     newUser.setAuthProvider(finalProvider);
                     return userRepository.save(newUser);
                 });
 
         Optional<User> dbUser = userRepository.findByEmail(finalEmail);
 
-        String role = dbUser.get().getRole(); // ADMIN, USER, etc.
+        Role role = dbUser.get().getRole(); // ADMIN, USER, etc.
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)),

@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import pl.fishingwear.user.model.Role;
 import pl.fishingwear.user.model.User;
+
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "OR LOWER(u.firstName) LIKE %:search% " +
             "OR LOWER(u.lastName) LIKE %:search%")
     Page<User> searchUsers(@Param("search") String search, Pageable pageable);
+    List<User> findByRole(Role role);
+    boolean existsByEmail(String email);
 }

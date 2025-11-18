@@ -7,7 +7,7 @@ public class UserCredentialsDtoMapper {
     public static UserCredentialsDto toDto(User user){
         String email = user.getEmail();
         String password = user.getPassword();
-        String role = user.getRole();
+        String role = String.valueOf(user.getRole());
         return new UserCredentialsDto(email, password, role);
     }
 }

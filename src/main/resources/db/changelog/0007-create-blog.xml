@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="02-create-blog-categories-table" author="fishingwear">
+        <createTable tableName="blog_categories">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="parent_id" type="BIGINT">
+                <constraints foreignKeyName="fk_blog_categories_parent"
+                             referencedTableName="blog_categories"
+                             referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+
+            <column name="moderator_id" type="BIGINT">
+                <constraints foreignKeyName="fk_blog_categories_moderator"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_blog_categories_parent" tableName="blog_categories">
+            <column name="parent_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="03-create-posts-table" author="fishingwear">
+        <createTable tableName="blog_post">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="content" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="img" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="status" type="VARCHAR(20)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="author_id" type="BIGINT">
+                <constraints foreignKeyName="fk_posts_author"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="category_id" type="BIGINT">
+                <constraints foreignKeyName="fk_posts_blog_category"
+                             referencedTableName="blog_categories"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_posts_category" tableName="blog_post">
+            <column name="category_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="04-create-comments-table" author="fishingwear">
+        <createTable tableName="comments">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(20)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="post_id" type="BIGINT">
+                <constraints foreignKeyName="fk_comments_post"
+                             referencedTableName="blog_post"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="author_id" type="BIGINT">
+                <constraints foreignKeyName="fk_comments_author"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_comments_post" tableName="comments">
+            <column name="post_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="05-create-comment-votes-table" author="fishingwear">
+        <createTable tableName="comment_votes">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="comment_id" type="BIGINT">
+                <constraints foreignKeyName="fk_votes_comment"
+                             referencedTableName="comments"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="fk_votes_user"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="is_upvote" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint tableName="comment_votes"
+                             columnNames="comment_id, user_id"
+                             constraintName="uq_vote_user_comment"/>
+    </changeSet>
+
+    <changeSet id="06-create-notifications-table" author="fishingwear">
+        <createTable tableName="notifications">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="fk_notifications_user"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="is_read" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_notifications_user" tableName="notifications">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="07-create-discussions-table" author="fishingwear">
+        <createTable tableName="discussions">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="topic" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(20)" defaultValue="OPEN">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints foreignKeyName="fk_discussions_user"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="moderator_id" type="BIGINT">
+                <constraints foreignKeyName="fk_discussions_moderator"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+
+            <column name="post_id" type="BIGINT">
+                <constraints foreignKeyName="fk_discussions_post"
+                             referencedTableName="blog_post"
+                             referencedColumnNames="id"
+                             nullable="true"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="08-create-discussion-messages-table" author="fishingwear">
+        <createTable tableName="discussion_messages">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="discussion_id" type="BIGINT">
+                <constraints foreignKeyName="fk_messages_discussion"
+                             referencedTableName="discussions"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="sender_id" type="BIGINT">
+                <constraints foreignKeyName="fk_messages_sender"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex indexName="idx_messages_discussion" tableName="discussion_messages">
+            <column name="discussion_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

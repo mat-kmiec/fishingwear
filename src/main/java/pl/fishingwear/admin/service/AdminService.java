@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.fishingwear.admin.dto.EditUserRequest;
 import pl.fishingwear.common.exception.UserNotFoundException;
+import pl.fishingwear.user.model.Role;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
@@ -36,7 +37,7 @@ public class AdminService {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
-        user.setRole(request.getRole());
+        user.setRole(Role.valueOf(request.getRole()));
         userRepository.save(user);
     }
 

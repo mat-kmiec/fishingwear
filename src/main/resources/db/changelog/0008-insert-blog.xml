@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20251119-01-insert-sample-blog-data" author="fishingwear">
+        <insert tableName="users">
+            <column name="email" value="mod@test.pl"/>
+            <column name="first_name" value="Piotr"/>
+            <column name="last_name" value="Moderator"/>
+            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
+            <column name="role" value="MODERATOR"/>
+            <column name="reputation_points" value="150"/>
+            <column name="rank_name" value="Srebrny Wędkarz"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="user@test.pl"/>
+            <column name="first_name" value="Jan"/>
+            <column name="last_name" value="Użytkownik"/>
+            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
+            <column name="role" value="USER"/>
+            <column name="reputation_points" value="60"/>
+            <column name="rank_name" value="Złoty Wędkarz"/>
+        </insert>
+        <insert tableName="users">
+            <column name="email" value="nowak@test.pl"/>
+            <column name="first_name" value="Krzysztof"/>
+            <column name="last_name" value="Nowak"/>
+            <column name="password" value="$2a$10$cidYqOt3dHtG9qLWRZ5af.SXCbKJ59dOjZQgjAIWPabQwgaoWtBfK"/>
+            <column name="role" value="USER"/>
+            <column name="reputation_points" value="5"/>
+            <column name="rank_name" value="Nowicjusz"/>
+        </insert>
+
+        <insert tableName="blog_categories">
+            <column name="id" value="10"/>
+            <column name="name" value="Poradniki"/>
+            <column name="moderator_id" value="2"/>
+        </insert>
+        <insert tableName="blog_categories">
+            <column name="id" value="11"/>
+            <column name="name" value="Sprzęt"/>
+            <column name="moderator_id" value="2"/>
+        </insert>
+        <insert tableName="blog_categories">
+            <column name="id" value="12"/>
+            <column name="name" value="Wędki spinningowe"/>
+            <column name="parent_id" value="11"/>
+            <column name="moderator_id" value="2"/>
+        </insert>
+
+        <insert tableName="blog_post">
+            <column name="id" value="100"/>
+            <column name="title" value="Jdgsgfdsgsning?"/>
+            <column name="content" value="&lt;p&gt;Wybór odpowiedniej wędki spinningowej to klucz do sukcesu! Rynek oferuje setki modeli.&lt;/p&gt;&lt;h2&gt;Długość wędki&lt;/h2&gt;&lt;p&gt;Na łódź krótsze kije (1,80m - 2,20m), z brzegu dłuższe (2,40m - 3,00m).&lt;/p&gt;&lt;blockquote&gt;Pamiętaj! CW musi być dopasowany do przynęt.&lt;/blockquote&gt;"/>
+            <column name="status" value="PUBLISHED"/>
+            <column name="author_id" value="3"/>
+            <column name="category_id" value="12"/>
+            <column name="img" value="blog-1.jpg"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2' DAY"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="blog_post">
+            <column name="id" value="105"/>
+            <column name="title" value="trgdfgsdgsg?"/>
+            <column name="content" value="&lt;p&gt; Rynek oferuje setki modeli.&lt;/p&gt;&lt;h2&gt;Długość wędki&lt;/h2&gt;&lt;p&gt;Na łódź krótsze kije (1,80m - 2,20m), z brzegu dłuższe (2,40m - 3,00m).&lt;/p&gt;&lt;blockquote&gt;Pamiętaj! CW musi być dopasowany do przynęt.&lt;/blockquote&gt;"/>
+            <column name="status" value="PUBLISHED"/>
+            <column name="author_id" value="3"/>
+            <column name="category_id" value="12"/>
+            <column name="img" value="blog-1.jpg"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2' DAY"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="blog_post">
+            <column name="id" value="1020"/>
+            <column name="title" value="Jak wybrać idealną wędkę na spinning?"/>
+            <column name="content" value="&lt;p&gt;Wybór odpowiedniej wędki spuje setki modeli.&lt;/p&gt;&lt;h2&gt;Długość wędki&lt;/h2&gt;&lt;p&gt;Na łódź krótsze kije (1,80m - 2,20m), z brzegu dłuższe (2,40m - 3,00m).&lt;/p&gt;&lt;blockquote&gt;Pamiętaj! CW musi być dopasowany do przynęt.&lt;/blockquote&gt;"/>
+            <column name="status" value="PUBLISHED"/>
+            <column name="author_id" value="3"/>
+            <column name="category_id" value="12"/>
+            <column name="img" value="blog-1.jpg"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2' DAY"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="blog_post">
+            <column name="id" value="101"/>
+            <column name="title" value="Najlepsze przynęty na szczupaka jesienią"/>
+            <column name="content" value="&lt;p&gt;Jesień to czas na duże drapieżniki. Skuteczne są duże gumy i woblery.&lt;/p&gt;"/>
+            <column name="status" value="PUBLISHED"/>
+            <column name="author_id" value="2"/>
+            <column name="category_id" value="10"/>
+            <column name="img" value="blog-1.jpg"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '1' DAY"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+        <insert tableName="blog_post">
+            <column name="id" value="102"/>
+            <column name="title" value="Mój rekordowy Okoń (W oczekiwaniu na akceptację)"/>
+            <column name="content" value="&lt;p&gt;Zgłaszam mój nowy post o rekordowym okoniu. Proszę o akceptację!&lt;/p&gt;"/>
+            <column name="status" value="PENDING"/>
+            <column name="author_id" value="4"/>
+            <column name="category_id" value="10"/>
+            <column name="img" value="blog-1.jpg"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
+            <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
+        </insert>
+
+
+        <insert tableName="comments">
+            <column name="id" value="200"/>
+            <column name="content" value="Świetny poradnik, bardzo pomógł mi w wyborze nowej wędki na szczupaka!"/>
+            <column name="status" value="APPROVED"/>
+            <column name="post_id" value="100"/>
+            <column name="author_id" value="2"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '10' MINUTE"/>
+        </insert>
+        <insert tableName="comments">
+            <column name="id" value="201"/>
+            <column name="content" value="Czy są jakieś wady wędki 2.7m? (Mój komentarz oczekujący)"/>
+            <column name="status" value="PENDING"/>
+            <column name="post_id" value="100"/>
+            <column name="author_id" value="3"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '5' MINUTE"/>
+        </insert>
+        <insert tableName="comments">
+            <column name="id" value="202"/>
+            <column name="content" value="Właśnie takiego podsumowania potrzebowałem! Dziękuję!"/>
+            <column name="status" value="APPROVED"/>
+            <column name="post_id" value="101"/>
+            <column name="author_id" value="4"/>
+            <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '1' MINUTE"/>
+        </insert>
+
+        <insert tableName="comment_votes">
+            <column name="comment_id" value="200"/>
+            <column name="user_id" value="3"/>
+            <column name="is_upvote" valueBoolean="true"/>
+        </insert>
+        <insert tableName="comment_votes">
+            <column name="comment_id" value="200"/>
+            <column name="user_id" value="4"/>
+            <column name="is_upvote" valueBoolean="true"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
