@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.fishingwear.admin.dto.EditUserRequest;
 import pl.fishingwear.admin.service.AdminService;
 import pl.fishingwear.user.model.User;
@@ -49,6 +50,19 @@ public class AdminUserController {
         }catch (Exception e){
             return "redirect:/admin/uzytkownicy?editError";
         }
+    }
+    @PostMapping("/usun")
+    public String deleteUser(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+        if(id == 1) {
+            throw new IllegalArgumentException("Nie można usunąć użytkownika systemowego (ID=1).");
+        }
+        try {
+            adminService.deleteUser(id);
+            redirectAttributes.addAttribute("deleteSuccess", "1");
+        } catch (Exception e) {
+            redirectAttributes.addAttribute("deleteError", "1");
+        }
 
+        return "redirect:/admin/uzytkownicy";
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.fishingwear.admin.dto.EditUserRequest;
+import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
@@ -27,12 +28,22 @@ public class AdminService {
 
     public void updateUser(EditUserRequest request) {
 
+        if(request.getId() == 1){
+            throw new IllegalArgumentException("Nie można usunąć użytkownika systemowego (ID=1).");
+        }
         User user = userRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+                .orElseThrow(UserNotFoundException::new);
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setEmail(request.getEmail());
         user.setRole(request.getRole());
         userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException();
+        }
+        userRepository.deleteById(id);
     }
 }

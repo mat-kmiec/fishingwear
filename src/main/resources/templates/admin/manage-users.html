@@ -48,6 +48,13 @@
                   Wystąpił błąd podczas edycji.
                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
               </div>
+              <div th:if="${param.deleteSuccess}" class="alert alert-success">
+                  Użytkownik usunięty pomyślnie.
+              </div>
+
+              <div th:if="${param.deleteError}" class="alert alert-danger">
+                  Nie udało się usunąć użytkownika.
+              </div>
               <form method="get" th:action="@{/admin/uzytkownicy}" class="input-group mb-4">
                   <input type="text" class="form-control" name="search"
                          th:value="${search}"
@@ -84,12 +91,20 @@
                         <button class="btn-link-custom"
                                 data-bs-toggle="modal"
                                 data-bs-target="#editUserModal"
+                                th:if="${user.id != 1}"
                                 th:attr="data-id=${user.id},
                  data-firstname=${user.firstName},
                  data-lastname=${user.lastName},
                  data-email=${user.email},
                  data-role=${user.role}">
                             Edytuj
+                        </button>
+                        <button class="btn btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteUserModal"
+                                th:attr="data-user-id=${user.id}"
+                                th:if="${user.id != 1}">
+                            <i class="fa-solid fa-trash text-danger"></i>
                         </button>
                     </td>
                   </tr>
@@ -100,7 +115,6 @@
               <nav aria-label="Nawigacja po użytkownikach" class="mt-4 d-flex justify-content-center">
                   <ul class="pagination">
 
-                      <!-- POPRZEDNIA -->
                       <li class="page-item" th:classappend="${users.hasPrevious()} ? '' : 'disabled'">
                           <a class="page-link"
                              th:href="@{/admin/uzytkownicy(page=${currentPage - 1}, size=${users.size}, search=${search})}">
@@ -108,7 +122,6 @@
                           </a>
                       </li>
 
-                      <!-- NUMERY STRON -->
                       <li class="page-item"
                           th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}"
                           th:classappend="${i == currentPage} ? 'active'">
@@ -118,7 +131,6 @@
                           </a>
                       </li>
 
-                      <!-- NASTĘPNA -->
                       <li class="page-item" th:classappend="${users.hasNext()} ? '' : 'disabled'">
                           <a class="page-link"
                              th:href="@{/admin/uzytkownicy(page=${currentPage + 1}, size=${users.size}, search=${search})}">
@@ -186,6 +198,32 @@
         </div>
       </div>
     </div>
+  <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+
+              <form method="post" th:action="@{/admin/uzytkownicy/usun}">
+                  <input type="hidden" name="id" id="deleteUserId">
+
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="deleteUserModalLabel">Usuń użytkownika</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+
+                  <div class="modal-body">
+                      Czy na pewno chcesz usunąć tego użytkownika? Tej operacji nie można cofnąć.
+                  </div>
+
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                      <button type="submit" class="btn btn-danger">Usuń</button>
+                  </div>
+
+              </form>
+
+          </div>
+      </div>
+  </div>
 
   <footer th:insert="~{fragments/footer :: footer}"></footer>
 
@@ -213,6 +251,18 @@
               document.getElementById('modalUserLastName').value = lastName;
               document.getElementById('modalUserEmail').value = email;
               document.getElementById('modalUserRole').value = role;
+          });
+      });
+  </script>
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          const deleteModal = document.getElementById('deleteUserModal');
+
+          deleteModal.addEventListener('show.bs.modal', function (event) {
+              const button = event.relatedTarget;
+              const userId = button.getAttribute('data-user-id');
+
+              document.getElementById('deleteUserId').value = userId;
           });
       });
   </script>
