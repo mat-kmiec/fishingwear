@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.fishingwear.admin.exception.EmailCannotBeSendException;
 import pl.fishingwear.cart.dto.CartItemDto;
 import pl.fishingwear.cart.dto.CartViewDto;
 import pl.fishingwear.common.service.MailService;
@@ -96,7 +97,11 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         productVariantRepository.saveAll(variantsToUpdate);
         clearUserCart(cart);
-        mailService.sendOrderConfirmationEmail(order.getEmail(), order.getId());
+        try{
+            mailService.sendOrderConfirmationEmail(order.getEmail(), order.getId());
+        }catch (Exception e){
+            throw new EmailCannotBeSendException();
+        }
         return savedOrder.getId();
     }
 

@@ -84,9 +84,9 @@ public class UserController {
 
         try {
             userService.updateUserData(principal.getName(), updatedUser);
-            return "redirect:/ustawienia-profilu?userSuccess";
+            return "redirect:/adresy?userSuccess";
         } catch (Exception e) {
-            return "redirect:/ustawienia-profilu?userError";
+            return "redirect:/adresy?userError";
         }
     }
 

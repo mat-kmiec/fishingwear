@@ -44,6 +44,14 @@
                 Wystąpił błąd podczas operacji na adresie. Spróbuj ponownie.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
             </div>
+            <div th:if="${param.userSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                Dane zostały zapisane pomyślnie.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+            </div>
+            <div th:if="${param.userError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                Wystąpił błąd podczas operacji na danych osobowych. Spróbuj ponownie.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+            </div>
             <div th:if="${param.deleted}" class="alert alert-success alert-dismissible fade show" role="alert">
                 Adres został usunięty pomyślnie.
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>

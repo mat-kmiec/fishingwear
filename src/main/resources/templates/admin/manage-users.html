@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -40,13 +40,22 @@
           <h2 class="h3 mb-4">Zarządzanie Użytkownikami</h2>
 
           <div class="account-card p-4 p-md-5">
-            
-            <div class="input-group mb-4">
-              <input type="text" class="form-control" placeholder="Szukaj użytkownika (email, nazwa)..." aria-label="Szukaj użytkownika">
-              <button class="btn btn-primary-custom" type="button" id="button-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-              </button>
-            </div>
+              <div th:if="${param.editSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                  Uzytkownik został edytowany pomyślnie.
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+              </div>
+              <div th:if="${param.editError}" class="alert alert-success alert-dismissible fade show" role="alert">
+                  Wystąpił błąd podczas edycji.
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+              </div>
+              <form method="get" th:action="@{/admin/uzytkownicy}" class="input-group mb-4">
+                  <input type="text" class="form-control" name="search"
+                         th:value="${search}"
+                         placeholder="Szukaj użytkownika (email, nazwa)...">
+                  <button class="btn btn-primary-custom" type="submit">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                  </button>
+              </form>
             
             <div class="table-responsive">
               <table class="table table-hover">
@@ -61,94 +70,68 @@
                 </thead>
                 <tbody>
                   
-                  <tr>
-                    <td class="fw-bold">Jan Kowalski (Ty)</td>
-                    <td>jan.kowalski@admin.pl</td>
+                  <tr th:each="user: ${users.content}">
+                    <td class="fw-bold" th:text="${user.firstName} + ' ' + ${user.lastName}" >test</td>
+                    <td th:text="${user.email}">jan.kowalski@admin.pl</td>
                     <td>
-                      <span class="badge badge-role badge-role-admin">Admin</span>
+                      <span class="badge badge-role badge-role-admin" th:text="${user.role}">tt</span>
                     </td>
                     <td>
-                      <span class="badge badge-status completed">Aktywny</span>
+                      <span class="badge badge-status completed" th:if="${user.enabled}">Aktywny</span>
+                      <span class="badge badge-status bg-secondary" th:if="!${user.enabled}">Nieaktywny</span>
                     </td>
                     <td>
-                      <button class="btn-link-custom" disabled>Edytuj</button>
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td class="fw-bold">Adam Kruk</td>
-                    <td>adam.kruk@mod.pl</td>
-                    <td>
-                      <span class="badge badge-role badge-role-mod">Moderator</span>
-                    </td>
-                    <td>
-                      <span class="badge badge-status completed">Aktywny</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn-link-custom me-2" 
-                         data-bs-toggle="modal" data-bs-target="#editUserModal"
-                         data-name="Adam Kruk" data-email="adam.kruk@mod.pl" data-role="Moderator">Edytuj</a>
-                      <a href="#" class="btn-link-custom text-warning me-2">Zablokuj</a>
-                      <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                        <button class="btn-link-custom"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editUserModal"
+                                th:attr="data-id=${user.id},
+                 data-firstname=${user.firstName},
+                 data-lastname=${user.lastName},
+                 data-email=${user.email},
+                 data-role=${user.role}">
+                            Edytuj
+                        </button>
                     </td>
                   </tr>
-                  
-                  <tr>
-                    <td class="fw-bold">Bartek Ryba</td>
-                    <td>bartek.ryba@user.pl</td>
-                    <td>
-                      <span class="badge badge-role badge-role-user">Użytkownik</span>
-                    </td>
-                    <td>
-                      <span class="badge badge-status completed">Aktywny</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn-link-custom me-2"
-                         data-bs-toggle="modal" data-bs-target="#editUserModal"
-                         data-name="Bartek Ryba" data-email="bartek.ryba@user.pl" data-role="Użytkownik">Edytuj</a>
-                      <a href="#" class="btn-link-custom text-warning me-2">Zablokuj</a>
-                      <a href="#" class="btn-link-custom text-danger">Usuń</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td class="fw-bold">Piotr Nowak</td>
-                    <td>piotr.nowak@user.pl</td>
-                    <td>
-                      <span class="badge badge-role badge-role-user">Użytkownik</span>
-                    </td>
-                    <td>
-                      <span class="badge badge-status cancelled">Zablokowany</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn-link-custom me-2"
-                         data-bs-toggle="modal" data-bs-target="#editUserModal"
-                         data-name="Piotr Nowak" data-email="piotr.nowak@user.pl" data-role="Użytkownik">Edytuj</a>
-                      <a href="#" class="btn-link-custom text-success me-2">Odblokuj</a>
-                      <a href="#" class="btn-link-custom text-danger">Usuń</a>
-                    </td>
-                  </tr>
-                  
                 </tbody>
               </table>
             </div>
 
-            <nav aria-label="Nawigacja po użytkownikach" class="mt-4 d-flex justify-content-center">
-              <ul class="pagination">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#">Poprzednia</a>
-                </li>
-                <li class="page-item active" aria-current="page">
-                  <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">Następna</a>
-                </li>
-              </ul>
-            </nav>
-            
+              <nav aria-label="Nawigacja po użytkownikach" class="mt-4 d-flex justify-content-center">
+                  <ul class="pagination">
+
+                      <!-- POPRZEDNIA -->
+                      <li class="page-item" th:classappend="${users.hasPrevious()} ? '' : 'disabled'">
+                          <a class="page-link"
+                             th:href="@{/admin/uzytkownicy(page=${currentPage - 1}, size=${users.size}, search=${search})}">
+                              Poprzednia
+                          </a>
+                      </li>
+
+                      <!-- NUMERY STRON -->
+                      <li class="page-item"
+                          th:each="i : ${#numbers.sequence(0, users.totalPages - 1)}"
+                          th:classappend="${i == currentPage} ? 'active'">
+                          <a class="page-link"
+                             th:text="${i + 1}"
+                             th:href="@{/admin/uzytkownicy(page=${i}, size=${users.size}, search=${search})}">
+                          </a>
+                      </li>
+
+                      <!-- NASTĘPNA -->
+                      <li class="page-item" th:classappend="${users.hasNext()} ? '' : 'disabled'">
+                          <a class="page-link"
+                             th:href="@{/admin/uzytkownicy(page=${currentPage + 1}, size=${users.size}, search=${search})}">
+
+                              Następna
+                          </a>
+                      </li>
+
+                  </ul>
+              </nav>
+
+
+
           </div>
         </div>
       </div>
@@ -157,39 +140,49 @@
     <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 1rem; border: none;">
-          <form>
-            <div class="modal-header" style="border-bottom: none;">
-              <h5 class="modal-title" id="editUserModalLabel">Edytuj użytkownika</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
-            </div>
-            <div class="modal-body p-4">
-              
-              <div class="mb-3">
-                <label class="form-label">Nazwa użytkownika</label>
-                <input type="text" class="form-control" id="modalUserName" disabled>
-              </div>
-              <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" class="form-control" id="modalUserEmail" disabled>
-              </div>
-              
-              <hr class="my-4">
+            <form method="post" th:action="@{/admin/uzytkownicy/update}">
+                <input type="hidden" name="id" id="modalUserId">
 
-              <div class="mb-3">
-                <label for="modalUserRole" class="form-label fw-bold">Zmień rolę</label>
-                <select class="form-select" id="modalUserRole">
-                  <option value="Użytkownik">Użytkownik</option>
-                  <option value="Moderator">Moderator</option>
-                  <option value="Administrator">Administrator</option>
-                </select>
-              </div>
+                <div class="modal-header" style="border-bottom: none;">
+                    <h5 class="modal-title">Edytuj użytkownika</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
 
-            </div>
-            <div class="modal-footer" style="border-top: none;">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-              <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
-            </div>
-          </form>
+                <div class="modal-body p-4">
+
+                    <div class="mb-3">
+                        <label class="form-label">Imię</label>
+                        <input type="text" class="form-control" name="firstName" id="modalUserFirstName">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nazwisko</label>
+                        <input type="text" class="form-control" name="lastName" id="modalUserLastName">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" id="modalUserEmail">
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Zmień rolę</label>
+                        <select class="form-select" name="role" id="modalUserRole">
+                            <option value="USER">Użytkownik</option>
+                            <option value="MOD">Moderator</option>
+                            <option value="ADMIN">Administrator</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer" style="border-top: none;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
+                </div>
+            </form>
         </div>
       </div>
     </div>
@@ -200,26 +193,30 @@
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
-    
-    <script>
+
+  <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const editUserModal = document.getElementById('editUserModal');
-        
-        editUserModal.addEventListener('show.bs.modal', function (event) {
-          const button = event.relatedTarget;
-          const name = button.getAttribute('data-name');
-          const email = button.getAttribute('data-email');
-          const role = button.getAttribute('data-role');
-          const modalUserName = editUserModal.querySelector('#modalUserName');
-          const modalUserEmail = editUserModal.querySelector('#modalUserEmail');
-          const modalUserRole = editUserModal.querySelector('#modalUserRole');
-          
-          modalUserName.value = name;
-          modalUserEmail.value = email;
-          modalUserRole.value = role;
-        });
+
+          const editUserModal = document.getElementById('editUserModal');
+
+          editUserModal.addEventListener('show.bs.modal', function (event) {
+              const button = event.relatedTarget;
+
+              const id = button.getAttribute('data-id');
+              const firstName = button.getAttribute('data-firstname');
+              const lastName = button.getAttribute('data-lastname');
+              const email = button.getAttribute('data-email');
+              const role = button.getAttribute('data-role');
+
+              document.getElementById('modalUserId').value = id;
+              document.getElementById('modalUserFirstName').value = firstName;
+              document.getElementById('modalUserLastName').value = lastName;
+              document.getElementById('modalUserEmail').value = email;
+              document.getElementById('modalUserRole').value = role;
+          });
       });
-    </script>
-    
+  </script>
+
+
   </body>
 </html>

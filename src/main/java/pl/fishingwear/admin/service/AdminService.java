@@ -1,0 +1,38 @@
+package pl.fishingwear.admin.service;
+
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import pl.fishingwear.admin.dto.EditUserRequest;
+import pl.fishingwear.user.model.User;
+import pl.fishingwear.user.repository.UserRepository;
+
+@Service
+@RequiredArgsConstructor
+public class AdminService {
+
+
+    private final UserRepository userRepository;
+
+    public Page<User> getUsers(int page, int size, String search) {
+        if (search == null || search.isBlank()) {
+            return userRepository.findAll(PageRequest.of(page, size));
+        }
+
+        return userRepository.searchUsers(search.toLowerCase(), PageRequest.of(page, size));
+    }
+
+    public void updateUser(EditUserRequest request) {
+
+        User user = userRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("Nie znaleziono użytkownika"));
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+        userRepository.save(user);
+    }
+}
