@@ -19,10 +19,7 @@ import pl.fishingwear.auth.model.AuthProvider;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -92,8 +89,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     return userRepository.save(newUser);
                 });
 
+        Optional<User> dbUser = userRepository.findByEmail(finalEmail);
+
+        String role = dbUser.get().getRole(); // ADMIN, USER, etc.
+
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)),
                 attributesWithEmail,
                 "email"
         );

@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/zamowienie/**").permitAll()
                         .requestMatchers("/api/v1/cart/**").permitAll()
                         .requestMatchers("/api/v1/orders/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
@@ -55,7 +56,6 @@ public class SecurityConfig {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 );
-//        TODO: Logout
         return http.build();
     }
 }
