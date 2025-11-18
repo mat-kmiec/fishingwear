@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<div class="account-card p-4" th:fragment="adminSidebar(activeTab)">
+    <h3 class="h5 mb-3" style="color: var(--color-accent);">Panel Administratora</h3>
+    <nav class="nav nav-pills flex-column account-nav">
+        <a class="nav-link"
+           th:classappend="${activeTab == 'main'} ? ' active'"
+           th:href="@{/admin}">Przegląd</a>
+
+        <a class="nav-link"
+           th:classappend="${activeTab == 'user-manage'} ? ' active'"
+           th:href="@{/admin/uzytkownicy}">Zarządzanie użytkownikami</a>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'blog-manage'} ? ' active'"
+           th:href="@{/admin/blog}">Zarządzanie Blogiem</a>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'order-manage'} ? ' active'"
+           th:href="@{/admin/zamowienia}">Zarządzanie Zamówieniami</a>
+
+
+        <hr class="my-2">
+
+        <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">
+            Sklep
+        </h6>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'products'} ? ' active'"
+           th:href="@{/admin/produkty}">Wszystkie produkty</a>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'new-product'} ? ' active'"
+           th:href="@{/admin/produkty/nowy}">Nowy produkty</a>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'category-product'} ? ' active'"
+           th:href="@{/admin/kategorie/nowa}">Kategorie produktów</a>
+
+        <hr class="my-2">
+        <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">
+            Slider
+        </h6>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'add-img'} ? ' active'"
+           th:href="@{/admin/zdjecia}">Dodaj zdjęcie</a>
+        <a class="nav-link"
+           th:classappend="${activeTab == 'slider'} ? ' active'"
+           th:href="@{/admin/slider}">Kolekcja slidera</a>
+
+        <hr class="my-2">
+        <a class="nav-link"
+           th:classappend="${activeTab == 'settings'} ? ' active'"
+           th:href="@{/admin/ustawienia}">Ustawienia</a>
+        <a class="nav-link" href="#">Wyloguj się</a>
+    </nav>
+</div>
+</html>

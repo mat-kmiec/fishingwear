@@ -35,27 +35,10 @@
 
     <div class="container my-5">
       <div class="row g-4">
-        
-        <div class="col-lg-4">
-          <div class="account-card p-4">
-            <h3 class="h5 mb-3" style="color: var(--color-accent);">Panel Administratora</h3>
-            <nav class="nav nav-pills flex-column account-nav">
-              <a class="nav-link" href="#">Przegląd</a>
-              <a class="nav-link" href="#">Zarządzanie Użytkownikami</a>
-              <a class="nav-link" href="#">Zarządzanie Blogiem</a>
-              <a class="nav-link active" aria-current="page" href="#">Zarządzanie Zamówieniami</a>
-              
-              <hr class="my-2">
-              <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">Slider</h6>
-              <a class="nav-link" href="#">Dodaj zdjęcia do bazy</a>
-              <a class="nav-link" href="#">Kolekcje Slidera</a>
-              
-              <hr class="my-2">
-              <a class="nav-link" href="#">Ustawienia Główne</a>
-              <a class="nav-link" href="#">Wyloguj się</a>
-            </nav>
+
+          <div class="col-lg-4">
+              <div th:replace="fragments/admin-sidebar :: adminSidebar('order-manage')"></div>
           </div>
-        </div>
 
         <div class="col-lg-8">
           
