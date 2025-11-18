@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.fishingwear.cart.dto.CartItemDto;
 import pl.fishingwear.cart.dto.CartViewDto;
+import pl.fishingwear.common.service.MailService;
 import pl.fishingwear.order.dto.CheckoutFormDto;
 import pl.fishingwear.order.dto.OrderConfirmationDto;
 import pl.fishingwear.cart.model.Cart;
@@ -41,6 +42,7 @@ public class OrderService {
     private static final BigDecimal DEFAULT_SHIPPING_COST = new BigDecimal("15.99");
     private final UserService userService;
     private final OrderMapper orderMapper;
+    private final MailService mailService;
 
 
     @Transactional(rollbackFor = Exception.class)
@@ -94,7 +96,7 @@ public class OrderService {
         Order savedOrder = orderRepository.save(order);
         productVariantRepository.saveAll(variantsToUpdate);
         clearUserCart(cart);
-
+        mailService.sendOrderConfirmationEmail(order.getEmail(), order.getId());
         return savedOrder.getId();
     }
 
