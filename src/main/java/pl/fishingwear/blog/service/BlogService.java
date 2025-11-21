@@ -67,7 +67,6 @@ public class BlogService {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        // Sprawdzenie czy użytkownik jest anonimowy
         boolean isAnonymous = (auth == null || !auth.isAuthenticated() ||
                 auth instanceof AnonymousAuthenticationToken);
 
@@ -104,8 +103,8 @@ public class BlogService {
             throw new IllegalStateException("Nieobsługiwany typ użytkownika: " + principal.getClass());
         }
 
-        // Znajdź użytkownika w bazie po emailu
         return userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
     }
+
 }

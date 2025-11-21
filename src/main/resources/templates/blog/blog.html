@@ -331,12 +331,12 @@
         <div class="col-lg-4">
           <div class="account-card p-4" style="position: sticky; top: 2rem;">
 
-            <div class="sidebar-widget">
+            <div class="sidebar-widget" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
               <h5 class="sidebar-widget-title">Panel Moderatora</h5>
-              <div class="alert alert-warning p-2 small">
-                <i class="fa-solid fa-bell me-2"></i>
-                Masz 1 komentarz do akceptacji.
-              </div>
+                <div class="alert alert-warning p-2 small">
+                    <i class="fa-solid fa-bell me-2"></i>
+                    <span th:text="'Masz ' + ${pendingCommentCount} + ' komentarz do akceptacji.'"></span>
+                </div>
               <a href="#" class="btn btn-outline-secondary w-100">
                 Przejdź do kolejki moderacji
               </a>

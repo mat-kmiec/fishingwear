@@ -22,6 +22,7 @@ import pl.fishingwear.blog.service.BlogService;
 import pl.fishingwear.blog.service.CommentService;
 import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.user.model.User;
+import pl.fishingwear.user.service.UserService;
 
 import java.nio.file.attribute.UserPrincipal;
 import java.security.Principal;
@@ -37,21 +38,21 @@ public class BlogController {
     private final BlogCategoryService blogCategoryService;
     private final PostRepository postRepository;
     private final CommentService commentService;
+    private final UserService userService;
 
     @GetMapping("/{id}")
-    public String getPost(@PathVariable Long id, Model model, Authentication auth) {
+    public String getPost(@PathVariable Long id, Model model) {
         PostDetailsDto postDetailsDto = blogService.getPostById(id);
         model.addAttribute("post", postDetailsDto);
-        Long currentUserId = null;
-        if (auth != null && auth.isAuthenticated()) {
-            try {
-                String email = auth.getName();
-                if (auth.getPrincipal() instanceof User user) {
-                    currentUserId = user.getId();
-                }
-            } catch (Exception ignored) {}
+        Long currentUserId = userService.getCurrentUser().map(User::getId).orElse(null);
+        int pendingCommentCount = 0;
+        if (currentUserId != null) {
+            pendingCommentCount = commentService.getAllPendingComments(currentUserId);
         }
+        model.addAttribute("pendingCommentCount", pendingCommentCount);
         model.addAttribute("currentUserId", currentUserId);
+
+
         return "blog/blog";
     }
 

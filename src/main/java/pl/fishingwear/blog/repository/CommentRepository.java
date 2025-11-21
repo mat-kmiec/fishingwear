@@ -19,4 +19,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
       AND (c.status = 'APPROVED' OR c.author.id = :userId)
     """)
     List<Comment> findVisibleForUser(Long postId, Long userId);
+
+    long countCommentByStatusContains(CommentStatus status);
+
+    long countByStatus(CommentStatus commentStatus);
 }

@@ -75,4 +75,18 @@ public class CommentService {
         }
     }
 
+    public int getAllPendingComments(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        boolean isStaff = user.getRole().equals(Role.ADMIN) ||
+                user.getRole().equals(Role.MODERATOR);
+
+        if (isStaff) {
+            long count = commentRepository.countByStatus(CommentStatus.PENDING);
+            return Math.toIntExact(count);
+        }
+        return 0;
+    }
+
 }

@@ -28,4 +28,5 @@ public class CommentController {
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/");
     }
+
 }
