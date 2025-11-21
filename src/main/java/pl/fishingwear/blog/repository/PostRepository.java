@@ -9,6 +9,7 @@ import pl.fishingwear.blog.model.Post;
 import pl.fishingwear.blog.model.enums.PostStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -48,4 +49,6 @@ Page<Post> searchPosts(
 
     long countByStatus(PostStatus status);
     List<Post> findTop3ByStatusOrderByCreatedAtDesc(PostStatus status);
+    Optional<Post> findByIdAndStatus(Long id, PostStatus status);
+    Optional<Post> findById(Long id);
 }

@@ -2,7 +2,10 @@ package pl.fishingwear.blog.mapper;
 
 import org.springframework.stereotype.Component;
 import pl.fishingwear.blog.dto.PostDto;
+import pl.fishingwear.blog.model.Comment;
 import pl.fishingwear.blog.model.Post;
+
+import java.util.List;
 
 @Component
 public class PostMapper {

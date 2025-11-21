@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org">>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,10 +25,21 @@
       href="../../static/css/slider.css"
     />
 
-    <style>
+      <style>
+          .category-list .list-group-item.active {
+              background-color: var(--color-primary); /* Tło koloru akcentu */
+              color: white;
+              font-weight: 600;
+              border-color: var(--color-accent);
+              border-radius: 0.5rem;
+              padding: 0.5rem 0.75rem;
+          }
 
-
-    </style>
+          .category-list .list-group-item.active .badge {
+              background-color: white;
+              color: var(--color-primary);
+          }
+      </style>
   </head>
   <body style="background-color: var(--color-neutral-light)">
     <nav th:insert="~{fragments/nav :: nav}"></nav>
@@ -37,9 +48,9 @@
 
       <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="#">Strona główna</a></li>
-          <li class="breadcrumb-item"><a href="#">Blog</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Jak wybrać idealną wędkę...</li>
+          <li class="breadcrumb-item"><a th:href="@{/}">Strona główna</a></li>
+          <li class="breadcrumb-item"><a th:href="@{/blog}">Blog</a></li>
+          <li class="breadcrumb-item active" aria-current="page" th:text="${post.title}"></li>
         </ol>
       </nav>
 
@@ -50,163 +61,259 @@
           <div class="account-card">
 
             <div class="post-header-img-wrapper">
-              <img src="../../../../../uploads/blog/blog-1.jpg" alt="Wędkarz o wschodzie słońca">
+              <img th:src="@{/uploads/blog/{imageName}(imageName=${post.img})}">
             </div>
 
             <div class="p-4 p-md-5">
               <div class="mb-3">
-                <a href="#" class="blog-badge me-2">Poradniki</a>
-                <small class="text-secondary">
-                  <i class="fa-solid fa-calendar-days fa-sm me-1"></i>
-                  06 listopada 2025
-                </small>
+                <a href="#" class="blog-badge me-2" th:text="${post.category().name}">Poradniki</a>
+                  <small class="text-secondary">
+                      <i class="fa-solid fa-calendar-days fa-sm me-1"></i>
+                      <span th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}">
+                        06 listopada 2025
+                    </span>
+                  </small>
               </div>
 
-              <h1 class="display-5 fw-bold mb-3" style="color: var(--color-accent);">
+              <h1 class="display-5 fw-bold mb-3" style="color: var(--color-accent);" th:text="${post.title}">
                 Jak wybrać idealną wędkę na spinning?
               </h1>
 
               <p class="text-secondary fw-bold mb-4">
-                Autor: <a href="#" class="btn-link-custom">Jan Kowalski</a>
+                Autor: <a href="#" class="btn-link-custom" th:text="${post.authorName()}">Jan Kowalski</a>
               </p>
 
-              <div class="post-body">
-                <p>
-                  Wybór odpowiedniej wędki spinningowej to klucz do sukcesu, ale dla początkującego wędkarza może być to nie lada wyzwanie. Rynek oferuje setki modeli różniących się długością, ciężarem wyrzutu (CW) i akcją.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque, sapien vel consequat accumsan, arcu nibh sagittis metus, in finibus lacus felis eu diam.
-                </p>
-                <h2>1. Długość wędki</h2>
-                <p>
-                  Długość wędziska to podstawowy parametr. Musisz zadać sobie pytanie, gdzie najczęściej będziesz łowić:
-                </p>
-                <ul>
-                  <li><strong>Z brzegu:</strong> Zalecane są dłuższe wędki (2,40m - 3,00m).</li>
-                  <li><strong>Z łodzi:</strong> Wystarczą krótsze kije (1,80m - 2,20m).</li>
-                </ul>
-                <blockquote>
-                  Pamiętaj! Łowienie przynętami lżejszymi lub cięższymi niż sugerowane CW może uszkodzić wędkę.
-                </blockquote>
+              <div class="post-body" th:utext="${post.content}">
               </div>
             </div>
           </div>
 
+            <div sec:authorize="!isAuthenticated()">
+                <p>Cześć, nieznajomy! <a th:href="@{/login}">Zaloguj się</a></p>
+            </div>
+
+            <div sec:authorize="isAuthenticated()">
+                <p>Witaj, zalogowany użytkowniku!</p>
+
+                <p>Twój login: <span sec:authentication="name"></span></p>
+            </div>
+
+            <div sec:authorize="hasRole('ADMIN')">
+                <button class="btn btn-danger">Panel Administratora (TYLKO ADMIN)</button>
+            </div>
+
+            <div sec:authorize="hasAuthority('MODERATOR')">
+                <p>Panel Moderatora</p>
+            </div>
+
+
           <div class="account-card p-4 p-md-5 mt-4">
-            <h3 class="h4 mb-4">Komentarze (3)</h3>
+            <h3 class="h4 mb-4" th:text="|Komentarze (${post.comments.size()})|">Komentarze (3)</h3>
+
 
             <div class="d-flex gap-3 mb-4">
               <div class="comment-avatar">
                 <i class="fa-solid fa-user"></i>
               </div>
-              <div class="comment-body">
+              <div class="comment-body" sec:authorize="isAuthenticated()">
                 <textarea class="form-control" rows="3" placeholder="Napisz swój komentarz..."></textarea>
                 <div class="text-end mt-2">
                   <button class="btn btn-primary-custom">Wyślij komentarz</button>
                 </div>
               </div>
-            </div>
-            <div class="comment-pending">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="status-badge">
-                  <i class="fa-solid fa-hourglass-half me-2"></i>Oczekuje na akceptację
-                </span>
-                <div>
-                  <a href="#" class="btn-link-custom me-3">Edytuj</a>
-                  <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                <div sec:authorize="!isAuthenticated()" class="alert alert-light mb-4">
+                    <a th:href="@{/login}" class="btn-link-custom">Zaloguj się</a>, aby dodać komentarz.
                 </div>
-              </div>
-              <div class="comment d-flex gap-3">
-                <div class="comment-avatar">JA</div>
-                <div class="comment-body">
-                  <div class="comment-meta">
-                    <span class="comment-author">Jan Kowalski</span>
-                    <span class="badge badge-role badge-role-user">Złoty Wędkarz</span>
+            </div>
+              <div th:each="comment : ${post.comments}">
+
+                  <div th:if="${comment.status.name() == 'PENDING'}" class="comment-pending mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+
+            <span class="status-badge">
+                <i class="fa-solid fa-hourglass-half me-2"></i>
+                <span sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">Do akceptacji</span>
+                <span sec:authorize="!hasAnyRole('ADMIN', 'MODERATOR')">Oczekuje na akceptację</span>
+            </span>
+
+                          <div>
+                              <div sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')" class="d-inline-block">
+                                  <form th:action="@{/comments/{id}/status(id=${comment.id})}" method="post" class="d-inline">
+                                      <input type="hidden" name="status" value="APPROVED"/>
+                                      <button class="btn btn-sm btn-success">Akceptuj</button>
+                                  </form>
+                                  <form th:action="@{/comments/{id}/status(id=${comment.id})}" method="post" class="d-inline">
+                                      <input type="hidden" name="status" value="REJECTED"/>
+                                      <button class="btn btn-sm btn-danger ms-2">Odrzuć</button>
+                                  </form>
+                              </div>
+
+                              <div th:if="${currentUserId != null and comment.author != null and currentUserId == comment.author.id}"
+                                   sec:authorize="!hasAnyRole('ADMIN', 'MODERATOR')" class="d-inline-block">
+                                  <a href="#" class="btn-link-custom me-3">Edytuj</a>
+                                  <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="comment d-flex gap-3">
+                          <div class="comment-avatar"
+                               th:text="${comment.author != null and comment.author.fullName != null ? #strings.substring(comment.author.fullName, 0, 1).toUpperCase() : '?'}">
+                              U
+                          </div>
+                          <div class="comment-body">
+                              <div class="comment-meta">
+                                  <span class="comment-author" th:text="${comment.author != null ? comment.author.fullName : 'Nieznany'}">Autor</span>
+                                  <span class="badge badge-role badge-role-user">Twój komentarz</span>
+                                  <span class="comment-date ms-2" th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Data</span>
+                                  <a href="#" class="btn-link-custom text-secondary ms-2" sec:authorize="isAuthenticated()">
+                                      Edytuj
+                                  </a>
+                              </div>
+                              <p class="mb-0" th:text="${comment.content}">Treść komentarza...</p>
+                          </div>
+                      </div>
                   </div>
-                  <p class="mb-0">Super artykuł! A co z akcją wędki? Czy "fast" to zawsze najlepszy wybór?</p>
-                </div>
-              </div>
-            </div>
 
-            <div class="comment d-flex gap-3">
-              <div class="comment-avatar">AK</div>
-              <div class="comment-body">
-                <div class="comment-meta">
-                  <span class="comment-author">Adam Kruk</span>
-                  <span class="badge badge-role badge-role-mod">Moderator</span>
-                  <span class="comment-date ms-2">· 1 godzinę temu</span>
-                </div>
-                <p>Dzięki za pytanie! Już uzupełniam artykuł o sekcję "Akcja wędki". Generalnie "fast" jest świetna do gum, ale do woblerów wielu woli "moderate".</p>
-                <div class="comment-actions d-flex gap-3 align-items-center">
-                  <a href="#" class="btn-rating active">
-                    <i class="fa-solid fa-thumbs-up"></i> 5
-                  </a>
-                  <a href="#" class="btn-rating">
-                    <i class="fa-solid fa-thumbs-down"></i> 0
-                  </a>
-                  <a href="#" class="btn-link-custom">Odpowiedz</a>
-                </div>
-              </div>
-            </div>
 
-            <div class="comment-pending">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="status-badge">
-                  <i class="fa-solid fa-hourglass-half me-2"></i>Do akceptacji
+                  <div th:if="${comment.status.name() == 'APPROVED'}" class="comment d-flex gap-3 mb-3">
+                      <div class="comment-avatar"
+                           th:text="${comment.author != null and comment.author.fullName != null ? #strings.substring(comment.author.fullName, 0, 2).toUpperCase() : 'US'}">
+                          AV
+                      </div>
+
+                      <div class="comment-body w-100">
+                          <div class="comment-meta">
+                              <span class="comment-author" th:text="${comment.author.getFirstName() != null ? comment.author.fullName : 'Anonim'}">Jan Kowalski</span>
+
+                              <span class="badge badge-role badge-role-user" th:text="${comment.author.rankName}">Wędkarz</span>
+
+                              <span class="comment-date ms-2"
+                                    th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">
+                    · 1 godzinę temu
                 </span>
-                <div>
-                  <button class="btn btn-sm btn-success">Akceptuj</button>
-                  <button class="btn btn-sm btn-danger ms-2">Odrzuć</button>
-                </div>
-              </div>
-              <div class="comment d-flex gap-3">
-                <div class="comment-avatar">BK</div>
-                <div class="comment-body">
-                  <div class="comment-meta">
-                    <span class="comment-author">Bartek Ryba</span>
-                    <span class="badge badge-role badge-role-user">Nowicjusz</span>
+                          </div>
+
+                          <p th:text="${comment.content}">Treść komentarza</p>
+
+                          <div class="comment-actions d-flex gap-3 align-items-center">
+                              <a href="#" class="btn-rating">
+                                  <i class="fa-solid fa-thumbs-up"></i> <span th:text="${comment.getScore()}">0</span>
+                              </a>
+
+                              <a href="#" class="btn-link-custom">Odpowiedz</a>
+
+                              <a href="#" class="btn-link-custom text-danger ms-auto"
+                                 sec:authorize="isAuthenticated()"
+                                 th:if="${currentUserId != comment.author.id}">
+                                  Zgłoś
+                              </a>
+                          </div>
+                      </div>
                   </div>
-                  <p class="mb-0">Dzięki! Właśnie tego szukałem.</p>
-                </div>
-              </div>
-            </div>
 
-            <div class="comment d-flex gap-3">
-              <div class="comment-avatar">PN</div>
-              <div class="comment-body">
-                <div class="comment-meta">
-                  <span class="comment-author">Piotr Nowak</span>
-                  <span class="badge badge-role badge-role-user">Srebrny Wędkarz</span>
-                  <span class="comment-date ms-2">· 4 godziny temu</span>
-                </div>
-                <p>Na łódkę polecam 1.98m, nic dłuższego nie potrzeba.</p>
-                <div class="comment-actions d-flex gap-3 align-items-center">
-                  <a href="#" class="btn-rating">
-                    <i class="fa-solid fa-thumbs-up"></i> 2
-                  </a>
-                  <a href="#" class="btn-rating">
-                    <i class="fa-solid fa-thumbs-down"></i> 1
-                  </a>
-                  <a href="#" class="btn-link-custom">Odpowiedz</a>
-                  <a href="#" class="btn-link-custom text-danger ms-auto">Zgłoś</a>
-                </div>
               </div>
-            </div>
+<!--            <div class="comment-pending">-->
+<!--              <div class="d-flex justify-content-between align-items-center mb-2">-->
+<!--                <span class="status-badge">-->
+<!--                  <i class="fa-solid fa-hourglass-half me-2"></i>Oczekuje na akceptację-->
+<!--                </span>-->
+<!--                <div>-->
+<!--                  <a href="#" class="btn-link-custom me-3">Edytuj</a>-->
+<!--                  <a href="#" class="btn-link-custom text-danger">Usuń</a>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="comment d-flex gap-3">-->
+<!--                <div class="comment-avatar">JA</div>-->
+<!--                <div class="comment-body">-->
+<!--                  <div class="comment-meta">-->
+<!--                    <span class="comment-author">Jan Kowalski</span>-->
+<!--                    <span class="badge badge-role badge-role-user">Złoty Wędkarz</span>-->
+<!--                  </div>-->
+<!--                  <p class="mb-0">Super artykuł! A co z akcją wędki? Czy "fast" to zawsze najlepszy wybór?</p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
 
-            <nav aria-label="Nawigacja po komentarzach" class="mt-4 pt-4 border-top">
-              <ul class="pagination pagination-sm justify-content-center">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#">«</a>
-                </li>
-                <li class="page-item active" aria-current="page">
-                  <a class="page-link" href="#">1</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">»</a>
-                </li>
-              </ul>
-            </nav>
+<!--            <div class="comment d-flex gap-3">-->
+<!--              <div class="comment-avatar">AK</div>-->
+<!--              <div class="comment-body">-->
+<!--                <div class="comment-meta">-->
+<!--                  <span class="comment-author">Adam Kruk</span>-->
+<!--                  <span class="badge badge-role badge-role-mod">Moderator</span>-->
+<!--                  <span class="comment-date ms-2">· 1 godzinę temu</span>-->
+<!--                </div>-->
+<!--                <p>Dzięki za pytanie! Już uzupełniam artykuł o sekcję "Akcja wędki". Generalnie "fast" jest świetna do gum, ale do woblerów wielu woli "moderate".</p>-->
+<!--                <div class="comment-actions d-flex gap-3 align-items-center">-->
+<!--                  <a href="#" class="btn-rating active">-->
+<!--                    <i class="fa-solid fa-thumbs-up"></i> 5-->
+<!--                  </a>-->
+<!--                  <a href="#" class="btn-rating">-->
+<!--                    <i class="fa-solid fa-thumbs-down"></i> 0-->
+<!--                  </a>-->
+<!--                  <a href="#" class="btn-link-custom">Odpowiedz</a>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <div class="comment-pending">-->
+<!--              <div class="d-flex justify-content-between align-items-center mb-2">-->
+<!--                <span class="status-badge">-->
+<!--                  <i class="fa-solid fa-hourglass-half me-2"></i>Do akceptacji-->
+<!--                </span>-->
+<!--                <div>-->
+<!--                  <button class="btn btn-sm btn-success">Akceptuj</button>-->
+<!--                  <button class="btn btn-sm btn-danger ms-2">Odrzuć</button>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--              <div class="comment d-flex gap-3">-->
+<!--                <div class="comment-avatar">BK</div>-->
+<!--                <div class="comment-body">-->
+<!--                  <div class="comment-meta">-->
+<!--                    <span class="comment-author">Bartek Ryba</span>-->
+<!--                    <span class="badge badge-role badge-role-user">Nowicjusz</span>-->
+<!--                  </div>-->
+<!--                  <p class="mb-0">Dzięki! Właśnie tego szukałem.</p>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <div class="comment d-flex gap-3">-->
+<!--              <div class="comment-avatar">PN</div>-->
+<!--              <div class="comment-body">-->
+<!--                <div class="comment-meta">-->
+<!--                  <span class="comment-author">Piotr Nowak</span>-->
+<!--                  <span class="badge badge-role badge-role-user">Srebrny Wędkarz</span>-->
+<!--                  <span class="comment-date ms-2">· 4 godziny temu</span>-->
+<!--                </div>-->
+<!--                <p>Na łódkę polecam 1.98m, nic dłuższego nie potrzeba.</p>-->
+<!--                <div class="comment-actions d-flex gap-3 align-items-center">-->
+<!--                  <a href="#" class="btn-rating">-->
+<!--                    <i class="fa-solid fa-thumbs-up"></i> 2-->
+<!--                  </a>-->
+<!--                  <a href="#" class="btn-rating">-->
+<!--                    <i class="fa-solid fa-thumbs-down"></i> 1-->
+<!--                  </a>-->
+<!--                  <a href="#" class="btn-link-custom">Odpowiedz</a>-->
+<!--                  <a href="#" class="btn-link-custom text-danger ms-auto">Zgłoś</a>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <nav aria-label="Nawigacja po komentarzach" class="mt-4 pt-4 border-top">-->
+<!--              <ul class="pagination pagination-sm justify-content-center">-->
+<!--                <li class="page-item disabled">-->
+<!--                  <a class="page-link" href="#">«</a>-->
+<!--                </li>-->
+<!--                <li class="page-item active" aria-current="page">-->
+<!--                  <a class="page-link" href="#">1</a>-->
+<!--                </li>-->
+<!--                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                <li class="page-item">-->
+<!--                  <a class="page-link" href="#">»</a>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </nav>-->
 
           </div>
         </div>
@@ -225,55 +332,68 @@
               </a>
             </div>
 
-            <div class="sidebar-widget">
-              <h5 class="sidebar-widget-title">Wyszukaj na blogu</h5>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Szukaj wpisu..." aria-label="Szukaj wpisu">
-                <button class="btn btn-primary-custom" type="button">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
+              <div class="sidebar-widget">
+                  <h5 class="sidebar-widget-title">Wyszukaj na blogu</h5>
+                  <form method="GET" th:action="@{/blog}">
+                      <div class="input-group">
+                          <input type="text"
+                                 class="form-control"
+                                 name="search"              th:value="${search}"       placeholder="Szukaj wpisu..."
+                                 aria-label="Szukaj wpisu">
+                          <button class="btn btn-primary-custom" type="submit">
+                              <i class="fa-solid fa-magnifying-glass"></i>
+                          </button>
+                      </div>
+                  </form>
               </div>
-            </div>
 
-            <div class="sidebar-widget">
-              <h5 class="sidebar-widget-title">Kategorie</h5>
-              <div class="list-group list-group-flush category-list">
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Poradniki
-                  <span class="badge rounded-pill">12</span>
-                </a>
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Sprzęt
-                  <span class="badge rounded-pill">8</span>
-                </a>
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Nowości
-                  <span class="badge rounded-pill">5</span>
-                </a>
-                <a href="#" class="list-group-item d-flex justify-content-between align-items-center">
-                  Historie
-                  <span class="badge rounded-pill">3</span>
-                </a>
-              </div>
-            </div>
+              <div class="sidebar-widget">
+                  <h5 class="sidebar-widget-title">Kategorie</h5>
 
-            <div class="sidebar-widget">
-              <h5 class="sidebar-widget-title">Ostatnie wpisy</h5>
-              <div class="list-group list-group-flush recent-posts-list">
-                <div class="mb-3">
-                  <a href="#">Jak wybrać idealną wędkę na spinning?</a>
-                  <small class="text-secondary d-block">06 listopada 2025</small>
-                </div>
-                <div class="mb-3">
-                  <a href="#">Top 5 przynęt na szczupaka jesienią</a>
-                  <small class="text-secondary d-block">03 listopada 2025</small>
-                </div>
-                <div>
-                  <a href="#">Nowa kolekcja odzieży termoaktywnej FishingWear</a>
-                  <small class="text-secondary d-block">01 listopada 2025</small>
-                </div>
+                  <div class="list-group list-group-flush category-list">
+
+                      <a th:href="@{/blog(search=${search})}"
+                         th:classappend="${categoryId == null ? 'active' : ''}"
+                         class="list-group-item d-flex justify-content-between align-items-center">
+                          Wszystkie Posty
+                          <span  class="badge rounded-pill" th:text="${sidebarCategoriesCount}">28</span>
+                      </a>
+
+                      <a th:each="category : ${sidebarCategories}"
+                         th:href="@{/blog(categoryId=${category.id}, search=${search})}"
+
+                         th:classappend="${categoryId != null and categoryId == category.id ? 'active' : ''}"
+
+                         class="list-group-item d-flex justify-content-between align-items-center">
+
+                          <span th:text="${category.name}">Poradniki</span>
+
+                          <span class="badge rounded-pill" th:text="${category.postCount}">12</span>
+                      </a>
+
+                  </div>
               </div>
-            </div>
+
+              <div class="sidebar-widget">
+                  <h5 class="sidebar-widget-title">Ostatnie wpisy</h5>
+                  <div class="list-group list-group-flush recent-posts-list">
+
+                      <div th:each="post : ${recentPosts}"
+                           th:class="${postStat.last} ? '' : 'mb-3'">
+                          <a th:href="@{/blog/{id}(id=${post.id})}"
+                             th:text="${post.title}">
+                              Jak wybrać idealną wędkę na spinning?
+                          </a>
+
+
+                          <small class="text-secondary d-block"
+                                 th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}">
+                              06 listopada 2025
+                          </small>
+                      </div>
+
+                  </div>
+              </div>
 
           </div>
         </div>
