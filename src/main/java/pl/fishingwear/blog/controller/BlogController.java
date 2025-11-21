@@ -1,5 +1,6 @@
 package pl.fishingwear.blog.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -86,6 +87,7 @@ public class BlogController {
 
         return "blog/blog-list";
     }
+
 
 
     @ModelAttribute("sidebarCategories")

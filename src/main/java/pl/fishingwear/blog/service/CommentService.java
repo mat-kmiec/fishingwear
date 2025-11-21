@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.fishingwear.blog.exception.PostNotFoundException;
 import pl.fishingwear.blog.model.Comment;
 import pl.fishingwear.blog.model.Post;
+import pl.fishingwear.blog.model.enums.CommentStatus;
 import pl.fishingwear.blog.repository.CommentRepository;
 import pl.fishingwear.blog.repository.PostRepository;
 import pl.fishingwear.common.exception.UserNotFoundException;
+import pl.fishingwear.user.model.Role;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 import pl.fishingwear.user.service.UserService;
@@ -38,7 +40,39 @@ public class CommentService {
                 .author(user)
                 .createdAt(LocalDateTime.now())
                 .build();
+        boolean userIsStaff = user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
+        if (userIsStaff){
+            comment.setStatus(CommentStatus.APPROVED);
+        }
         commentRepository.save(comment);
+    }
+
+    @Transactional
+    public void updateStatus(Long commentId, String statusStr, Principal principal) {
+        var currentUser = userService.findByEmail(principal.getName());
+        boolean isStaff = currentUser.getRole().equals(Role.ADMIN) ||
+                currentUser.getRole().equals(Role.MODERATOR);
+
+        if (!isStaff) {
+            throw new org.springframework.security.access.AccessDeniedException("Brak uprawnień");
+        }
+
+        CommentStatus newStatus;
+        try {
+            newStatus = CommentStatus.valueOf(statusStr);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Nieznany status: " + statusStr);
+        }
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono komentarza"));
+
+        if (newStatus == CommentStatus.REJECTED) {
+            commentRepository.delete(comment);
+        } else {
+            comment.setStatus(newStatus);
+            commentRepository.save(comment);
+        }
     }
 
 }
