@@ -14,17 +14,6 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 
-//    @Query(value = "SELECT * FROM blog_post p " +
-//            "WHERE (LOWER(p.title) LIKE CONCAT('%', :search, '%') " +
-//            "OR LOWER(p.content) LIKE CONCAT('%', :search, '%')) " +
-//            // Dodatkowy warunek filtrowania po kategorii (jeśli :categoryId jest podane)
-//            "AND (p.category_id = :categoryId OR :categoryId IS NULL) " +
-//            "ORDER BY p.created_at DESC",
-//            nativeQuery = true)
-//    Page<Post> searchPosts(
-//            @Param("search") String search,
-//            @Param("categoryId") Long categoryId,
-//            Pageable pageable);
 @Query(value = "SELECT * FROM blog_post p " +
         "WHERE p.status = 'PUBLISHED' " +
         "AND (" +

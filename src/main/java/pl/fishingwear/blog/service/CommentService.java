@@ -3,11 +3,14 @@ package pl.fishingwear.blog.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.fishingwear.blog.exception.CommentNotFoundException;
 import pl.fishingwear.blog.exception.PostNotFoundException;
 import pl.fishingwear.blog.model.Comment;
+import pl.fishingwear.blog.model.CommentVote;
 import pl.fishingwear.blog.model.Post;
 import pl.fishingwear.blog.model.enums.CommentStatus;
 import pl.fishingwear.blog.repository.CommentRepository;
+import pl.fishingwear.blog.repository.CommentVoteRepository;
 import pl.fishingwear.blog.repository.PostRepository;
 import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.user.model.Role;
@@ -26,6 +29,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final CommentVoteRepository commentVoteRepository;
 
     @Transactional
     public void addComment(Long postId, String commentContent, Principal principal){

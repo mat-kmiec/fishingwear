@@ -24,7 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/libs/**", "/uploads/**").permitAll()
                         .requestMatchers("/lista-produktow", "/produkty/**", "/produkt/**").permitAll()
                         .requestMatchers("/login",  "/h2-console/**").permitAll()
-                        .requestMatchers("/blog/**", "/lista-blogow").permitAll()
+                        .requestMatchers("/blog/**", "/lista-blogow", "/comments/**").permitAll()
                         .requestMatchers("/koszyk/**").permitAll()
                         .requestMatchers("/zamowienie/**").permitAll()
                         .requestMatchers("/api/v1/cart/**").permitAll()

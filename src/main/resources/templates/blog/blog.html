@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FishingWear - Jak wybrać idealną wędkę?</title>
+      <meta name="_csrf" th:content="${_csrf.token}"/>
+      <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -88,29 +90,8 @@
             </div>
           </div>
 
-            <div sec:authorize="!isAuthenticated()">
-                <p>Cześć, nieznajomy! <a th:href="@{/login}">Zaloguj się</a></p>
-            </div>
-
-            <div sec:authorize="isAuthenticated()">
-                <p>Witaj, zalogowany użytkowniku!</p>
-
-                <p>Twój login: <span sec:authentication="name"></span></p>
-            </div>
-
-            <div sec:authorize="hasRole('ADMIN')">
-                <button class="btn btn-danger">Panel Administratora (TYLKO ADMIN)</button>
-            </div>
-
-            <div sec:authorize="hasAuthority('MODERATOR')">
-                <p>Panel Moderatora</p>
-            </div>
-
-
-          <div class="account-card p-4 p-md-5 mt-4">
+          <div class="account-card p-4 p-md-5 mt-4 mh-100 overflow-scroll">
             <h3 class="h4 mb-4" th:text="|Komentarze (${post.comments.size()})|">Komentarze (3)</h3>
-
-
               <div class="d-flex gap-3 mb-4">
                   <div class="comment-avatar">
                       <i class="fa-solid fa-user"></i>
@@ -196,7 +177,7 @@
                           <div class="comment-meta">
                               <span class="comment-author" th:text="${comment.author.getFirstName() != null ? comment.author.fullName : 'Anonim'}">Jan Kowalski</span>
 
-                              <span class="badge badge-role badge-role-user" th:text="${comment.author.rankName}">Wędkarz</span>
+                              <span class="badge badge-role badge-role-user" th:text="${comment.author.getRankName()}">Wędkarz</span>
 
                               <span class="comment-date ms-2"
                                     th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">
@@ -207,8 +188,9 @@
                           <p th:text="${comment.content}">Treść komentarza</p>
 
                           <div class="comment-actions d-flex gap-3 align-items-center">
-                              <a href="#" class="btn-rating">
-                                  <i class="fa-solid fa-thumbs-up"></i> <span th:text="${comment.getScore()}">0</span>
+                              <a href="#" class="btn-rating" th:data-comment-id="${comment.id}">
+                                  <i class="fa-solid fa-thumbs-up"></i>
+                                  <span class="comment-score" th:text="${comment.score}">0</span>
                               </a>
 
                               <a href="#" class="btn-link-custom">Odpowiedz</a>
@@ -223,107 +205,6 @@
                   </div>
 
               </div>
-<!--            <div class="comment-pending">-->
-<!--              <div class="d-flex justify-content-between align-items-center mb-2">-->
-<!--                <span class="status-badge">-->
-<!--                  <i class="fa-solid fa-hourglass-half me-2"></i>Oczekuje na akceptację-->
-<!--                </span>-->
-<!--                <div>-->
-<!--                  <a href="#" class="btn-link-custom me-3">Edytuj</a>-->
-<!--                  <a href="#" class="btn-link-custom text-danger">Usuń</a>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="comment d-flex gap-3">-->
-<!--                <div class="comment-avatar">JA</div>-->
-<!--                <div class="comment-body">-->
-<!--                  <div class="comment-meta">-->
-<!--                    <span class="comment-author">Jan Kowalski</span>-->
-<!--                    <span class="badge badge-role badge-role-user">Złoty Wędkarz</span>-->
-<!--                  </div>-->
-<!--                  <p class="mb-0">Super artykuł! A co z akcją wędki? Czy "fast" to zawsze najlepszy wybór?</p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-
-<!--            <div class="comment d-flex gap-3">-->
-<!--              <div class="comment-avatar">AK</div>-->
-<!--              <div class="comment-body">-->
-<!--                <div class="comment-meta">-->
-<!--                  <span class="comment-author">Adam Kruk</span>-->
-<!--                  <span class="badge badge-role badge-role-mod">Moderator</span>-->
-<!--                  <span class="comment-date ms-2">· 1 godzinę temu</span>-->
-<!--                </div>-->
-<!--                <p>Dzięki za pytanie! Już uzupełniam artykuł o sekcję "Akcja wędki". Generalnie "fast" jest świetna do gum, ale do woblerów wielu woli "moderate".</p>-->
-<!--                <div class="comment-actions d-flex gap-3 align-items-center">-->
-<!--                  <a href="#" class="btn-rating active">-->
-<!--                    <i class="fa-solid fa-thumbs-up"></i> 5-->
-<!--                  </a>-->
-<!--                  <a href="#" class="btn-rating">-->
-<!--                    <i class="fa-solid fa-thumbs-down"></i> 0-->
-<!--                  </a>-->
-<!--                  <a href="#" class="btn-link-custom">Odpowiedz</a>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-
-<!--            <div class="comment-pending">-->
-<!--              <div class="d-flex justify-content-between align-items-center mb-2">-->
-<!--                <span class="status-badge">-->
-<!--                  <i class="fa-solid fa-hourglass-half me-2"></i>Do akceptacji-->
-<!--                </span>-->
-<!--                <div>-->
-<!--                  <button class="btn btn-sm btn-success">Akceptuj</button>-->
-<!--                  <button class="btn btn-sm btn-danger ms-2">Odrzuć</button>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--              <div class="comment d-flex gap-3">-->
-<!--                <div class="comment-avatar">BK</div>-->
-<!--                <div class="comment-body">-->
-<!--                  <div class="comment-meta">-->
-<!--                    <span class="comment-author">Bartek Ryba</span>-->
-<!--                    <span class="badge badge-role badge-role-user">Nowicjusz</span>-->
-<!--                  </div>-->
-<!--                  <p class="mb-0">Dzięki! Właśnie tego szukałem.</p>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-
-<!--            <div class="comment d-flex gap-3">-->
-<!--              <div class="comment-avatar">PN</div>-->
-<!--              <div class="comment-body">-->
-<!--                <div class="comment-meta">-->
-<!--                  <span class="comment-author">Piotr Nowak</span>-->
-<!--                  <span class="badge badge-role badge-role-user">Srebrny Wędkarz</span>-->
-<!--                  <span class="comment-date ms-2">· 4 godziny temu</span>-->
-<!--                </div>-->
-<!--                <p>Na łódkę polecam 1.98m, nic dłuższego nie potrzeba.</p>-->
-<!--                <div class="comment-actions d-flex gap-3 align-items-center">-->
-<!--                  <a href="#" class="btn-rating">-->
-<!--                    <i class="fa-solid fa-thumbs-up"></i> 2-->
-<!--                  </a>-->
-<!--                  <a href="#" class="btn-rating">-->
-<!--                    <i class="fa-solid fa-thumbs-down"></i> 1-->
-<!--                  </a>-->
-<!--                  <a href="#" class="btn-link-custom">Odpowiedz</a>-->
-<!--                  <a href="#" class="btn-link-custom text-danger ms-auto">Zgłoś</a>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-
-<!--            <nav aria-label="Nawigacja po komentarzach" class="mt-4 pt-4 border-top">-->
-<!--              <ul class="pagination pagination-sm justify-content-center">-->
-<!--                <li class="page-item disabled">-->
-<!--                  <a class="page-link" href="#">«</a>-->
-<!--                </li>-->
-<!--                <li class="page-item active" aria-current="page">-->
-<!--                  <a class="page-link" href="#">1</a>-->
-<!--                </li>-->
-<!--                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
-<!--                <li class="page-item">-->
-<!--                  <a class="page-link" href="#">»</a>-->
-<!--                </li>-->
-<!--              </ul>-->
-<!--            </nav>-->
 
           </div>
         </div>
@@ -416,5 +297,30 @@
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
+
+    <script>
+        document.querySelectorAll(".btn-rating").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const commentId = this.dataset.commentId;
+                const scoreSpan = this.querySelector(".comment-score");
+                const token = document.querySelector('meta[name="_csrf"]').content;
+                const header = document.querySelector('meta[name="_csrf_header"]').content;
+
+                fetch(`/comments/${commentId}/vote?upvote=true`, {
+                    method: "POST",
+                    headers: {
+                        [header]: token,
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                })
+                    .then(r => r.json())
+                    .then(newScore => {
+                        scoreSpan.textContent = newScore;
+                    });
+            });
+        });
+    </script>
   </body>
 </html>

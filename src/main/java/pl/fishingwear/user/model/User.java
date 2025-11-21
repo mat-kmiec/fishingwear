@@ -58,6 +58,11 @@ public class User {
         else this.rankName = "Nowicjusz";
     }
 
+    public String getRankName(){
+        updateRank();
+        return rankName;
+    }
+
     public String getFullName() {
         return firstName + " " + lastName;
     }
