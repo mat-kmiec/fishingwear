@@ -111,20 +111,30 @@
             <h3 class="h4 mb-4" th:text="|Komentarze (${post.comments.size()})|">Komentarze (3)</h3>
 
 
-            <div class="d-flex gap-3 mb-4">
-              <div class="comment-avatar">
-                <i class="fa-solid fa-user"></i>
+              <div class="d-flex gap-3 mb-4">
+                  <div class="comment-avatar">
+                      <i class="fa-solid fa-user"></i>
+                  </div>
+
+                  <div class="comment-body" sec:authorize="isAuthenticated()">
+                      <form th:action="@{/blog/{id}/addComment(id=${post.id()})}" method="post">
+
+            <textarea class="form-control"
+                      rows="3"
+                      name="comment"
+                      placeholder="Napisz swój komentarz..."
+                      required></textarea>
+
+                          <div class="text-end mt-2">
+                              <button type="submit" class="btn btn-primary-custom">Wyślij komentarz</button>
+                          </div>
+                      </form>
+                  </div>
+
+                  <div sec:authorize="!isAuthenticated()" class="alert alert-light mb-4" style="width: 100%;">
+                      <a th:href="@{/login}" class="btn-link-custom">Zaloguj się</a>, aby dodać komentarz.
+                  </div>
               </div>
-              <div class="comment-body" sec:authorize="isAuthenticated()">
-                <textarea class="form-control" rows="3" placeholder="Napisz swój komentarz..."></textarea>
-                <div class="text-end mt-2">
-                  <button class="btn btn-primary-custom">Wyślij komentarz</button>
-                </div>
-              </div>
-                <div sec:authorize="!isAuthenticated()" class="alert alert-light mb-4">
-                    <a th:href="@{/login}" class="btn-link-custom">Zaloguj się</a>, aby dodać komentarz.
-                </div>
-            </div>
               <div th:each="comment : ${post.comments}">
 
                   <div th:if="${comment.status.name() == 'PENDING'}" class="comment-pending mb-3">

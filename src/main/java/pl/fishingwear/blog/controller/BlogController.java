@@ -58,8 +58,6 @@ public class BlogController {
     public String addComment(@PathVariable Long id,
                              @RequestParam String comment,
                              Principal principal) {
-
-
         commentService.addComment(id, comment, principal);
 
         return "redirect:/blog/" + id;
