@@ -26,6 +26,10 @@ public class CommentVoteService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(commentId));
 
+        if (comment.getAuthor().getId().equals(userId)) {
+            throw new IllegalStateException("Nie możesz głosować na swój własny komentarz.");
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 

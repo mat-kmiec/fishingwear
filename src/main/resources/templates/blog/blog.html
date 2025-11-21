@@ -304,6 +304,8 @@
                 e.preventDefault();
 
                 const commentId = this.dataset.commentId;
+                if (!commentId) return;
+
                 const scoreSpan = this.querySelector(".comment-score");
                 const token = document.querySelector('meta[name="_csrf"]').content;
                 const header = document.querySelector('meta[name="_csrf_header"]').content;
@@ -315,9 +317,20 @@
                         "X-Requested-With": "XMLHttpRequest"
                     }
                 })
-                    .then(r => r.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error("Błąd głosowania:", response.status);
+                            return null;
+                        }
+                        return response.json();
+                    })
                     .then(newScore => {
-                        scoreSpan.textContent = newScore;
+                        if (newScore !== null) {
+                            scoreSpan.textContent = newScore;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Wyjątek podczas głosowania:", error);
                     });
             });
         });
