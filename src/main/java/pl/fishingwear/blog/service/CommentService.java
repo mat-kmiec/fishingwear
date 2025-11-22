@@ -20,6 +20,7 @@ import pl.fishingwear.user.service.UserService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -91,6 +92,29 @@ public class CommentService {
             return Math.toIntExact(count);
         }
         return 0;
+    }
+
+    @Transactional
+    public Long updateComment(Long commentId, String newContent, String currentUsername) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Komentarz nie istnieje."));
+
+        User user = userService.getCurrentUser().orElseThrow(UserNotFoundException::new);
+        if (!Objects.equals(user.getEmail(), currentUsername)) {
+            throw new IllegalArgumentException("Nie masz uprawnień do edycji tego komentarza.");
+        }
+
+        if (comment.getStatus() != CommentStatus.PENDING) {
+            throw new IllegalArgumentException("Można edytować tylko komentarze oczekujące na akceptację.");
+        }
+
+        if (newContent == null || newContent.trim().isEmpty()) {
+            throw new IllegalArgumentException("Treść komentarza nie może być pusta.");
+        }
+
+        comment.setContent(newContent);
+        commentRepository.save(comment);
+        return comment.getPost().getId();
     }
 
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.fishingwear.blog.service.CommentService;
 import pl.fishingwear.blog.service.CommentVoteService;
 import pl.fishingwear.user.model.User;
@@ -45,6 +46,28 @@ public class CommentController {
         int newScore = commentVoteService.vote(id, userId, upvote);
 
         return ResponseEntity.ok(newScore);
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editComment(@PathVariable Long id,
+                              @RequestParam("content") String content,
+                              Principal principal,
+                              RedirectAttributes redirectAttributes) {
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            Long postId = commentService.updateComment(id, content, principal.getName());
+
+            redirectAttributes.addFlashAttribute("successMessage", "Twój komentarz został zaktualizowany.");
+            return "redirect:/blog/" + postId;
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/blog";
+        }
     }
 
 }

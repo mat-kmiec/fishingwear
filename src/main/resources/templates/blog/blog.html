@@ -41,6 +41,11 @@
               background-color: white;
               color: var(--color-primary);
           }
+
+          .comments-wrapper {
+              max-height: 100vh;
+              overflow-y: auto; /* pionowy scroll */
+          }
       </style>
   </head>
   <body style="background-color: var(--color-neutral-light)">
@@ -99,8 +104,7 @@
               </div>
             </div>
           </div>
-
-          <div class="account-card p-4 p-md-5 mt-4 mh-100 overflow-scroll">
+            <div class="account-card p-4 p-md-5 mt-4 comments-wrapper">
             <h3 class="h4 mb-4" th:text="|Komentarze (${post.comments.size()})|">Komentarze (3)</h3>
               <div class="d-flex gap-3 mb-4">
                   <div class="comment-avatar">
@@ -126,6 +130,25 @@
                       <a th:href="@{/login}" class="btn-link-custom">Zaloguj się</a>, aby dodać komentarz.
                   </div>
               </div>
+                <div class="mb-4">
+
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+                        <i class="fa-solid fa-circle-check fa-lg me-2"></i>
+                        <div>
+                            <strong th:text="${successMessage}">Akcja zakończona sukcesem!</strong>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation fa-lg me-2"></i>
+                        <div>
+                            <strong th:text="${errorMessage}">Wystąpił błąd!</strong>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                </div>
               <div th:each="comment : ${post.comments}">
 
                   <div th:if="${comment.status.name() == 'PENDING'}" class="comment-pending mb-3">
@@ -148,12 +171,6 @@
                                       <button class="btn btn-sm btn-danger ms-2">Odrzuć</button>
                                   </form>
                               </div>
-
-                              <div th:if="${currentUserId != null and comment.author != null and currentUserId == comment.author.id}"
-                                   sec:authorize="!hasAnyRole('ADMIN', 'MODERATOR')" class="d-inline-block">
-                                  <a href="#" class="btn-link-custom me-3">Edytuj</a>
-                                  <a href="#" class="btn-link-custom text-danger">Usuń</a>
-                              </div>
                           </div>
                       </div>
 
@@ -167,8 +184,13 @@
                                   <span class="comment-author" th:text="${comment.author != null ? comment.author.fullName : 'Nieznany'}">Autor</span>
                                   <span class="badge badge-role badge-role-user">Twój komentarz</span>
                                   <span class="comment-date ms-2" th:text="${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}">Data</span>
-                                  <a href="#" class="btn-link-custom text-secondary ms-2" sec:authorize="isAuthenticated()">
-                                      Edytuj
+                                  <a href="#"
+                                     class="btn-link-custom text-secondary ms-2"
+                                     sec:authorize="isAuthenticated()"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#editCommentModal"
+                                     th:data-comment-id="${comment.id}"
+                                     th:data-comment-content="${comment.content}"> Edytuj
                                   </a>
                               </div>
                               <p class="mb-0" th:text="${comment.content}">Treść komentarza...</p>
@@ -203,7 +225,7 @@
                                   <span class="comment-score" th:text="${comment.score}">0</span>
                               </a>
 
-                              <a href="#" class="btn-link-custom">Odpowiedz</a>
+<!--                              <a href="#" class="btn-link-custom">Odpowiedz</a>-->
 
                               <a href="#" class="btn-link-custom text-danger ms-auto"
                                  sec:authorize="isAuthenticated()"
@@ -303,6 +325,33 @@
 
     <footer th:insert="~{fragments/footer :: footer}"></footer>
 
+    <div class="modal fade" id="editCommentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edytuj komentarz</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editCommentForm" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <div class="modal-body">
+                        <label for="modalCommentContent" class="form-label">Treść</label>
+                        <textarea class="form-control"
+                                  id="modalCommentContent"
+                                  name="content"
+                                  rows="4"
+                                  required></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                        <button type="submit" class="btn btn-primary-custom">Zapisz</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../static/libs/bootstrap/bootstrap.bundle.min.js"
@@ -345,5 +394,21 @@
             });
         });
     </script>
+  <script>
+      const editCommentModal = document.getElementById('editCommentModal');
+
+      if (editCommentModal) {
+          editCommentModal.addEventListener('show.bs.modal', event => {
+              const button = event.relatedTarget;
+              const id = button.getAttribute('data-comment-id');
+              const content = button.getAttribute('data-comment-content');
+              const modalTextarea = editCommentModal.querySelector('#modalCommentContent');
+              modalTextarea.value = content;
+
+              const modalForm = document.getElementById('editCommentForm');
+              modalForm.action = `/comments/${id}/edit`;
+          });
+      }
+  </script>
   </body>
 </html>
