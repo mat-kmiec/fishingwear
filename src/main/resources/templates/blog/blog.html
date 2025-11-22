@@ -47,14 +47,24 @@
     <nav th:insert="~{fragments/nav :: nav}"></nav>
 
     <div class="container my-5">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/}">Strona główna</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/blog}">Blog</a></li>
 
-      <nav aria-label="breadcrumb" class="mb-3">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a th:href="@{/}">Strona główna</a></li>
-          <li class="breadcrumb-item"><a th:href="@{/blog}">Blog</a></li>
-          <li class="breadcrumb-item active" aria-current="page" th:text="${post.title}"></li>
-        </ol>
-      </nav>
+                <li class="breadcrumb-item" th:if="${post.category.parent != null}">
+                    <a th:href="@{/blog(categoryId=${post.category.parent.id})}"
+                       th:text="${post.category.parent.name}">Kategoria Nadrzędna</a>
+                </li>
+
+                <li class="breadcrumb-item">
+                    <a th:href="@{/blog(categoryId=${post.category.id})}"
+                       th:text="${post.category.name}">Kategoria</a>
+                </li>
+
+                <li class="breadcrumb-item active" aria-current="page" th:text="${post.title}"></li>
+            </ol>
+        </nav>
 
       <div class="row g-4 g-lg-5">
 
