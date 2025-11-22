@@ -1,227 +1,300 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FishingWear - Panel Admina - Zarządzanie Blogiem</title>
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
     <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
+            rel="stylesheet"
+            th:href="@{/libs/bootstrap/bootstrap.min.css}"
+            href="../../static/libs/bootstrap/bootstrap.min.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
+            rel="stylesheet"
+            th:href="@{/css/style.css}"
+            href="../../static/css/style.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
+            rel="stylesheet"
+            th:href="@{/css/slider.css}"
+            href="../../static/css/slider.css"
     />
 
     <style>
-      
+        /* Stylowanie statusów dla badge */
+        .badge-status.published { background-color: #28a745; color: white; }
+        .badge-status.pending { background-color: #ffc107; color: black; }
+        .badge-status.draft { background-color: #6c757d; color: white; }
 
+        /* Dodatkowe style dla formularzy admina */
+        .category-form {
+            border: 1px solid var(--color-neutral-light);
+            border-radius: 0.5rem;
+        }
     </style>
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-  <nav th:insert="~{fragments/nav :: nav}"></nav>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container my-5">
-      <div class="row g-4">
+<div class="container my-5">
+    <div class="row g-4">
 
-          <div class="col-lg-4">
-              <div th:replace="fragments/admin-sidebar :: adminSidebar('blog-manage')"></div>
-          </div>
+        <div class="col-lg-4">
+            <div th:replace="fragments/admin-sidebar :: adminSidebar('blog-manage')"></div>
+        </div>
 
         <div class="col-lg-8">
-          
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h3 mb-0">Zarządzanie Blogiem</h2>
-            <a href="#" class="btn btn-primary-custom"> <i class="fa-solid fa-pen-to-square me-2"></i>Napisz nowy wpis
-            </a>
-          </div>
 
-          <ul class="nav nav-tabs" id="blogTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts" type="button" role="tab" aria-controls="posts" aria-selected="true">Wpisy</button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="false">Kategorie</button>
-            </li>
-          </ul>
-          
-          <div class="tab-content" id="blogTabsContent">
-            
-            <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
-              
-              <div class="input-group mb-4">
-                <input type="text" class="form-control" placeholder="Szukaj wpisu (tytuł, autor)..." aria-label="Szukaj wpisu">
-                <button class="btn btn-primary-custom" type="button">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-              </div>
-
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">Tytuł</th>
-                      <th scope="col">Autor</th>
-                      <th scope="col">Kategoria</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Akcje</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    
-                    <tr>
-                      <td class="fw-bold">Jak wybrać idealną wędkę...</td>
-                      <td>Adam Kruk (Mod)</td>
-                      <td>Poradniki</td>
-                      <td>
-                        <span class="badge badge-status published">Opublikowany</span>
-                      </td>
-                      <td>
-                        <a href="#" class="btn-link-custom me-2">Edytuj</a>
-                        <a href="#" class="btn-link-custom text-danger">Usuń</a>
-                      </td>
-                    </tr>
-                    
-                    <tr>
-                      <td class="fw-bold">Moja wyprawa na szczupaka</td>
-                      <td>Bartek Ryba (User)</td>
-                      <td>Historie</td>
-                      <td>
-                        <span class="badge badge-status pending">Oczekujący</span>
-                      </td>
-                      <td>
-                        <a href="#" class="btn-link-custom me-2">Przejrzyj</a>
-                        <a href="#" class="btn-link-custom text-danger">Odrzuć</a>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td class="fw-bold">Top 5 przynęt (Szkic)</td>
-                      <td>Adam Kruk (Mod)</td>
-                      <td>Sprzęt</td>
-                      <td>
-                        <span class="badge badge-status draft">Szkic</span>
-                      </td>
-                      <td>
-                        <a href="#" class="btn-link-custom me-2">Dokończ</a>
-                        <a href="#" class="btn-link-custom text-danger">Usuń</a>
-                      </td>
-                    </tr>
-                    
-                  </tbody>
-                </table>
-              </div>
-              
-              <nav aria-label="Nawigacja po wpisach" class="mt-4 d-flex justify-content-center">
-                <ul class="pagination">
-                  <li class="page-item disabled">
-                    <a class="page-link" href="#">Poprzednia</a>
-                  </li>
-                  <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">1</a>
-                  </li>
-                  <li class="page-item"><a class="page-link" href="#">2</a></li>
-                  <li class="page-item">
-                    <a class="page-link" href="#">Następna</a>
-                  </li>
-                </ul>
-              </nav>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h3 mb-0">Zarządzanie Blogiem</h2>
+                <a href="#" class="btn btn-primary-custom"> <i class="fa-solid fa-pen-to-square me-2"></i>Napisz nowy wpis
+                </a>
             </div>
-            
-            <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="categories-tab">
-              <div class="row g-4">
-                
-                <div class="col-md-7">
-                  <h5 class="mb-3">Istniejące kategorie</h5>
-                  <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div>
-                        <span class="fw-bold">Poradniki</span>
-                        <p class="small text-secondary mb-0">Opis: Przewodniki i tipy dla wędkarzy.</p>
-                      </div>
-                      <div>
-                        <a href="#" class="btn-link-custom me-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can"></i></a>
-                      </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div>
-                        <span class="fw-bold">Sprzęt</span>
-                        <p class="small text-secondary mb-0">Opis: Recenzje i testy sprzętu wędkarskiego.</p>
-                      </div>
-                      <div>
-                        <a href="#" class="btn-link-custom me-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can"></i></a>
-                      </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div>
-                        <span class="fw-bold">Historie</span>
-                        <p class="small text-secondary mb-0">Opis: Opowieści znad wody.</p>
-                      </div>
-                      <div>
-                        <a href="#" class="btn-link-custom me-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can"></i></a>
-                      </div>
-                    </li>
-                  </ul>
+
+            <ul class="nav nav-tabs" id="blogTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="posts-tab" data-bs-toggle="tab" data-bs-target="#posts" type="button" role="tab" aria-controls="posts" aria-selected="true">Wpisy</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="false">Kategorie</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="false">Komentarze</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="blogTabsContent">
+
+                <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+
+                    <div class="input-group mb-4">
+                        <input type="text" class="form-control" placeholder="Szukaj wpisu (tytuł, autor)..." aria-label="Szukaj wpisu">
+                        <button class="btn btn-primary-custom" type="button">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Tytuł</th>
+                                <th scope="col">Autor</th>
+                                <th scope="col">Kategoria</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td class="fw-bold">Jak wybrać idealną wędkę...</td>
+                                <td>Adam Kruk (Mod)</td>
+                                <td>Poradniki</td>
+                                <td>
+                                    <span class="badge badge-status published">Opublikowany</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn-link-custom me-2">Edytuj</a>
+                                    <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="fw-bold">Moja wyprawa na szczupaka</td>
+                                <td>Bartek Ryba (User)</td>
+                                <td>Historie</td>
+                                <td>
+                                    <span class="badge badge-status pending">Oczekujący</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn-link-custom me-2">Przejrzyj</a>
+                                    <a href="#" class="btn-link-custom text-danger">Odrzuć</a>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="fw-bold">Top 5 przynęt (Szkic)</td>
+                                <td>Adam Kruk (Mod)</td>
+                                <td>Sprzęt</td>
+                                <td>
+                                    <span class="badge badge-status draft">Szkic</span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn-link-custom me-2">Dokończ</a>
+                                    <a href="#" class="btn-link-custom text-danger">Usuń</a>
+                                </td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <nav aria-label="Nawigacja po wpisach" class="mt-4 d-flex justify-content-center">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Poprzednia</a>
+                            </li>
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">1</a>
+                            </li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Następna</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
-                
-                <div class="col-md-5">
-                  <div class="category-form p-4">
-                    <h5 class="mb-3" id="categoryFormLabel">Dodaj nową kategorię</h5>
-                    <form>
-                      <div class="mb-3">
-                        <label for="catName" class="form-label">Nazwa</label>
-                        <input type="text" class="form-control" id="catName" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="catSlug" class="form-label">Uproszczona nazwa (slug)</label>
-                        <input type="text" class="form-control" id="catSlug" placeholder="np. poradniki-spinningowe">
-                        <small class="text-secondary">Tylko małe litery, cyfry i myślniki.</small>
-                      </div>
-                      <div class="mb-3">
-                        <label for="catParent" class="form-label">Kategoria nadrzędna</label>
-                        <select class="form-select" id="catParent">
-                          <option value="0">Brak (główna kategoria)</option>
-                          <option value="1">- Poradniki</option>
-                          <option value="2">- Sprzęt</option>
-                        </select>
-                      </div>
-                      <div class="mb-3">
-                        <label for="catDesc" class="form-label">Opis</label>
-                        <textarea class="form-control" id="catDesc" rows="3"></textarea>
-                      </div>
-                      <button type="submit" class="btn btn-primary-custom w-100">Zapisz kategorię</button>
-                    </form>
-                  </div>
+
+                <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+                    <div class="row g-4">
+
+                        <div class="col-md-7">
+                            <h5 class="mb-3">Istniejące kategorie</h5>
+                            <ul class="list-group" th:each="category : ${categories}">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="fw-bold" th:text="${category.name()}">Poradniki</span>
+
+                                        <p class="small text-secondary mb-0">
+                                            Kategoria nadrzędna:
+                                            <span th:text="${category.parentCategory() != null ? category.parentCategory.name : 'Brak'}">xxx</span>
+                                        </p>
+
+                                        <p class="small text-secondary mb-0" th:text="'Moderator: ' + ${category.moderator != null ? category.moderator: 'Brak'}">Moderator: xxx</p>
+                                    </div>
+                                    <div>
+                                        <a href="#" class="btn-link-custom me-2"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can"></i></a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="category-form p-4">
+                                <h5 class="mb-3" id="categoryFormLabel">Dodaj nową kategorię</h5>
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="catName" class="form-label">Nazwa</label>
+                                        <input type="text" class="form-control" id="catName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="catParent" class="form-label">Kategoria nadrzędna</label>
+                                        <select class="form-select" id="catParent">
+                                            <option value="0">Brak (główna kategoria)</option>
+                                            <option value="1">- Poradniki</option>
+                                            <option value="2">- Sprzęt</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="catParent" class="form-label">Moderator</label>
+                                        <select class="form-select" id="moderator">
+                                            <option value="0">Brak (główna kategoria)</option>
+                                            <option value="1">- Poradniki</option>
+                                            <option value="2">- Sprzęt</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary-custom w-100">Zapisz kategorię</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
+
+                <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0">Oczekujące na moderację</h5>
+                        <span class="badge bg-warning text-dark rounded-pill" th:text="${pendingCommentCount}">3 nowe</span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col" style="width: 15%;">Autor</th>
+                                <th scope="col" style="width: 40%;">Treść komentarza</th>
+                                <th scope="col" style="width: 20%;">Dotyczy wpisu</th>
+                                <th scope="col" style="width: 10%;">Data</th>
+                                <th scope="col" style="width: 15%;">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr th:each="comment : ${pendingComments}">
+                                <td>
+                                    <div class="fw-bold" th:text="${comment.authorName}">Michał Wędkarz</div>
+                                    <small class="text-secondary" th:text="${comment.authorEmail}">michal@example.com</small>
+                                </td>
+                                <td style="max-width: 400px; overflow: hidden;">
+                                    <p class="mb-0" th:text="${comment.content}"></p>
+                                </td>
+
+                                <td>
+                                    <a href="#" th:text="${comment.postTitle}" class="text-decoration-none text-dark fw-bold">Jak wybrać idealną wędkę...</a>
+                                </td>
+                                <td class="small text-secondary">
+                                    <span th:text="${#temporals.format(comment.submissionDate, 'dd.MM.yyyy')}">22.11.2025</span><br>
+                                    <span th:text="${#temporals.format(comment.submissionDate, 'HH:mm')}">14:30</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <form th:action="@{/admin/blog/comments/accept/{id}(id=${comment.id})}" method="POST">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <button type="submit" class="btn btn-sm btn-success" title="Akceptuj">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </form>
+
+                                        <form th:action="@{/admin/blog/comments/reject/{id}(id=${comment.id})}" method="POST">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <button type="submit" class="btn btn-sm btn-danger" title="Odrzuć">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(pendingComments)}">
+                                <td colspan="5" class="text-center py-4 text-secondary">Brak nowych komentarzy do moderacji.</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
             </div>
-            
-          </div>
         </div>
-      </div>
     </div>
+</div>
 
-  <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const hash = window.location.hash;
+        if (hash) {
+            const tabTrigger = document.querySelector(`button[data-bs-target="${hash}"]`);
+            if (tabTrigger) {
+                const tab = new bootstrap.Tab(tabTrigger);
+                tab.show();
+            }
+        }
+    });
+</script>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
-    
-  </body>
+<script
+        th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
+        src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
+></script>
+
+</body>
 </html>

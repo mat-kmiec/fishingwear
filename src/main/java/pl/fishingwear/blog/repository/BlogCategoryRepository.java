@@ -18,4 +18,5 @@ public interface BlogCategoryRepository extends JpaRepository<BlogCategory, Long
             "GROUP BY c.id, c.name " +
             "ORDER BY c.name ASC")
     List<BlogCategorySidebarDto> findAllCategoriesWithPostCount();
+
 }

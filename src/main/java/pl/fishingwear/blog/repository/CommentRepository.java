@@ -23,4 +23,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     long countCommentByStatusContains(CommentStatus status);
 
     long countByStatus(CommentStatus commentStatus);
+    List<Comment> findByStatus(CommentStatus commentStatus);
 }
