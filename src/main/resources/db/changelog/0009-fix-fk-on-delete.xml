@@ -1,0 +1,185 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="1.0.1-fix-delete-all-fks-v3" author="TwojeImie">
+        <comment>
+            Zmienia FK dla kategorii, postów i komentarzy na ON DELETE SET NULL.
+            Dodaje FK dla głosów (COMMENT_VOTES) i koszyka (CART) z ON DELETE CASCADE.
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="BLOG_CATEGORIES"
+                                  constraintName="FK_BLOG_CATEGORIES_MODERATOR"/>
+
+        <addForeignKeyConstraint baseTableName="BLOG_CATEGORIES"
+                                 baseColumnNames="MODERATOR_ID"
+                                 constraintName="FK_BLOG_CATEGORIES_MODERATOR"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
+
+        <dropForeignKeyConstraint baseTableName="BLOG_POST"
+                                  constraintName="FK_POSTS_AUTHOR"/>
+
+        <addForeignKeyConstraint baseTableName="BLOG_POST"
+                                 baseColumnNames="AUTHOR_ID"
+                                 constraintName="FK_POSTS_AUTHOR"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
+
+        <dropForeignKeyConstraint baseTableName="COMMENTS"
+                                  constraintName="FK_COMMENTS_AUTHOR"/>
+
+        <addForeignKeyConstraint baseTableName="COMMENTS"
+                                 baseColumnNames="AUTHOR_ID"
+                                 constraintName="FK_COMMENTS_AUTHOR"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
+
+        <dropForeignKeyConstraint baseTableName="COMMENT_VOTES"
+                                  constraintName="FK_VOTES_USER"/>
+
+        <addForeignKeyConstraint baseTableName="COMMENT_VOTES"
+                                 baseColumnNames="USER_ID"
+                                 constraintName="FK_VOTES_USER"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="CART"
+                                  constraintName="FK_CART_USER"/>
+
+        <addForeignKeyConstraint baseTableName="CART"
+                                 baseColumnNames="USER_ID"
+                                 constraintName="FK_CART_USER"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+    <changeSet id="1.0.2-fix-delete-product-fks" author="TwojeImie">
+        <comment>
+            Dodaje FK dla zdjęć produktu (PRODUCT_IMAGE) z ON DELETE CASCADE,
+            aby umożliwić usuwanie produktów (naprawia błąd: FK_PRODUCT_IMAGE_PRODUCT).
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="PRODUCT_IMAGE"
+                                  constraintName="FK_PRODUCT_IMAGE_PRODUCT"/>
+
+        <addForeignKeyConstraint baseTableName="PRODUCT_IMAGE"
+                                 baseColumnNames="PRODUCT_ID"
+                                 constraintName="FK_PRODUCT_IMAGE_PRODUCT"
+                                 referencedTableName="PRODUCT"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+    <changeSet id="1.0.3-fix-product-category-fk" author="TwojeImie">
+        <comment>
+            Dodaje FK dla tabeli pośredniczącej PRODUCT_CATEGORY (PRODUCT_ID) z ON DELETE CASCADE,
+            aby umożliwić usuwanie produktów (naprawia błąd: FK_PC_PRODUCT).
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="PRODUCT_CATEGORY"
+                                  constraintName="FK_PC_PRODUCT"/>
+
+        <addForeignKeyConstraint baseTableName="PRODUCT_CATEGORY"
+                                 baseColumnNames="PRODUCT_ID"
+                                 constraintName="FK_PC_PRODUCT"
+                                 referencedTableName="PRODUCT"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+    <changeSet id="1.0.4-fix-product-variant-fk" author="TwojeImie">
+        <comment>
+            Dodaje FK dla wariantów produktu (PRODUCT_VARIANT) z ON DELETE CASCADE,
+            aby umożliwić usuwanie produktów (naprawia błąd: FK_VARIANT_PRODUCT).
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="PRODUCT_VARIANT"
+                                  constraintName="FK_VARIANT_PRODUCT"/>
+
+        <addForeignKeyConstraint baseTableName="PRODUCT_VARIANT"
+                                 baseColumnNames="PRODUCT_ID"
+                                 constraintName="FK_VARIANT_PRODUCT"
+                                 referencedTableName="PRODUCT"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+    <changeSet id="1.0.5-fix-comments-post-fk" author="TwojeImie">
+        <comment>
+            Dodaje FK dla komentarzy (COMMENTS.POST_ID) z ON DELETE CASCADE,
+            aby umożliwić usuwanie postów (naprawia błąd: FK_COMMENTS_POST).
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="COMMENTS"
+                                  constraintName="FK_COMMENTS_POST"/>
+
+        <addForeignKeyConstraint baseTableName="COMMENTS"
+                                 baseColumnNames="POST_ID"
+                                 constraintName="FK_COMMENTS_POST"
+                                 referencedTableName="BLOG_POST"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+    <changeSet id="1.0.6-fix-variant-color-fk" author="TwojeImie">
+        <comment>
+            Zmienia FK dla koloru w wariantach produktu (PRODUCT_VARIANT.COLOR_ID) na ON DELETE SET NULL,
+            aby umożliwić usuwanie kolorów (naprawia błąd: FK_VARIANT_COLOR).
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="PRODUCT_VARIANT"
+                                  constraintName="FK_VARIANT_COLOR"/>
+
+        <addForeignKeyConstraint baseTableName="PRODUCT_VARIANT"
+                                 baseColumnNames="COLOR_ID"
+                                 constraintName="FK_VARIANT_COLOR"
+                                 referencedTableName="COLOR"
+                                 referencedColumnNames="ID"
+                                 onDelete="SET NULL"/>
+
+    </changeSet>
+    <changeSet id="1.0.7-fix-product-category-fk-category-side" author="TwojeImie">
+        <comment>
+            Dodaje FK dla tabeli pośredniczącej PRODUCT_CATEGORY (CATEGORY_ID) z ON DELETE CASCADE,
+            aby umożliwić usuwanie kategorii (naprawia błąd: FK_PC_CATEGORY).
+            Dla tabel pośredniczących CASCADE jest niezbędny do usunięcia rekordu powiązania.
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="PRODUCT_CATEGORY"
+                                  constraintName="FK_PC_CATEGORY"/>
+
+        <addForeignKeyConstraint baseTableName="PRODUCT_CATEGORY"
+                                 baseColumnNames="CATEGORY_ID"
+                                 constraintName="FK_PC_CATEGORY"
+                                 referencedTableName="CATEGORY"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+    <changeSet id="1.0.6-fix-votes-comment-fk" author="TwojeImie">
+        <comment>
+            Dodaje FK dla głosów do komentarzy (COMMENT_VOTES.COMMENT_ID) z ON DELETE CASCADE,
+            aby umożliwić kaskadowe usuwanie komentarzy (naprawia błąd: FK_VOTES_COMMENT).
+        </comment>
+
+        <dropForeignKeyConstraint baseTableName="COMMENT_VOTES"
+                                  constraintName="FK_VOTES_COMMENT"/>
+
+        <addForeignKeyConstraint baseTableName="COMMENT_VOTES"
+                                 baseColumnNames="COMMENT_ID"
+                                 constraintName="FK_VOTES_COMMENT"
+                                 referencedTableName="COMMENTS"
+                                 referencedColumnNames="ID"
+                                 onDelete="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>

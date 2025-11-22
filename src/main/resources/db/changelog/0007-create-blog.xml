@@ -60,7 +60,7 @@
                 <constraints foreignKeyName="fk_posts_author"
                              referencedTableName="users"
                              referencedColumnNames="id"
-                             nullable="false"/>
+                             nullable="true"/>
             </column>
 
             <column name="category_id" type="BIGINT">
@@ -109,7 +109,7 @@
                 <constraints foreignKeyName="fk_comments_author"
                              referencedTableName="users"
                              referencedColumnNames="id"
-                             nullable="false"/>
+                             nullable="true"/>
             </column>
 
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
