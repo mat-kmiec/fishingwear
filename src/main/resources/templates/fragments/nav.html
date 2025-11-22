@@ -64,10 +64,10 @@
             </form>
 
             <div
-                    class="navbar-actions d-flex align-items-center justify-content-center justify-content-lg-end ms-lg-3 mt-4 mt-lg-0"
+                    class="navbar-actions g-3 d-flex align-items-center justify-content-center justify-content-lg-end ms-lg-3 mt-4 mt-lg-0"
             >
                 <a
-                        class="nav-link position-relative fs-4"
+                        class="nav-link position-relative fs-4 me-3"
                         href="#"
                         th:href="@{/koszyk}"
                         aria-label="Koszyk"
@@ -81,7 +81,39 @@
                 <span class="visually-hidden">przedmioty w koszyku</span>
               </span>
                 </a>
+                <div class="nav-item dropdown ms-3 me-3" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
 
+                    <a class="nav-link dropdown-toggle fs-4 "
+                       href="#"
+                       id="adminDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false"
+                       aria-label="Panel Administracyjny">
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                        <li><h6 class="dropdown-header">Ogólne</h6></li>
+                        <li><a class="dropdown-item" th:href="@{/admin}">Przegląd</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/uzytkownicy}">Użytkownicy</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/blog}">Blog</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/zamowienia}">Zamówienia</a></li>
+
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li><h6 class="dropdown-header">Produkty</h6></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/produkty}">Wszystkie</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/produkty/nowy}">Nowy</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/kategorie/nowa}">Kategorie</a></li>
+                        <li><h6 class="dropdown-header">Slider</h6></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/zdjecia}">Dodaj zdjęcie</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/slider}">Kolekcja slidera</a></li>
+                        <li><h6 class="dropdown-header">Inne</h6></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/ustawienia}">Ustawienia</a></li>
+
+                    </ul>
+                </div>
                 <div class="nav-item dropdown ms-3">
                     <a
                             class="nav-link dropdown-toggle fs-4"
@@ -108,6 +140,14 @@
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                             <button type="submit" class="dropdown-item">Wyloguj się</button>
                         </form>
+                    </ul>
+                    <ul sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"
+                        class="dropdown-menu dropdown-menu-end"
+                        aria-labelledby="profileDropdown">
+                        <li><a class="dropdown-item" href="/panel-admina">Panel Administratora</a></li>
+                        <li><a class="dropdown-item" href="/moderacja">Panel Moderatora</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/wyloguj">Wyloguj się</a></li>
                     </ul>
                     <!-- unauthenticated -->
                     <ul sec:authorize="isAnonymous()"
