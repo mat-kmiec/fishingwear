@@ -26,7 +26,7 @@
     />
 
     <style>
-      
+
 
     </style>
   </head>
@@ -50,7 +50,7 @@
                 <i class="fa-solid fa-plus me-2"></i>Dodaj nowy motyw
               </button>
             </div>
-            
+
             <p class="text-secondary small">
               Zdefiniowane tutaj motywy (grupy kolorów) będą dostępne do wyboru dla użytkowników w ich ustawieniach profilu.
             </p>
@@ -61,69 +61,119 @@
                   <span th:text="${errorMessage}"></span>
               </div>
 
-            <ul class="list-group list-group-flush mt-4">
-              
-              <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3" th:each="theme : ${themes}">
-                  <div class="d-flex align-items-center">
-                      <div
-                              class="theme-preview-swatch"
-                              th:style="|background: linear-gradient(90deg,
-                                ${theme.colorPrimaryHex()} 33.33%,
-                                ${theme.colorSecondaryHex()} 33.33%,
-                                ${theme.colorSecondaryHex()} 66.66%,
-                                ${theme.colorAccentHex()} 66.66%
-                            );|"
-                      ></div>
-                      <span class="ms-3 fw-bold" th:text="${theme.name}">Oliwkowy (Domyślny)</span>
-                  </div>
-                <div>
-                  <button class="btn-link-custom me-3" data-bs-toggle="modal" data-bs-target="#themeModal" onclick="prepareEditModal('Oliwkowy', '#677525', '#2e3b38', '#f5f5f5')">
-                    <i class="fa-solid fa-pen-to-square me-1"></i>Edytuj
-                  </button>
-                    <button
-                            type="button"
-                            class="btn-link-custom text-danger"
-                            data-bs-toggle="modal"
-                            th:data-bs-target="'#deleteModal_'+${theme.id}"
-                    >
-                        <i class="fa-solid fa-trash-can me-1"></i>Usuń
-                    </button>
+              <ul class="list-group list-group-flush mt-4">
 
-                    <div
-                            class="modal fade"
-                            th:id="|deleteModal_${theme.id}|"
-                            tabindex="-1"
-                            aria-labelledby="deleteModalLabel"
-                            aria-hidden="true"
-                    >
-                        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
+                  <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3" th:each="theme : ${themes}">
+                      <div class="d-flex align-items-center">
+                          <div class="theme-preview-swatch"
+                               th:style="|background: linear-gradient(90deg,
+                            ${theme.colorPrimaryHex()} 33.33%,
+                            ${theme.colorSecondaryHex()} 33.33%,
+                            ${theme.colorSecondaryHex()} 66.66%,
+                            ${theme.colorAccentHex()} 66.66%
+                        );|">
+                          </div>
+                          <span class="ms-3 fw-bold" th:text="${theme.name}">Nazwa Motywu</span>
+                      </div>
 
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel">Potwierdzenie usunięcia</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
+                      <div>
+                          <button class="btn-link-custom me-3"
+                                  data-bs-toggle="modal"
+                                  th:data-bs-target="'#editModal_'+${theme.id}">
+                              <i class="fa-solid fa-pen-to-square me-1"></i>Edytuj
+                          </button>
 
-                            <div class="modal-body">
-                                Czy na pewno chcesz usunąć motyw <span style="font-weight: bold" th:text="${theme.name}">Nazwa motywu</span>? Tej operacji nie będzie można cofnąć.
-                            </div>
+                          <button type="button"
+                                  class="btn-link-custom text-danger"
+                                  data-bs-toggle="modal"
+                                  th:data-bs-target="'#deleteModal_'+${theme.id}">
+                              <i class="fa-solid fa-trash-can me-1"></i>Usuń
+                          </button>
 
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                          <div class="modal fade"
+                               th:id="'editModal_' + ${theme.id}"
+                               tabindex="-1"
+                               aria-hidden="true">
+                              <div class="modal-dialog modal-lg modal-dialog-centered">
+                                  <div class="modal-content" style="border-radius: 1rem; border: none;">
+                                      <form th:action="@{/theme/update}" method="post">
+                                          <div class="modal-header" style="border-bottom: none;">
+                                              <h5 class="modal-title">Edytuj Motyw</h5>
+                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                                          </div>
+                                          <div class="modal-body p-4">
+                                              <input type="hidden" name="id" th:value="${theme.id}" />
 
-                                <form th:action="@{/theme/delete/{id}(id=${theme.id})}" method="post">
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="fa-solid fa-trash-can me-1"></i> Potwierdź Usunięcie
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-              </li>
-            </ul>
+                                              <div class="mb-3">
+                                                  <label class="form-label">Nazwa motywu</label>
+                                                  <input type="text" class="form-control" name="name" th:value="${theme.name}" required>
+                                              </div>
+
+                                              <hr class="my-4">
+
+                                              <div class="row g-3">
+                                                  <div class="col-md-4">
+                                                      <label class="form-label fw-bold">Kolor Podstawowy</label>
+                                                      <input type="color" class="form-control form-control-color"
+                                                             name="colorPrimaryHex"
+                                                             th:value="${theme.colorPrimaryHex}"
+                                                             title="Wybierz kolor podstawowy">
+                                                  </div>
+                                                  <div class="col-md-4">
+                                                      <label class="form-label fw-bold">Kolor Akcentu</label>
+                                                      <input type="color" class="form-control form-control-color"
+                                                             name="colorSecondaryHex"
+                                                             th:value="${theme.colorSecondaryHex}"
+                                                             title="Wybierz kolor akcentu">
+                                                  </div>
+                                                  <div class="col-md-4">
+                                                      <label class="form-label fw-bold">Kolor Tła</label>
+                                                      <input type="color" class="form-control form-control-color"
+                                                             name="colorAccentHex"
+                                                             th:value="${theme.colorAccentHex}"
+                                                             title="Wybierz kolor tła">
+                                                  </div>
+                                              </div>
+                                          </div>
+                                          <div class="modal-footer" style="border-top: none;">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                              <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
+
+                          <div class="modal fade"
+                               th:id="|deleteModal_${theme.id}|"
+                               tabindex="-1"
+                               aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title">Potwierdzenie usunięcia</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <div class="modal-body">
+                                          Czy na pewno chcesz usunąć motyw <span style="font-weight: bold" th:text="${theme.name}">Nazwa</span>?
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                          <form th:action="@{/theme/delete/{id}(id=${theme.id})}" method="post">
+                                              <button type="submit" class="btn btn-danger">
+                                                  <i class="fa-solid fa-trash-can me-1"></i> Potwierdź Usunięcie
+                                              </button>
+                                          </form>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </div>
+                  </li>
+              </ul>
           </div>
-          
+
           <div class="account-card p-4 p-md-5 mt-4">
              <h3 class="h5 mb-4">Inne Ustawienia</h3>
              <p class="text-secondary">Miejsce na inne globalne ustawienia sklepu...</p>
@@ -178,6 +228,7 @@
       </div>
   </div>
 
+
   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#themeModal">
       Dodaj Nowy Motyw
   </button>
@@ -188,7 +239,7 @@
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
-    
+
     <script>
       const themeModal = document.getElementById('themeModal');
       const modalLabel = document.getElementById('themeModalLabel');
