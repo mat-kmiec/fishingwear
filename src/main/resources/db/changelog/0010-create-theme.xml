@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1-create-theme-table-simplified" author="admin">
+        <createTable tableName="THEME">
+            <column name="ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="COLOR_PRIMARY_HEX" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COLOR_SECONDARY_HEX" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COLOR_ACCENT_HEX" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2-add-theme-to-user-table" author="admin">
+        <addColumn tableName="USERS">
+            <column name="SELECTED_THEME_ID" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="3-add-foreign-key-to-user" author="admin">
+        <addForeignKeyConstraint baseTableName="USERS"
+                                 baseColumnNames="SELECTED_THEME_ID"
+                                 constraintName="FK_USER_SELECTED_THEME"
+                                 referencedTableName="THEME"
+                                 referencedColumnNames="ID"/>
+    </changeSet>
+
+    <changeSet id="4-insert-initial-themes" author="admin">
+        <insert tableName="THEME">
+            <column name="ID" value="0"/>
+            <column name="NAME" value="Zielony (Domyślny)"/>
+            <column name="COLOR_PRIMARY_HEX" value="#677525"/>
+            <column name="COLOR_SECONDARY_HEX" value="#2e3b38"/>
+            <column name="COLOR_ACCENT_HEX" value="#f5f5f5"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

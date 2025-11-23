@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -54,54 +54,73 @@
             <p class="text-secondary small">
               Zdefiniowane tutaj motywy (grupy kolorów) będą dostępne do wyboru dla użytkowników w ich ustawieniach profilu.
             </p>
+              <div th:if="${successMessage}" class="alert alert-success" role="alert">
+                  <span th:text="${successMessage}"></span>
+              </div>
+              <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                  <span th:text="${errorMessage}"></span>
+              </div>
 
             <ul class="list-group list-group-flush mt-4">
               
-              <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                <div class="d-flex align-items-center">
-                  <div class="theme-preview-swatch" style="background: linear-gradient(90deg, #677525 33.33%, #2e3b38 33.33%, #2e3b38 66.66%, #f5f5f5 66.66%);"></div>
-                  <span class="ms-3 fw-bold">Oliwkowy (Domyślny)</span>
-                </div>
+              <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3" th:each="theme : ${themes}">
+                  <div class="d-flex align-items-center">
+                      <div
+                              class="theme-preview-swatch"
+                              th:style="|background: linear-gradient(90deg,
+                                ${theme.colorPrimaryHex()} 33.33%,
+                                ${theme.colorSecondaryHex()} 33.33%,
+                                ${theme.colorSecondaryHex()} 66.66%,
+                                ${theme.colorAccentHex()} 66.66%
+                            );|"
+                      ></div>
+                      <span class="ms-3 fw-bold" th:text="${theme.name}">Oliwkowy (Domyślny)</span>
+                  </div>
                 <div>
                   <button class="btn-link-custom me-3" data-bs-toggle="modal" data-bs-target="#themeModal" onclick="prepareEditModal('Oliwkowy', '#677525', '#2e3b38', '#f5f5f5')">
                     <i class="fa-solid fa-pen-to-square me-1"></i>Edytuj
                   </button>
-                  <button class="btn-link-custom text-danger">
-                    <i class="fa-solid fa-trash-can me-1"></i>Usuń
-                  </button>
+                    <button
+                            type="button"
+                            class="btn-link-custom text-danger"
+                            data-bs-toggle="modal"
+                            th:data-bs-target="'#deleteModal_'+${theme.id}"
+                    >
+                        <i class="fa-solid fa-trash-can me-1"></i>Usuń
+                    </button>
+
+                    <div
+                            class="modal fade"
+                            th:id="|deleteModal_${theme.id}|"
+                            tabindex="-1"
+                            aria-labelledby="deleteModalLabel"
+                            aria-hidden="true"
+                    >
+                        <div class="modal-dialog modal-dialog-centered"> <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel">Potwierdzenie usunięcia</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                Czy na pewno chcesz usunąć motyw <span style="font-weight: bold" th:text="${theme.name}">Nazwa motywu</span>? Tej operacji nie będzie można cofnąć.
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+
+                                <form th:action="@{/theme/delete/{id}(id=${theme.id})}" method="post">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa-solid fa-trash-can me-1"></i> Potwierdź Usunięcie
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                 </div>
               </li>
-              
-              <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                <div class="d-flex align-items-center">
-                  <div class="theme-preview-swatch" style="background: linear-gradient(90deg, #0a4d68 33.33%, #088395 33.33%, #088395 66.66%, #f0eabe 66.66%);"></div>
-                  <span class="ms-3 fw-bold">Morski</span>
-                </div>
-                <div>
-                  <button class="btn-link-custom me-3" data-bs-toggle="modal" data-bs-target="#themeModal" onclick="prepareEditModal('Morski', '#0a4d68', '#088395', '#f0eabe')">
-                    <i class="fa-solid fa-pen-to-square me-1"></i>Edytuj
-                  </button>
-                  <button class="btn-link-custom text-danger">
-                    <i class="fa-solid fa-trash-can me-1"></i>Usuń
-                  </button>
-                </div>
-              </li>
-              
-              <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
-                <div class="d-flex align-items-center">
-                  <div class="theme-preview-swatch" style="background: linear-gradient(90deg, #343a40 33.33%, #6c757d 33.33%, #6c757d 66.66%, #adb5bd 66.66%);"></div>
-                  <span class="ms-3 fw-bold">Grafit</span>
-                </div>
-                <div>
-                  <button class="btn-link-custom me-3" data-bs-toggle="modal" data-bs-target="#themeModal" onclick="prepareEditModal('Grafit', '#343a40', '#6c757d', '#adb5bd')">
-                    <i class="fa-solid fa-pen-to-square me-1"></i>Edytuj
-                  </button>
-                  <button class="btn-link-custom text-danger">
-                    <i class="fa-solid fa-trash-can me-1"></i>Usuń
-                  </button>
-                </div>
-              </li>
-              
             </ul>
           </div>
           
@@ -114,50 +133,54 @@
       </div>
     </div>
 
-    <div class="modal fade" id="themeModal" tabindex="-1" aria-labelledby="themeModalLabel" aria-hidden="true">
+  <div class="modal fade" id="themeModal" tabindex="-1" aria-labelledby="themeModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg">
-        <div class="modal-content" style="border-radius: 1rem; border: none;">
-          <form>
-            <div class="modal-header" style="border-bottom: none;">
-              <h5 class="modal-title" id="themeModalLabel">Edytuj Motyw</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
-            </div>
-            <div class="modal-body p-4">
-              
-              <div class="mb-3">
-                <label for="themeName" class="form-label">Nazwa motywu</label>
-                <input type="text" class="form-control" id="themeName" value="Oliwkowy">
-              </div>
+          <div class="modal-content" style="border-radius: 1rem; border: none;">
+              <form th:action="@{/theme/create}" th:object="${newTheme}" method="post">
+                  <div class="modal-header" style="border-bottom: none;">
+                      <h5 class="modal-title" id="themeModalLabel">Dodaj Nowy Motyw</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                  </div>
+                  <div class="modal-body p-4">
 
-              <hr class="my-4">
-              
-              <div class="row g-3">
-                <div class="col-md-4">
-                  <label for="color1" class="form-label fw-bold">Kolor Podstawowy</label>
-                  <input type="color" class="form-control form-control-color" id="color1" value="#677525" title="Wybierz kolor podstawowy">
-                  <small class="text-secondary">Główny kolor (np. przyciski)</small>
-                </div>
-                <div class="col-md-4">
-                  <label for="color2" class="form-label fw-bold">Kolor Akcentu</label>
-                  <input type="color" class="form-control form-control-color" id="color2" value="#2e3b38" title="Wybierz kolor akcentu">
-                  <small class="text-secondary">Drugi kolor (np. tło paska)</small>
-                </div>
-                <div class="col-md-4">
-                  <label for="color3" class="form-label fw-bold">Kolor Tła</label>
-                  <input type="color" class="form-control form-control-color" id="color3" value="#f5f5f5" title="Wybierz kolor tła">
-                  <small class="text-secondary">Jasne tło (np. tło strony)</small>
-                </div>
-              </div>
+                      <div class="mb-3">
+                          <label for="themeName" class="form-label">Nazwa motywu</label>
+                          <input type="text" class="form-control" id="themeName" th:field="*{name}" required>
+                      </div>
 
-            </div>
-            <div class="modal-footer" style="border-top: none;">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
-              <button type="submit" class="btn btn-primary-custom">Zapisz motyw</button>
-            </div>
-          </form>
-        </div>
+                      <hr class="my-4">
+
+                      <div class="row g-3">
+                          <div class="col-md-4">
+                              <label for="color1" class="form-label fw-bold">Kolor Podstawowy</label>
+                              <input type="color" class="form-control form-control-color" id="color1" th:field="*{colorPrimaryHex}" title="Wybierz kolor podstawowy">
+                              <small class="text-secondary">Główny kolor (np. przyciski)</small>
+                          </div>
+                          <div class="col-md-4">
+                              <label for="color2" class="form-label fw-bold">Kolor Akcentu</label>
+                              <input type="color" class="form-control form-control-color" id="color2" th:field="*{colorSecondaryHex}" title="Wybierz kolor akcentu">
+                              <small class="text-secondary">Drugi kolor (np. tło paska)</small>
+                          </div>
+                          <div class="col-md-4">
+                              <label for="color3" class="form-label fw-bold">Kolor Tła</label>
+                              <input type="color" class="form-control form-control-color" id="color3" th:field="*{colorAccentHex}" title="Wybierz kolor tła">
+                              <small class="text-secondary">Jasne tło (np. tło strony)</small>
+                          </div>
+                      </div>
+
+                  </div>
+                  <div class="modal-footer" style="border-top: none;">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                      <button type="submit" class="btn btn-primary-custom">Zapisz motyw</button>
+                  </div>
+              </form>
+          </div>
       </div>
-    </div>
+  </div>
+
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#themeModal">
+      Dodaj Nowy Motyw
+  </button>
 
   <footer th:insert="~{fragments/footer :: footer}"></footer>
 

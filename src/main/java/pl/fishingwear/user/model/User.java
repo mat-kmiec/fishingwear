@@ -3,6 +3,7 @@ package pl.fishingwear.user.model;
 import jakarta.persistence.*;
 import lombok.*;
 import pl.fishingwear.auth.model.AuthProvider;
+import pl.fishingwear.theme.model.Theme;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,6 +51,10 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "SELECTED_THEME_ID", referencedColumnName = "ID")
+    private Theme selectedTheme;
 
 
     public void updateRank() {

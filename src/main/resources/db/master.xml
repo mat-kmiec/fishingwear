@@ -13,4 +13,5 @@
     <include file="changelog/0007-create-blog.xml" relativeToChangelogFile="true" />
     <include file="changelog/0008-insert-blog.xml" relativeToChangelogFile="true" />
     <include file="changelog/0009-fix-fk-on-delete.xml" relativeToChangelogFile="true" />
+    <include file="changelog/0010-create-theme.xml" relativeToChangelogFile="true" />
 </databaseChangeLog>
