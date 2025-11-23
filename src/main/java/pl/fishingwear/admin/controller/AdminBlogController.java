@@ -1,12 +1,15 @@
 package pl.fishingwear.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.fishingwear.admin.dto.blog.AdminCommentDto;
 import pl.fishingwear.admin.dto.blog.BlogCategoryDto;
+import pl.fishingwear.admin.dto.blog.CategoryEditDto;
 import pl.fishingwear.admin.dto.user.StaffUserDto;
 import pl.fishingwear.admin.dto.blog.BlogCategoryCreationDto;
 import pl.fishingwear.admin.exception.CategoryNotFoundException;
@@ -88,6 +91,23 @@ public class AdminBlogController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage",
                     "Wystąpił nieoczekiwany błąd podczas tworzenia kategorii.");
+        }
+
+        return "redirect:/admin/blog#categories";
+    }
+
+    @PostMapping("/blog/categories/edit")
+    public String editCategory(@Valid CategoryEditDto categoryEditDto,
+                               RedirectAttributes redirectAttributes) {
+
+        try {
+            blogManagementService.updateCategory(categoryEditDto);
+            redirectAttributes.addFlashAttribute("successMessage", "Kategoria została pomyślnie zaktualizowana!");
+        } catch (IllegalArgumentException | NoSuchElementException e) {
+            // Obsługa błędów, np. brak kategorii, niepoprawne ID parenta/moderatora
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Wystąpił nieoczekiwany błąd podczas aktualizacji kategorii.");
         }
 
         return "redirect:/admin/blog#categories";

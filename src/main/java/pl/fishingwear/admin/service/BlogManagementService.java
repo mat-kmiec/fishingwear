@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.fishingwear.admin.dto.blog.AdminCommentDto;
 import pl.fishingwear.admin.dto.blog.BlogCategoryDto;
 import pl.fishingwear.admin.dto.blog.BlogCategoryCreationDto;
+import pl.fishingwear.admin.dto.blog.CategoryEditDto;
 import pl.fishingwear.admin.exception.CategoryNotFoundException;
-import pl.fishingwear.admin.exception.DeletionConstraintException;
 import pl.fishingwear.admin.mapper.blog.BlogCategoryMapper;
 import pl.fishingwear.admin.mapper.blog.CommentMapper;
 import pl.fishingwear.blog.model.BlogCategory;
@@ -87,5 +87,36 @@ public class BlogManagementService {
             throw new CategoryNotFoundException();
         }
         blogCategoryRepository.deleteById(categoryId);
+    }
+
+    @Transactional
+    public void updateCategory(CategoryEditDto dto) {
+        if (dto.getId() == null) {
+            throw new IllegalArgumentException("ID kategorii jest wymagane do edycji.");
+        }
+
+        BlogCategory category = blogCategoryRepository.findById(dto.getId())
+                .orElseThrow(CategoryNotFoundException::new);
+
+        category.setName(dto.getName());
+
+        if (dto.getParentCategoryId() != null) {
+            BlogCategory parent = blogCategoryRepository.findById(dto.getParentCategoryId())
+                    .orElseThrow(CategoryNotFoundException::new);
+            category.setParent(parent);
+        } else {
+            category.setParent(null);
+        }
+
+        if (dto.getModeratorId() != null || dto.getModeratorId() != 0) {
+            User moderator = userRepository.findById(dto.getModeratorId())
+                    .orElseThrow(UserNotFoundException::new);
+            category.setAssignedModerator(moderator);
+        } else {
+            category.setAssignedModerator(null);
+        }
+
+
+        blogCategoryRepository.save(category);
     }
 }

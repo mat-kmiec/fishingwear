@@ -165,32 +165,35 @@
                             <ul class="list-group" th:each="category : ${categories}">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-                                        <span class="fw-bold" th:text="${category.name()}">Poradniki</span>
+                                        <span class="fw-bold" th:text="${category.name}">Poradniki</span>
 
                                         <p class="small text-secondary mb-0">
                                             Kategoria nadrzędna:
-                                            <span th:text="${category.parentCategory() != null ? category.parentCategory.name : 'Brak'}">xxx</span>
+                                            <span th:text="${category.parentCategory != null ? category.parentCategory.name : 'Brak'}">xxx</span>
                                         </p>
 
-                                        <p class="small text-secondary mb-0" th:text="'Moderator: ' + ${category.moderator != null ? category.moderator: 'Brak'}">Moderator: xxx</p>
                                     </div>
                                     <div>
-                                        <a href="#"
-                                           class="btn-link-custom me-2"
-                                           data-bs-toggle="modal"
-                                           data-bs-target="#editCategoryModal"
-                                           th:data-category-id="${category.id}"
-                                           th:data-category-name="${category.name}">
-                                            <i class="fa-solid fa-pen-to-square"></i>
-                                        </a>
-                                        <a href="#"
-                                           class="btn-link-custom text-danger"
-                                           data-bs-toggle="modal"
-                                           data-bs-target="#deleteCategoryModal"
-                                           th:data-category-id="${category.id}"
-                                           th:data-category-name="${category.name}">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </a>
+<!--                                        <a href="#"-->
+<!--                                           class="btn-link-custom me-2"-->
+<!--                                           data-bs-toggle="modal"-->
+<!--                                           data-bs-target="#editCategoryModal"-->
+<!--                                           th:data-category-id="${category.id}"-->
+<!--                                           th:data-category-name="${category.name}"-->
+
+<!--                                           th:data-parent-id="${category.parentCategory() != null ? category.parentCategory.id : 0}"-->
+<!--                                           th:data-moderator-id="${category.moderator != null ? category.moderator.id : 0}">-->
+
+<!--                                            <i class="fa-solid fa-pen-to-square"></i>-->
+<!--                                        </a>-->
+<!--                                        <a href="#"-->
+<!--                                           class="btn-link-custom text-danger"-->
+<!--                                           data-bs-toggle="modal"-->
+<!--                                           data-bs-target="#deleteCategoryModal"-->
+<!--                                           th:data-category-id="${category.id}"-->
+<!--                                           th:data-category-name="${category.name}">-->
+<!--                                            <i class="fa-solid fa-trash-can"></i>-->
+<!--                                        </a>-->
                                     </div>
                                 </li>
                             </ul>
@@ -425,16 +428,15 @@
 
         if (editModal) {
             editModal.addEventListener('show.bs.modal', function (event) {
-                // Przycisk (link), który uruchomił modal
                 const button = event.relatedTarget;
 
-                // Pobieranie danych z linku
+                // Pobieranie danych z linku (teraz te atrybuty są dostępne dzięki zmianom w Thymeleaf)
                 const categoryId = button.getAttribute('data-category-id');
                 const categoryName = button.getAttribute('data-category-name');
-                const parentId = button.getAttribute('data-parent-id');
-                const moderatorId = button.getAttribute('data-moderator-id');
+                const parentId = button.getAttribute('data-parent-id');   // Będzie ID lub '0'
+                const moderatorId = button.getAttribute('data-moderator-id'); // Będzie ID lub '0'
 
-                // 1. Ustawienie ID w ukrytym polu formularza (dla endpointu edycji)
+                // 1. Ustawienie ID w ukrytym polu formularza
                 editModal.querySelector('#editCategoryId').value = categoryId;
 
                 // 2. Ustawienie Nazwy w tytule modala
@@ -444,14 +446,10 @@
                 editModal.querySelector('#editCatName').value = categoryName;
 
                 // 4. Ustawienie wybranej KATEGORII NADRZĘDNEJ
-                editModal.querySelector('#editCatParent').value = parentId;
+                editModal.querySelector('#editCatParent').value = parentId; // Ustawia wybraną opcję
 
                 // 5. Ustawienie wybranego MODERATORA
-                editModal.querySelector('#editModerator').value = moderatorId;
-
-                // Opcjonalnie: Ustawienie akcji formularza na endpoint edycji (jeśli endpoint używa ID w ścieżce)
-                // const form = editModal.querySelector('#editCategoryForm');
-                // form.action = `/admin/blog/categories/edit/${categoryId}`;
+                editModal.querySelector('#editModerator').value = moderatorId; // Ustawia wybraną opcję
             });
         }
     });
