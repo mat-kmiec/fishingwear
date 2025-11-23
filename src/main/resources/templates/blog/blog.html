@@ -57,14 +57,20 @@
                 <li class="breadcrumb-item"><a th:href="@{/}">Strona główna</a></li>
                 <li class="breadcrumb-item"><a th:href="@{/blog}">Blog</a></li>
 
-                <li class="breadcrumb-item" th:if="${post.category.parent != null}">
+                <li class="breadcrumb-item" th:if="${post.category != null and post.category.parent != null}">
                     <a th:href="@{/blog(categoryId=${post.category.parent.id})}"
                        th:text="${post.category.parent.name}">Kategoria Nadrzędna</a>
                 </li>
 
-                <li class="breadcrumb-item">
+                <li class="breadcrumb-item" th:if="${post.category != null}">
                     <a th:href="@{/blog(categoryId=${post.category.id})}"
-                       th:text="${post.category.name}">Kategoria</a>
+                       th:text="${post.category.name}">
+                        Kategoria
+                    </a>
+                </li>
+
+                <li class="breadcrumb-item" th:unless="${post.category != null}">
+                    Brak kategorii
                 </li>
 
                 <li class="breadcrumb-item active" aria-current="page" th:text="${post.title}"></li>
@@ -83,7 +89,10 @@
 
             <div class="p-4 p-md-5">
               <div class="mb-3">
-                <a href="#" class="blog-badge me-2" th:text="${post.category().name}">Poradniki</a>
+                  <a href="#" class="blog-badge me-2"
+                     th:text="${post.category() != null ? post.category().name : 'Brak kategorii'}">
+                      Poradniki
+                  </a>
                   <small class="text-secondary">
                       <i class="fa-solid fa-calendar-days fa-sm me-1"></i>
                       <span th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}">

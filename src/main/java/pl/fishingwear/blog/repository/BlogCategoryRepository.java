@@ -2,6 +2,7 @@ package pl.fishingwear.blog.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import pl.fishingwear.blog.dto.BlogCategorySidebarDto;
 import pl.fishingwear.blog.model.BlogCategory;
 
@@ -18,5 +19,9 @@ public interface BlogCategoryRepository extends JpaRepository<BlogCategory, Long
             "GROUP BY c.id, c.name " +
             "ORDER BY c.name ASC")
     List<BlogCategorySidebarDto> findAllCategoriesWithPostCount();
+
+    @Query("SELECT COUNT(p) FROM Post p WHERE p.category.id = :categoryId")
+    int countPostsByCategory(@Param("categoryId") Long categoryId);
+    int countByParentId(Long categoryId);
 
 }

@@ -1,7 +1,7 @@
-package pl.fishingwear.admin.mapper;
+package pl.fishingwear.admin.mapper.blog;
 
 import org.springframework.stereotype.Component;
-import pl.fishingwear.admin.dto.AdminCommentDto;
+import pl.fishingwear.admin.dto.blog.AdminCommentDto;
 import pl.fishingwear.blog.model.Comment;
 
 @Component

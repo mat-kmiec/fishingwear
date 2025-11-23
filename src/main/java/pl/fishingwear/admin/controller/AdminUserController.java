@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pl.fishingwear.admin.dto.EditUserRequest;
-import pl.fishingwear.admin.service.AdminService;
+import pl.fishingwear.admin.dto.user.EditUserRequest;
+import pl.fishingwear.admin.service.UserManagementService;
 import pl.fishingwear.user.model.User;
 
 @Controller
@@ -19,7 +19,7 @@ import pl.fishingwear.user.model.User;
 public class AdminUserController {
 
 
-    private final AdminService adminService;
+    private final UserManagementService userManagementService;
 
     @GetMapping()
     public String users(@RequestParam(defaultValue = "0") int page,
@@ -29,7 +29,7 @@ public class AdminUserController {
                         @RequestParam(value = "editError", required = false) String editError,
                         Model model) {
 
-        Page<User> userPage = adminService.getUsers(page, size, search);
+        Page<User> userPage = userManagementService.getUsers(page, size, search);
 
         model.addAttribute("users", userPage);
         model.addAttribute("currentPage", page);
@@ -45,7 +45,7 @@ public class AdminUserController {
     @PostMapping("/update")
     public String updateUser(EditUserRequest request) {
         try{
-            adminService.updateUser(request);
+            userManagementService.updateUser(request);
             return "redirect:/admin/uzytkownicy?editSuccess";
         }catch (Exception e){
             return "redirect:/admin/uzytkownicy?editError";
@@ -57,7 +57,7 @@ public class AdminUserController {
             throw new IllegalArgumentException("Nie można usunąć użytkownika systemowego (ID=1).");
         }
         try {
-            adminService.deleteUser(id);
+            userManagementService.deleteUser(id);
             redirectAttributes.addAttribute("deleteSuccess", "1");
         } catch (Exception e) {
             redirectAttributes.addAttribute("deleteError", "1");

@@ -181,5 +181,21 @@
                                  onDelete="CASCADE"/>
 
     </changeSet>
+    <changeSet id="20251123-set-null-on-category-delete" author="yourname">
+
+        <dropForeignKeyConstraint baseTableName="blog_post"
+                                  constraintName="FK_POSTS_BLOG_CATEGORY"/>
+
+        <addForeignKeyConstraint baseTableName="blog_post"
+                                 baseColumnNames="category_id"
+                                 constraintName="FK_POSTS_BLOG_CATEGORY_SET_NULL"
+                                 referencedTableName="blog_categories"
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="20251123-make-category-id-nullable" author="yourname">
+        <dropNotNullConstraint tableName="blog_post" columnName="category_id" columnDataType="BIGINT"/>
+    </changeSet>
 
 </databaseChangeLog>

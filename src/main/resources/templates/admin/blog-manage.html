@@ -156,6 +156,12 @@
 
                         <div class="col-md-7">
                             <h5 class="mb-3">Istniejące kategorie</h5>
+                            <div th:if="${categories.isEmpty()}">
+                                <div class="alert alert-info text-center" role="alert">
+                                    <h4 class="alert-heading">Brak kategorii!</h4>
+                                    <p class="mb-0">Aktualnie nie ma żadnych kategorii do wyświetlenia. Użyj formularza z prawej, aby dodać pierwszą kategorię.</p>
+                                </div>
+                            </div>
                             <ul class="list-group" th:each="category : ${categories}">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
@@ -169,8 +175,22 @@
                                         <p class="small text-secondary mb-0" th:text="'Moderator: ' + ${category.moderator != null ? category.moderator: 'Brak'}">Moderator: xxx</p>
                                     </div>
                                     <div>
-                                        <a href="#" class="btn-link-custom me-2"><i class="fa-solid fa-pen-to-square"></i></a>
-                                        <a href="#" class="btn-link-custom text-danger"><i class="fa-solid fa-trash-can"></i></a>
+                                        <a href="#"
+                                           class="btn-link-custom me-2"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#editCategoryModal"
+                                           th:data-category-id="${category.id}"
+                                           th:data-category-name="${category.name}">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="#"
+                                           class="btn-link-custom text-danger"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#deleteCategoryModal"
+                                           th:data-category-id="${category.id}"
+                                           th:data-category-name="${category.name}">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
                                     </div>
                                 </li>
                             </ul>
@@ -179,25 +199,40 @@
                         <div class="col-md-5">
                             <div class="category-form p-4">
                                 <h5 class="mb-3" id="categoryFormLabel">Dodaj nową kategorię</h5>
-                                <form>
+                                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <span th:text="${successMessage}">Powiadomienie o sukcesie!</span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+
+                                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <span th:text="${errorMessage}">Powiadomienie o błędzie!</span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <form th:action="@{/admin/blog/categories/create}" method="POST" th:object="${categoryCreationDto}">
                                     <div class="mb-3">
                                         <label for="catName" class="form-label">Nazwa</label>
-                                        <input type="text" class="form-control" id="catName" required>
+                                        <input type="text" class="form-control" id="catName" th:field="*{name}" required>
                                     </div>
+
                                     <div class="mb-3">
                                         <label for="catParent" class="form-label">Kategoria nadrzędna</label>
-                                        <select class="form-select" id="catParent">
-                                            <option value="0">Brak (główna kategoria)</option>
-                                            <option value="1">- Poradniki</option>
-                                            <option value="2">- Sprzęt</option>
+                                        <select class="form-select" id="catParent" th:field="*{parentCategoryId}">
+                                            <option value="0">Brak</option>
+                                            <option th:each="category : ${categories}"
+                                                    th:value="${category.id}"
+                                                    th:text="${category.name}">
+                                            </option>
                                         </select>
                                     </div>
+
                                     <div class="mb-3">
-                                        <label for="catParent" class="form-label">Moderator</label>
-                                        <select class="form-select" id="moderator">
-                                            <option value="0">Brak (główna kategoria)</option>
-                                            <option value="1">- Poradniki</option>
-                                            <option value="2">- Sprzęt</option>
+                                        <label for="moderator" class="form-label">Moderator</label>
+                                        <select class="form-select" id="moderator" th:field="*{moderatorId}">
+                                            <option value="0">Brak </option>
+                                            <option th:each="staff : ${staffUsers}"
+                                                    th:value="${staff.id}"
+                                                    th:text="${staff.firstName()} + ' ' + ${staff.lastName()}">
+                                            </option>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-primary-custom w-100">Zapisz kategorię</button>
@@ -277,6 +312,78 @@
     </div>
 </div>
 
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCategoryModalLabel">Potwierdzenie Usunięcia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Czy na pewno chcesz usunąć kategorię **<span id="categoryNamePlaceholder"></span>**?
+                Ta operacja jest nieodwracalna.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+
+                <form id="deleteCategoryForm" th:action="@{/admin/blog/categories/delete}" method="post">
+                    <input type="hidden" name="id" id="categoryIdToDelete">
+                    <button type="submit" class="btn btn-danger">Usuń kategorię</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Edytuj kategorię: <span id="currentCategoryName"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form id="editCategoryForm" th:action="@{/admin/blog/categories/edit}" method="post">
+                <div class="modal-body">
+
+                    <input type="hidden" name="id" id="editCategoryId">
+
+                    <div class="mb-3">
+                        <label for="editCatName" class="form-label">Nazwa</label>
+                        <input type="text" class="form-control" id="editCatName" name="name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editCatParent" class="form-label">Kategoria nadrzędna</label>
+                        <select class="form-select" id="editCatParent" name="parentCategoryId">
+                            <option value="0">Brak (główna kategoria)</option>
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.id}"
+                                    th:text="${category.name}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="editModerator" class="form-label">Moderator</label>
+                        <select class="form-select" id="editModerator" name="moderatorId">
+                            <option value="0">Brak </option>
+                            <option th:each="staff : ${staffUsers}"
+                                    th:value="${staff.id}"
+                                    th:text="${staff.firstName()} + ' ' + ${staff.lastName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-primary-custom">Zapisz zmiany</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <footer th:insert="~{fragments/footer :: footer}"></footer>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -287,6 +394,65 @@
                 const tab = new bootstrap.Tab(tabTrigger);
                 tab.show();
             }
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteModal = document.getElementById('deleteCategoryModal');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            // Przycisk, który uruchomił modal (ikona kosza)
+            const button = event.relatedTarget;
+
+            // Pobierz dane z atrybutów 'data-'
+            const categoryId = button.getAttribute('data-category-id');
+            const categoryName = button.getAttribute('data-category-name');
+
+            // Zaktualizuj tekst w modalu
+            const namePlaceholder = deleteModal.querySelector('#categoryNamePlaceholder');
+            namePlaceholder.textContent = categoryName;
+
+            // Zaktualizuj ukryte pole formularza
+            const inputId = deleteModal.querySelector('#categoryIdToDelete');
+            inputId.value = categoryId;
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const editModal = document.getElementById('editCategoryModal');
+
+        if (editModal) {
+            editModal.addEventListener('show.bs.modal', function (event) {
+                // Przycisk (link), który uruchomił modal
+                const button = event.relatedTarget;
+
+                // Pobieranie danych z linku
+                const categoryId = button.getAttribute('data-category-id');
+                const categoryName = button.getAttribute('data-category-name');
+                const parentId = button.getAttribute('data-parent-id');
+                const moderatorId = button.getAttribute('data-moderator-id');
+
+                // 1. Ustawienie ID w ukrytym polu formularza (dla endpointu edycji)
+                editModal.querySelector('#editCategoryId').value = categoryId;
+
+                // 2. Ustawienie Nazwy w tytule modala
+                editModal.querySelector('#currentCategoryName').textContent = categoryName;
+
+                // 3. Ustawienie Nazwy w polu INPUT
+                editModal.querySelector('#editCatName').value = categoryName;
+
+                // 4. Ustawienie wybranej KATEGORII NADRZĘDNEJ
+                editModal.querySelector('#editCatParent').value = parentId;
+
+                // 5. Ustawienie wybranego MODERATORA
+                editModal.querySelector('#editModerator').value = moderatorId;
+
+                // Opcjonalnie: Ustawienie akcji formularza na endpoint edycji (jeśli endpoint używa ID w ścieżce)
+                // const form = editModal.querySelector('#editCategoryForm');
+                // form.action = `/admin/blog/categories/edit/${categoryId}`;
+            });
         }
     });
 </script>

@@ -60,7 +60,10 @@
                         <img th:src="@{/uploads/blog/{imageName}(imageName=${post.img})}"  class="card-img-top blog-card-img" th:alt="${post.title}">
                         <div class="card-body d-flex flex-column">
                             <div>
-                                <span class="blog-badge me-2" th:text="${post.category.name}">Poradniki</span>
+                                <span class="blog-badge me-2"
+                                      th:text="${post.category != null ? post.category.name : 'Brak kategorii'}">
+    Poradniki
+</span>
                                 <small class="text-secondary" th:text="${#temporals.format(post.createdAt, 'dd MMMM yyyy')}">06 listopada 2025</small>
                             </div>
                             <h5 class="card-title mt-2">

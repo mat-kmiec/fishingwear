@@ -1,4 +1,4 @@
-package pl.fishingwear.admin.dto;
+package pl.fishingwear.admin.dto.user;
 
 import lombok.Data;
 

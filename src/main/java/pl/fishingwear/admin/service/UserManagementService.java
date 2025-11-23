@@ -1,20 +1,22 @@
 package pl.fishingwear.admin.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import pl.fishingwear.admin.dto.EditUserRequest;
+import pl.fishingwear.admin.dto.user.EditUserRequest;
+import pl.fishingwear.admin.dto.user.StaffUserDto;
+import pl.fishingwear.admin.mapper.user.StaffMapper;
 import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.user.model.Role;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class UserManagementService {
 
 
     private final UserRepository userRepository;
@@ -46,5 +48,12 @@ public class AdminService {
             throw new UserNotFoundException();
         }
         userRepository.deleteById(id);
+    }
+
+    public List<StaffUserDto> getAllStaff(){
+        return userRepository.findByRoleIn(List.of(Role.ADMIN, Role.MODERATOR))
+                .stream()
+                .map(StaffMapper::toDto)
+                .toList();
     }
 }

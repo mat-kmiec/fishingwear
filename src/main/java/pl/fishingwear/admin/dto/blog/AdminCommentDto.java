@@ -1,4 +1,4 @@
-package pl.fishingwear.admin.dto;
+package pl.fishingwear.admin.dto.blog;
 
 import java.time.LocalDateTime;
 
