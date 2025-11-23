@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FishingWear - Strona główna</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
 
     <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../static/libs/bootstrap/bootstrap.min.css"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <th:block th:insert="fragments/head-styles :: theme-styles" />
+
+    <link
+            rel="stylesheet"
+            th:href="@{/libs/bootstrap/bootstrap.min.css}"
+            href="../static/libs/bootstrap/bootstrap.min.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../static/css/style.css"
+            rel="stylesheet"
+            th:href="@{/css/style.css}"
+            href="../static/css/style.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../static/css/slider.css"
+            rel="stylesheet"
+            th:href="@{/css/slider.css}"
+            href="../static/css/slider.css"
     />
-  </head>
+</head>
   <body>
     <nav th:insert="~{fragments/nav :: nav}"></nav>
 

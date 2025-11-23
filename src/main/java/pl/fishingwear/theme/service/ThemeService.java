@@ -1,6 +1,7 @@
 package pl.fishingwear.theme.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.fishingwear.theme.dto.ThemeCreateDto;
@@ -40,21 +41,21 @@ public class ThemeService {
         Theme defaultTheme = themeRepository.findById(DEFAULT_THEME_ID).orElseThrow(IllegalStateException::new);
 
         // Update all users with theme to delete
-       List<User> usersToUpdate = userRepository.findAllBySelectedThemeId(themeToDeleteId);
-       usersToUpdate.forEach(user -> user.setSelectedTheme(defaultTheme));
-       userRepository.saveAll(usersToUpdate);
+        List<User> usersToUpdate = userRepository.findAllBySelectedThemeId(themeToDeleteId);
+        usersToUpdate.forEach(user -> user.setSelectedTheme(defaultTheme));
+        userRepository.saveAll(usersToUpdate);
 
-       // delete theme
-       themeRepository.delete(themeToDelete);
+        // delete theme
+        themeRepository.delete(themeToDelete);
     }
 
 
-    public void createTheme(ThemeCreateDto dto){
+    public void createTheme(ThemeCreateDto dto) {
         themeRepository.save(ThemeMapper.toEntity(dto));
     }
 
     @Transactional
-    public void updateTheme(ThemeDto dto){
+    public void updateTheme(ThemeDto dto) {
         Theme theme = themeRepository.findById(dto.id()).orElseThrow(ThemeNotFoundException::new);
         theme.setName(dto.name());
         theme.setColorPrimaryHex(dto.colorPrimaryHex());
@@ -63,5 +64,51 @@ public class ThemeService {
         themeRepository.save(theme);
     }
 
+    @Transactional
+    public void changeUserTheme(String username, Long newThemeId)
+            throws UsernameNotFoundException, ThemeNotFoundException {
 
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono użytkownika: " + username));
+
+
+        Theme selectedTheme = themeRepository.findById(newThemeId).orElseThrow(ThemeNotFoundException::new);
+
+        user.setSelectedTheme(selectedTheme);
+        userRepository.save(user);
+
+    }
+
+    public ThemeDto getCurrentUserThemeData(String username) {
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono użytkownika."));
+
+        Theme selectedTheme = user.getSelectedTheme();
+
+        if (selectedTheme == null) {
+            return this.getThemeDtoById(DEFAULT_THEME_ID);
+        }
+
+        return ThemeMapper.toDto(selectedTheme);
+    }
+
+    private ThemeDto getThemeDtoById(Long id) {
+        Theme theme = themeRepository.findById(id)
+                .orElseThrow(ThemeNotFoundException::new);
+
+        return ThemeMapper.toDto(theme);
+    }
+
+    public Theme findById(Long id) {
+        return themeRepository.findById(id)
+                .orElseThrow(ThemeNotFoundException::new);
+    }
+
+    public ThemeDto getDefaultThemeData() {
+        try {
+            return this.getThemeDtoById(DEFAULT_THEME_ID);
+        } catch (ThemeNotFoundException e) {
+            return new ThemeDto(1L, "Domyślny Awaryjny", "#343a40", "#6c757d", "#adb5bd");
+        }
+    }
 }

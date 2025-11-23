@@ -2,17 +2,20 @@ package pl.fishingwear.theme.controller;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.fishingwear.theme.dto.ThemeCreateDto;
 import pl.fishingwear.theme.dto.ThemeDto;
 import pl.fishingwear.theme.exception.ThemeNotFoundException;
+import pl.fishingwear.theme.model.Theme;
 import pl.fishingwear.theme.service.ThemeService;
+import pl.fishingwear.user.model.User;
+import pl.fishingwear.user.service.UserService;
+
+import java.security.Principal;
 
 @Controller
 @AllArgsConstructor
@@ -20,6 +23,7 @@ import pl.fishingwear.theme.service.ThemeService;
 public class ThemeController {
 
     private final ThemeService themeService;
+    private final UserService userService;
 
     @PostMapping("delete/{id}")
     public String deleteTheme(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
@@ -68,5 +72,28 @@ public class ThemeController {
         }
 
         return "redirect:/admin/ustawienia";
+    }
+
+    @PostMapping("/change")
+    public String changeUserTheme(@RequestParam("themeId") Long newThemeId,
+                                  Principal principal,
+                                  RedirectAttributes redirectAttributes) {
+
+        String username = principal.getName();
+
+        try {
+            themeService.changeUserTheme(username, newThemeId);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Motyw został pomyślnie zmieniony.");
+
+        } catch (UsernameNotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Błąd: Nie znaleziono użytkownika.");
+        } catch (ThemeNotFoundException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Błąd: Wybrany motyw nie istnieje.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Wystąpił nieoczekiwany błąd serwera.");
+        }
+
+        return "redirect:/ustawienia-profilu";
     }
 }

@@ -9,6 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
+      <th:block th:insert="fragments/head-styles :: theme-styles" />
     <link
       rel="stylesheet"
       th:href="@{/libs/bootstrap/bootstrap.min.css}"
@@ -26,7 +27,56 @@
     />
 
     <style>
-      
+        /* Karta wyboru motywu */
+        .theme-selection-card {
+            display: block;
+            cursor: pointer;
+            background-color: #fff;
+            border: 2px solid #e9ecef; /* Jasna ramka domyślnie */
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.2s ease-in-out;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .theme-selection-card:hover {
+            border-color: #dee2e6;
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        /* Podgląd kulek z kolorami */
+        .colors-preview {
+            display: flex;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            justify-content: center;
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1); /* Delikatna obwódka dla jasnych kolorów */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .theme-radio-input:checked + .theme-selection-card {
+            border-color: var(--color-primary); /* Twój główny kolor z CSS */
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+
+
+
+        .theme-radio-input:checked + .theme-selection-card .check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
 
     </style>
   </head>
@@ -40,6 +90,23 @@
 
         <div class="col-lg-8">
           <h2 class="h3 mb-4">Ustawienia konta</h2>
+            <div class="row g-4">
+                <div class="col-12">
+
+                    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa-solid fa-circle-check me-2"></i>
+                        <span th:text="${successMessage}">Wiadomość o sukcesie</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        <span th:text="${errorMessage}">Wiadomość o błędzie</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                </div>
+            </div>
 
           <div class="account-card p-4 p-md-5 mb-4">
             <h3 class="h5 mb-4">Zmień hasło</h3>
@@ -61,43 +128,47 @@
               </div>
             </form>
           </div>
-          
-          <div class="account-card p-4 p-md-5 mb-4">
-            <h3 class="h5 mb-4">Wybierz motyw witryny</h3>
-            <div class="row g-3">
-              
-              <div class="col-md-4">
-                <input type="radio" class="selection-card-input" name="theme" id="theme-olive" checked>
-                <label class="selection-card" for="theme-olive">
-                  <div class="theme-swatch" style="background: linear-gradient(90deg, #677525, #2e3b38, #f5f5f5);"></div>
-                  <div class="theme-name">
-                    <span>Oliwkowy</span>
-                  </div>
-                </label>
-              </div>
-              
-              <div class="col-md-4">
-                <input type="radio" class="selection-card-input" name="theme" id="theme-marine">
-                <label class="selection-card" for="theme-marine">
-                  <div class="theme-swatch" style="background: linear-gradient(90deg, #0a4d68, #088395, #f0eabe);"></div>
-                  <div class="theme-name">
-                    <span>Morski</span>
-                  </div>
-                </label>
-              </div>
-              
-              <div class="col-md-4">
-                <input type="radio" class="selection-card-input" name="theme" id="theme-graphite">
-                <label class="selection-card" for="theme-graphite">
-                  <div class="theme-swatch" style="background: linear-gradient(90deg, #343a40, #6c757d, #adb5bd);"></div>
-                  <div class="theme-name">
-                    <span>Grafit</span>
-                  </div>
-                </label>
-              </div>
-              
+
+            <div class="account-card p-4 p-md-5 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="h5 mb-0">Wybierz motyw witryny</h3>
+                </div>
+
+                <form th:action="@{/theme/change}" method="post">
+                    <div class="row g-3">
+
+                        <div class="col-6 col-md-4 col-lg-3" th:each="theme : ${themes}">
+
+                            <input type="radio"
+                                   class="btn-check theme-radio-input"
+                                   name="themeId"
+                                   th:id="'theme_select_' + ${theme.id}"
+                                   th:value="${theme.id}"
+                                   th:checked="${(currentUser.selectedTheme != null ? currentUser.selectedTheme.id : 0) == theme.id}"
+                                   autocomplete="off">
+
+                            <label class="theme-selection-card h-100" th:for="'theme_select_' + ${theme.id}">
+
+                                <div class="colors-preview mb-2">
+                                    <span class="color-dot" th:style="'background-color:' + ${theme.colorPrimaryHex}" title="Kolor główny"></span>
+                                    <span class="color-dot" th:style="'background-color:' + ${theme.colorSecondaryHex}" title="Akcent"></span>
+                                    <span class="color-dot" th:style="'background-color:' + ${theme.colorAccentHex}" title="Tło/Jasny"></span>
+                                </div>
+
+                                    <span class="fw-bold small" th:text="${theme.name}">Nazwa Motywu</span>
+
+                            </label>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4 text-end">
+                        <button type="submit" class="btn btn-primary-custom">
+                            Zapisz Wygląd
+                        </button>
+                    </div>
+                </form>
             </div>
-          </div>
         </div>
       </div>
     </div>

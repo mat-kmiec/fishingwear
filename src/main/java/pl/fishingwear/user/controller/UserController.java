@@ -5,6 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.order.service.OrderService;
+import pl.fishingwear.theme.dto.ThemeDto;
+import pl.fishingwear.theme.service.ThemeService;
 import pl.fishingwear.user.model.Address;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.service.AddressService;
@@ -12,6 +14,7 @@ import pl.fishingwear.user.service.UserService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -20,11 +23,13 @@ public class UserController {
     private final UserService userService;
     private final AddressService addressService;
     private final OrderService orderService;
+    private final ThemeService themeService;
 
-    public UserController(UserService userService, AddressService addressService, OrderService orderService) {
+    public UserController(UserService userService, AddressService addressService, OrderService orderService, ThemeService themeService) {
         this.userService = userService;
         this.addressService = addressService;
         this.orderService = orderService;
+        this.themeService = themeService;
     }
 
     @GetMapping("/moje-konto")
@@ -45,7 +50,12 @@ public class UserController {
 
 
     @GetMapping("/ustawienia-profilu")
-    public String profileSettings() {
+    public String userSettings(Model model, Principal principal) {
+        User user = userService.findByEmail(principal.getName());
+        List<ThemeDto> themes = themeService.getAllThemes();
+        model.addAttribute("currentUser", user);
+        model.addAttribute("themes", themes);
+
         return "user/user-settings";
     }
 
