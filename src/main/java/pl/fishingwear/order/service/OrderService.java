@@ -16,6 +16,7 @@ import pl.fishingwear.order.mapper.OrderMapper;
 import pl.fishingwear.order.model.Order;
 import pl.fishingwear.order.model.OrderItem;
 import pl.fishingwear.cart.repository.CartRepository;
+import pl.fishingwear.order.model.OrderStatus;
 import pl.fishingwear.order.repository.OrderRepository;
 import pl.fishingwear.cart.service.CartService;
 import pl.fishingwear.product.model.ProductVariant;
@@ -90,7 +91,7 @@ public class OrderService {
                 .subtotal(cartView.subtotalPrice())
                 .shippingCost(shippingCost)
                 .total(total)
-                .status("NOWE")
+                .status(OrderStatus.NEW)
                 .build();
 
         orderItems.forEach(order::addItem);

@@ -69,7 +69,7 @@ public class Order {
     private BigDecimal total;
 
     @Column(nullable = false, length = 50)
-    private String status;
+    private OrderStatus status;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

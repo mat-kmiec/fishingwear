@@ -10,10 +10,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.fishingwear.theme.dto.ThemeCreateDto;
 import pl.fishingwear.theme.dto.ThemeDto;
 import pl.fishingwear.theme.exception.ThemeNotFoundException;
-import pl.fishingwear.theme.model.Theme;
 import pl.fishingwear.theme.service.ThemeService;
-import pl.fishingwear.user.model.User;
-import pl.fishingwear.user.service.UserService;
 
 import java.security.Principal;
 
@@ -23,7 +20,6 @@ import java.security.Principal;
 public class ThemeController {
 
     private final ThemeService themeService;
-    private final UserService userService;
 
     @PostMapping("delete/{id}")
     public String deleteTheme(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
@@ -60,7 +56,6 @@ public class ThemeController {
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Wystąpiły błędy w formularzu edycji.");
-            // W przypadku błędu najlepiej jest ponownie otworzyć modal lub użyć AJAX
             return "redirect:/admin/ustawienia";
         }
 

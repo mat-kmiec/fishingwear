@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.fishingwear.order.model.OrderStatus;
 import pl.fishingwear.payment.controller.PaymentSimulationController.PaymentSimulationDto;
 import pl.fishingwear.order.exception.OrderNotFoundException;
 import pl.fishingwear.order.model.Order;
@@ -22,18 +23,18 @@ public class PaymentService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(OrderNotFoundException::new);
 
-        if (!order.getStatus().equals("NOWE")) {
+        if (!order.getStatus().equals(OrderStatus.NEW)) {
             log.warn("Otrzymano powiadomienie dla zamówienia #{} ze statusem innym niż NOWE.", orderId);
             return;
         }
 
         if ("COMPLETED".equals(dto.status())) {
-            order.setStatus("OPŁACONE");
+            order.setStatus(OrderStatus.PROCESSING);
             log.info("Zamówienie #{} zostało automatycznie OPŁACONE (symulacja).", orderId);
             // TODO: payment
 
         } else if ("FAILED".equals(dto.status())) {
-            order.setStatus("ANULOWANE (BŁĄD PŁATNOŚCI)");
+            order.setStatus(OrderStatus.CANCELED);
             log.info("Zamówienie #{} zostało automatycznie ANULOWANE (symulacja).", orderId);
         }
 

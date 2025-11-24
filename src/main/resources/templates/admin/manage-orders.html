@@ -1,193 +1,181 @@
 <!DOCTYPE html>
 <html lang="pl">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FishingWear - Panel Admina - Zamówienia</title>
-      <th:block th:insert="fragments/head-styles :: theme-styles" />
+    <th:block th:insert="fragments/head-styles :: theme-styles" />
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
 
     <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
+            rel="stylesheet"
+            th:href="@{/libs/bootstrap/bootstrap.min.css}"
+            href="../../static/libs/bootstrap/bootstrap.min.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
+            rel="stylesheet"
+            th:href="@{/css/style.css}"
+            href="../../static/css/style.css"
     />
     <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
+            rel="stylesheet"
+            th:href="@{/css/slider.css}"
+            href="../../static/css/slider.css"
     />
 
     <style>
-      
-      
-      
-
+        .badge-status { font-weight: 500; font-size: 0.85em; padding: 0.5em 0.8em; }
+        .badge-new { background-color: #e3f2fd; color: #0d47a1; } /* Niebieski */
+        .badge-pending { background-color: #fff3e0; color: #e65100; } /* Pomarańczowy */
+        .badge-processing { background-color: #f3e5f5; color: #7b1fa2; } /* Fioletowy */
+        .badge-shipped { background-color: #e8f5e9; color: #1b5e20; } /* Zielony */
+        .badge-canceled {
+            background-color: #ffebee; /* Bardzo jasny czerwony (pastelowy) */
+            color: #c62828;            /* Ciemny, wyraźny czerwony tekst */
+        }
     </style>
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-  <nav th:insert="~{fragments/nav :: nav}"></nav>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container my-5">
-      <div class="row g-4">
+<div class="container my-5">
+    <div class="row g-4">
 
-          <div class="col-lg-4">
-              <div th:replace="fragments/admin-sidebar :: adminSidebar('order-manage')"></div>
-          </div>
+        <div class="col-lg-4">
+            <div th:replace="fragments/admin-sidebar :: adminSidebar('order-manage')"></div>
+        </div>
 
         <div class="col-lg-8">
-          <h2 class="h3 mb-4">Zarządzanie Zamówieniami</h2>
+            <h2 class="h3 mb-4">Zarządzanie Zamówieniami</h2>
 
-          <div class="account-card p-4 mb-4">
-            <div class="row g-3">
-              <div class="col-md-7">
-                <input type="text" class="form-control" placeholder="Szukaj (ID zamówienia, klient, email)...">
-              </div>
-              <div class="col-md-5">
-                <input type="date" class="form-control"> </div>
-            </div>
-          </div>
+            <!-- Sekcja Filtrów -->
+            <div class="account-card p-4 mb-4 bg-white shadow-sm rounded">
+                <form th:action="@{/admin/zamowienia}" method="get">
+                    <div class="row g-3">
+                        <div class="col-md-12 col-lg-4">
+                            <label for="searchQuery" class="form-label small text-muted fw-bold">Szukaj</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-secondary"></i></span>
+                                <input type="text" name="searchQuery" id="searchQuery" class="form-control border-start-0 ps-0"
+                                       placeholder="ID, nazwisko, email..." th:value="${currentSearch}">
+                            </div>
+                        </div>
 
-          <ul class="nav nav-tabs" id="ordersTabs" role="tablist">
-            <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="new-tab" data-bs-toggle="tab" data-bs-target="#new" type="button" role="tab" aria-controls="new" aria-selected="true">
-                Nowe <span class="badge bg-danger rounded-pill">2</span>
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="processing-tab" data-bs-toggle="tab" data-bs-target="#processing" type="button" role="tab" aria-controls="processing" aria-selected="false">
-                W trakcie <span class="badge bg-secondary rounded-pill">1</span>
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="false">
-                Historia (zakończone)
-              </button>
-            </li>
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button" role="tab" aria-controls="all" aria-selected="false">
-                Wszystkie
-              </button>
-            </li>
-          </ul>
-          
-          <div class="tab-content" id="ordersTabsContent">
-            
-            <div class="tab-pane fade show active" id="new" role="tabpanel" aria-labelledby="new-tab">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Klient</th>
-                      <th scope="col">Data</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Suma</th>
-                      <th scope="col">Akcje</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="fw-bold">#10025</td>
-                      <td>Alicja Testowa</td>
-                      <td>07.11.2025</td>
-                      <td><span class="badge badge-status new">Nowe</span></td>
-                      <td class="fw-bold">299,98 zł</td>
-                      <td><a href="#" class="btn btn-primary-custom btn-sm">Zarządzaj</a></td>
-                    </tr>
-                    <tr>
-                      <td class="fw-bold">#10024</td>
-                      <td>Marek Cierpliwy</td>
-                      <td>06.11.2025</td>
-                      <td><span class="badge badge-status new">Oczekuje na płatność</span></td>
-                      <td class="fw-bold">99,99 zł</td>
-                      <td><a href="#" class="btn btn-primary-custom btn-sm">Zarządzaj</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            <div class="tab-pane fade" id="processing" role="tabpanel" aria-labelledby="processing-tab">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <td class="fw-bold">#10023</td>
-                      <td>Jan Kowalski</td>
-                      <td>05.11.2025</td>
-                      <td><span class="badge badge-status processing">Pakowanie</span></td>
-                      <td class="fw-bold">415,96 zł</td>
-                      <td><a href="#" class="btn btn-primary-custom btn-sm">Zarządzaj</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            
-            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-              <div class="table-responsive">
-                <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                      <td class="fw-bold">#10022</td>
-                      <td>Adam Kruk</td>
-                      <td>28.10.2025</td>
-                      <td><span class="badge badge-status shipped">Wysłane</span></td>
-                      <td class="fw-bold">112,98 zł</td>
-                      <td><a href="#" class="btn btn-primary-custom btn-sm">Zarządzaj</a></td>
-                    </tr>
-                    <tr>
-                      <td class="fw-bold">#10021</td>
-                      <td>Bartek Ryba</td>
-                      <td>15.10.2025</td>
-                      <td><span class="badge badge-status cancelled">Anulowane</span></td>
-                      <td class="fw-bold">249,99 zł</td>
-                      <td><a href="#" class="btn btn-primary-custom btn-sm">Zarządzaj</a></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                        <div class="col-md-6 col-lg-3">
+                            <label for="statusFilter" class="form-label small text-muted fw-bold">Status zamówienia</label>
+                            <select name="statusFilter" id="statusFilter" class="form-select">
+                                <option value="">Wszystkie statusy</option>
+                                <option th:each="status : ${allStatuses}"
+                                        th:value="${status}"
+                                        th:text="${status}"
+                                        th:selected="${status == currentStatus}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <label for="dateFilter" class="form-label small text-muted fw-bold">Data od</label>
+                            <input type="date" name="dateFilter" id="dateFilter" class="form-control"
+                                   th:value="${currentDate}">
+                        </div>
+
+                        <div class="col-lg-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary-custom w-100">Filtruj</button>
+                        </div>
+                    </div>
+                </form>
             </div>
 
-            <div class="tab-pane fade" id="all" role="tabpanel" aria-labelledby="all-tab">
-              <p class="text-secondary p-3">Wyświetlanie wszystkich zamówień...</p>
+            <!-- Jedna lista zamówień -->
+            <div class="account-card p-0 bg-white shadow-sm rounded overflow-hidden">
+                <div class="table-responsive">
+                    <!-- Dodano klasę text-nowrap, aby zapobiec łamaniu się tekstu i wymusić scroll na mobile -->
+                    <table class="table table-hover mb-0 align-middle text-nowrap">
+                        <thead class="bg-light">
+                        <tr>
+                            <th scope="col" class="py-3 ps-4">ID</th>
+                            <th scope="col" class="py-3">Klient</th>
+                            <th scope="col" class="py-3">Data</th>
+                            <th scope="col" class="py-3">Status</th>
+                            <th scope="col" class="py-3">Suma</th>
+                            <th scope="col" class="py-3 pe-4 text-end">Akcje</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="order : ${ordersPage.content}">
+                            <td class="fw-bold ps-4 text-primary" th:text="'#' + ${order.id}">#10025</td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold" th:text="${order.customerName}">Alicja Testowa</span>
+                                    <small class="text-muted" th:text="${order.customerEmail}">alicja@example.com</small>
+                                </div>
+                            </td>
+                            <td th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}">07.11.2025</td>
+
+
+                            <td>
+    <span class="badge rounded-pill"
+          th:classappend="|badge-${#strings.toLowerCase(order.status)}|"
+          th:text="${order.status}">Nowe</span>
+                            </td>
+                            <td class="fw-bold" th:text="${order.totalAmount} + ' zł'">299,98 zł</td>
+
+                            <td class="pe-4 text-end">
+                                <a th:href="@{/admin/zamowienia/szczegoly/{id}(id=${order.id})}"
+                                   class="btn btn-sm btn-primary-custom ms-1">
+                                    Zarządzaj
+                                </a>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${ordersPage.empty}">
+                            <td colspan="6" class="text-center py-4 text-muted">Brak zamówień spełniających kryteria.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          </div>
-          
-          <nav aria-label="Nawigacja po zamówieniach" class="mt-4 d-flex justify-content-center">
-            <ul class="pagination">
-              <li class="page-item disabled">
-                <a class="page-link" href="#">Poprzednia</a>
-              </li>
-              <li class="page-item active" aria-current="page">
-                <a class="page-link" href="#">1</a>
-              </li>
-              <li class="page-item"><a class="page-link" href="#">2</a></li>
-              <li class="page-item">
-                <a class="page-link" href="#">Następna</a>
-              </li>
-            </ul>
-          </nav>
-          
+
+            <nav aria-label="Nawigacja po zamówieniach" class="mt-4 d-flex justify-content-between align-items-center"
+                 th:if="${ordersPage.totalPages > 0}">
+
+                <small class="text-muted">
+                    Strona <span th:text="${ordersPage.number + 1}">1</span> z <span th:text="${ordersPage.totalPages}">10</span>
+                </small>
+
+                <ul class="pagination mb-0">
+                    <li class="page-item" th:classappend="${ordersPage.first} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/orders(page=${ordersPage.number - 1}, searchQuery=${currentSearch}, statusFilter=${currentStatus}, dateFilter=${currentDate})}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    <li class="page-item active">
+                        <span class="page-link" th:text="${ordersPage.number + 1}">1</span>
+                    </li>
+
+                    <li class="page-item" th:classappend="${ordersPage.last} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="@{/admin/orders(page=${ordersPage.number + 1}, searchQuery=${currentSearch}, statusFilter=${currentStatus}, dateFilter=${currentDate})}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
         </div>
-      </div>
     </div>
+</div>
 
-  <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
-    
-  </body>
+<script
+        th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
+        src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
+></script>
+
+</body>
 </html>
