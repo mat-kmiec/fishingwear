@@ -1,178 +1,201 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FishingWear - Panel Admina - Zamówienie #10025</title>
-      <th:block th:insert="fragments/head-styles :: theme-styles" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
+    <title th:text="'FishingWear - Panel Admina - Zamówienie #' + ${order.id}">FishingWear - Panel Admina - Zamówienie</title>
 
-    <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
-    />
+    <th:block th:insert="~{fragments/head-styles :: theme-styles}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}" href="../../static/libs/bootstrap/bootstrap.min.css"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="../../static/css/style.css"/>
+    <link rel="stylesheet" th:href="@{/css/slider.css}" href="../../static/css/slider.css"/>
 
     <style>
-      
-
+        .badge-status.new { background-color: #0d6efd; color: white; }
+        .badge-status.processing { background-color: #ffc107; color: black; }
+        .badge-status.shipped { background-color: #198754; color: white; }
+        .badge-status.delivered { background-color: #0dcaf0; color: black; }
+        .badge-status.canceled { background-color: #dc3545; color: white; }
+        .badge-status.returned { background-color: #6c757d; color: white; }
     </style>
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-  <nav th:insert="~{fragments/nav :: nav}"></nav>
+</head>
+<body style="background-color: var(--color-neutral-light)">
 
-    <div class="container my-5">
-      <div class="row g-4">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-          <div class="col-lg-4">
-              <div th:replace="fragments/admin-sidebar :: adminSidebar('order-manage')"></div>
-          </div>
+<div class="container my-5">
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div th:replace="~{fragments/admin-sidebar :: adminSidebar('order-manage')}"></div>
+        </div>
 
         <div class="col-lg-8">
-          
-          <div class="mb-4">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Panel Admina</a></li>
-                <li class="breadcrumb-item"><a href="#">Zamówienia</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Zamówienie #10025</li>
-              </ol>
-            </nav>
-            <h2 class="h3 mb-0">Zamówienie #10025</h2>
-          </div>
 
-          <div class="row g-4">
-            
-            <div class="col-lg-8">
-              <div class="account-card p-4 p-md-5">
-                <h3 class="h5 mb-4">Produkty w zamówieniu (2)</h3>
-                
-                <ul class="list-group list-group-flush">
-                  <li class="list-group-item d-flex flex-wrap align-items-center px-0 py-3">
-                    <img src="../../../../../uploads/products/1/dresy.png" alt="Spodnie" class="order-item-img me-3">
-                    <div class="flex-grow-1 mb-2 mb-md-0">
-                      <a href="#" class="order-item-title">Spodnie dresowe super premium</a>
-                      <p class="order-item-details mb-0">SKU: FW-DRS-GRF-XL</p>
-                      <p class="order-item-details mb-0">Rozmiar: XL, Kolor: Grafitowy</p>
-                    </div>
-                    <div class="text-secondary small me-3">1 x 199,99 zł</div>
-                    <div class="fw-bold">199,99 zł</div>
-                  </li>
-                  <li class="list-group-item d-flex flex-wrap align-items-center px-0 py-3">
-                    <img src="../../../../../uploads/products/1/tshirt.png" alt="Koszulka" class="order-item-img me-3">
-                    <div class="flex-grow-1 mb-2 mb-md-0">
-                      <a href="#" class="order-item-title">Koszulka na krótki rękaw</a>
-                      <p class="order-item-details mb-0">SKU: FW-TSH-OLW-L</p>
-                      <p class="order-item-details mb-0">Rozmiar: L, Kolor: Oliwkowy</p>
-                    </div>
-                    <div class="text-secondary small me-3">1 x 99,99 zł</div>
-                    <div class="fw-bold">99,99 zł</div>
-                  </li>
-                </ul>
-                
-                <hr class="my-4">
-                <div class="row">
-                  <div class="col-md-6"></div> <div class="col-md-6">
-                    <div class="d-flex justify-content-between mb-2">
-                      <span class="text-secondary">Suma częściowa:</span>
-                      <span class="fw-bold">299,98 zł</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                      <span class="text-secondary">Dostawa (Kurier DPD):</span>
-                      <span class="fw-bold">15,99 zł</span>
-                    </div>
-                    <div class="d-flex justify-content-between fs-5 border-top pt-2 mt-2">
-                      <span class="fw-bold">Łącznie:</span>
-                      <span class="fw-bold" style="color: var(--color-primary);">315,97 zł</span>
-                    </div>
-                  </div>
-                </div>
-                
-              </div>
+            <div th:if="${message}" th:class="'alert alert-' + ${messageType} + ' alert-dismissible fade show'" role="alert">
+                <span th:text="${message}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-            <div class="col-lg-4">
-              <div class="sidebar-sticky">
-                
-                <div class="account-card p-4 mb-4">
-                  <h3 class="h5 mb-3">Zarządzaj</h3>
-                  <div class="mb-3">
-                    <label class="form-label fw-bold">Aktualny status:</label>
-                    <span class="badge badge-status new d-block fs-6">Nowe</span>
-                  </div>
-                  <div class="mb-3">
-                    <label for="orderStatus" class="form-label fw-bold">Zmień status:</label>
-                    <select class="form-select" id="orderStatus">
-                      <option value="new" selected>Nowe</option>
-                      <option value="processing">W trakcie realizacji</option>
-                      <option value="shipped">Wysłane</option>
-                      <option value="cancelled">Anulowane</option>
-                    </select>
-                  </div>
-                  <button class="btn btn-primary-custom w-100 mb-3">Zapisz zmianę statusu</button>
-                  
-                  <hr>
-
-                  <a href="#" class="btn btn-outline-danger w-100 btn-sm">
-                    <i class="fa-solid fa-times-circle me-2"></i>Anuluj zamówienie
-                  </a>
+            <div class="mb-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/admin}">Panel Admina</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/admin/zamowienia}">Zamówienia</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="'Zamówienie #' + ${order.id}">Zamówienie #10025</li>
+                    </ol>
+                </nav>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="h3 mb-0" th:text="'Zamówienie #' + ${order.id}">Zamówienie #10025</h2>
+                    <small class="text-muted" th:text="'Złożone: ' + ${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}">Data</small>
                 </div>
-
-                <div class="account-card p-4 mb-4">
-                  <h3 class="h5 mb-3">Klient</h3>
-                  <ul class="list-unstyled customer-details-list mb-0">
-                    <li>
-                      <strong>Imię i nazwisko</strong>
-                      Alicja Testowa
-                    </li>
-                    <li>
-                      <strong>Email</strong>
-                      <a href="mailto:alicja@example.com">alicja@example.com</a>
-                    </li>
-                    <li>
-                      <strong>Telefon</strong>
-                      <a href="tel:123456789">123 456 789</a>
-                    </li>
-                  </ul>
-                </div>
-                
-                <div class="account-card p-4">
-                  <h3 class="h5 mb-3">Adres dostawy</h3>
-                  <p class="mb-0 customer-details-list">
-                    Alicja Testowa<br>
-                    ul. Testowa 1/23<br>
-                    00-001 Warszawa<br>
-                    Polska
-                  </p>
-                </div>
-                
-              </div>
             </div>
 
-          </div>
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="account-card p-4 p-md-5">
+                        <h3 class="h5 mb-4" th:text="'Produkty w zamówieniu (' + ${order.items.size()} + ')'">Produkty w zamówieniu (2)</h3>
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex flex-wrap align-items-center px-0 py-3" th:each="item : ${order.items}">
+                                <div class="flex-grow-1 mb-2 mb-md-0">
+                                    <div class="fw-bold order-item-title" th:text="${item.productName}">Nazwa produktu</div>
+                                    <small class="text-muted d-block" th:text="'SKU: ' + ${item.sku}">SKU: FW-123</small>
+                                    <small class="text-muted d-block" th:if="${not #strings.isEmpty(item.variantDetails)}" th:text="${item.variantDetails}">Rozmiar: XL, Kolor: Oliwkowy</small>
+                                </div>
+                                <div class="text-secondary small me-4" th:text="${item.quantity} + ' x ' + ${item.unitPrice} + ' zł'">1 x 199,99 zł</div>
+                                <div class="fw-bold" th:text="${item.totalPrice} + ' zł'">199,99 zł</div>
+                            </li>
+                        </ul>
+
+                        <hr class="my-4">
+
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-secondary">Suma częściowa:</span>
+                                    <span class="fw-bold" th:text="${order.subtotal} + ' zł'">299,98 zł</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-secondary" th:text="'Dostawa (' + ${order.shippingMethod} + '):'">Dostawa (Kurier DPD):</span>
+                                    <span class="fw-bold" th:text="${order.shippingCost} + ' zł'">15,99 zł</span>
+                                </div>
+                                <div class="d-flex justify-content-between fs-5 border-top pt-2 mt-2">
+                                    <span class="fw-bold">Łącznie:</span>
+                                    <span class="fw-bold" style="color: var(--color-primary);" th:text="${order.total} + ' zł'">315,97 zł</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="sidebar-sticky">
+
+                        <div class="account-card p-4 mb-4">
+                            <h3 class="h5 mb-3">Zarządzaj</h3>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Aktualny status:</label>
+                                <span class="badge badge-status d-block fs-6"
+                                      th:classappend="${#strings.toLowerCase(order.status)}"
+                                      th:text="${order.status}">Nowe</span>
+                            </div>
+
+                            <form th:action="@{/admin/zamowienia/{id}/status(id=${order.id})}" method="post">
+                                <div class="mb-3">
+                                    <label for="orderStatus" class="form-label fw-bold">Zmień status:</label>
+                                    <select class="form-select" id="orderStatus" name="status">
+                                        <option th:each="statusOpt : ${allStatuses}"
+                                                th:value="${statusOpt}"
+                                                th:text="${statusOpt}"
+                                                th:selected="${statusOpt == order.status}">
+                                            Nowe
+                                        </option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary-custom w-100 mb-3">Zapisz zmianę statusu</button>
+                            </form>
+
+                            <hr>
+
+                            <div th:if="${order.status.name() != 'CANCELED' and order.status.name() != 'RETURNED'}">
+                                <button type="button"
+                                        class="btn btn-outline-danger w-100 btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#cancelOrderModal">
+                                    <i class="fa-solid fa-times-circle me-2"></i>Anuluj zamówienie
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="account-card p-4 mb-4">
+                            <h3 class="h5 mb-3">Klient</h3>
+                            <ul class="list-unstyled customer-details-list mb-0">
+                                <li>
+                                    <strong>Imię i nazwisko</strong>
+                                    <span th:text="${order.firstName + ' ' + order.lastName}">Alicja Testowa</span>
+                                </li>
+                                <li>
+                                    <strong>Email</strong>
+                                    <a th:href="'mailto:' + ${order.email}" th:text="${order.email}">alicja@example.com</a>
+                                </li>
+                                <li>
+                                    <strong>Telefon</strong>
+                                    <a th:href="'tel:' + ${order.phone}" th:text="${order.phone}">123 456 789</a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="account-card p-4">
+                            <h3 class="h5 mb-3">Adres dostawy</h3>
+                            <p class="mb-0 customer-details-list">
+                                <span th:text="${order.firstName + ' ' + order.lastName}">Alicja Testowa</span><br>
+                                <span th:text="${order.shippingAddress}">ul. Testowa 1/23</span><br>
+                                <span th:text="${order.zipCode + ' ' + order.city}">00-001 Warszawa</span><br>
+                                Polska
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
-  <footer th:insert="~{fragments/footer :: footer}"></footer>
+<div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title" id="cancelOrderModalLabel">Potwierdzenie anulowania</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body text-center py-4">
+                <div class="text-danger mb-3">
+                    <i class="fa-solid fa-triangle-exclamation fa-3x"></i>
+                </div>
+                <p class="mb-1 fs-5">Czy na pewno chcesz anulować zamówienie <strong th:text="'#' + ${order.id}"></strong>?</p>
+                <p class="text-muted small">Tej operacji nie można automatycznie cofnąć.</p>
+            </div>
+            <div class="modal-footer border-0 justify-content-center pb-4">
+                <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal">Wróć</button>
+                <form th:action="@{/admin/zamowienia/{id}/status(id=${order.id})}" method="post">
+                    <input type="hidden" name="status" value="CANCELED">
+                    <button type="submit" class="btn btn-danger px-4">Potwierdź anulowanie</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
-    
-  </body>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
+
+</body>
 </html>

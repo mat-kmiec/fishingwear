@@ -7,10 +7,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.fishingwear.admin.dto.order.AdminOrderDetailsDto;
 import pl.fishingwear.admin.dto.order.OrderAdminListDto;
 import pl.fishingwear.admin.service.OrderManagementService;
 import pl.fishingwear.order.model.OrderStatus;
@@ -48,8 +47,35 @@ public class AdminOrderController {
         return "admin/manage-orders";
     }
 
+
     @GetMapping("/zamowienia/szczegoly/{id}")
-    public String orderDetails(@PathVariable Long id, Model model) {
-        return "admin/order";
+    public String getOrderDetails(@PathVariable Long id, Model model) {
+        try {
+            AdminOrderDetailsDto orderDto = orderManagementService.getOrderDetails(id);
+            model.addAttribute("order", orderDto);
+            model.addAttribute("allStatuses", OrderStatus.values());
+            return "admin/order";
+
+        } catch (IllegalArgumentException e) {
+            return "redirect:/admin/zamowienia";
+        }
+    }
+
+    @PostMapping("/zamowienia/{id}/status")
+    public String updateOrderStatus(@PathVariable Long id,
+                                    @RequestParam("status") OrderStatus newStatus,
+                                    RedirectAttributes redirectAttributes) {
+        try {
+            orderManagementService.updateOrderStatus(id, newStatus);
+
+            redirectAttributes.addFlashAttribute("message", "Status zamówienia został pomyślnie zmieniony na: " + newStatus);
+            redirectAttributes.addFlashAttribute("messageType", "success");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("message", "Wystąpił błąd: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("messageType", "danger");
+        }
+
+        return "redirect:/admin/zamowienia/szczegoly/" + id;
     }
 }

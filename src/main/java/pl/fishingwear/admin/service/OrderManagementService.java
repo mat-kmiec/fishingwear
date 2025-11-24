@@ -6,15 +6,21 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import pl.fishingwear.admin.dto.order.AdminOrderDetailsDto;
+import pl.fishingwear.admin.dto.order.AdminOrderItemDto;
 import pl.fishingwear.admin.dto.order.OrderAdminListDto;
 import pl.fishingwear.order.model.Order;
+import pl.fishingwear.order.model.OrderItem;
 import pl.fishingwear.order.model.OrderStatus;
 import pl.fishingwear.order.repository.OrderRepository;
+import pl.fishingwear.product.model.ProductVariant;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -65,5 +71,77 @@ public class OrderManagementService {
                 order.getStatus(),
                 order.getTotal()
         );
+    }
+
+    @Transactional
+    public AdminOrderDetailsDto getOrderDetails(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono zamówienia o ID: " + orderId));
+
+        return mapToDetailsDto(order);
+    }
+
+    @Transactional
+    public void updateOrderStatus(Long orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Nie znaleziono zamówienia o ID: " + orderId));
+
+        order.setStatus(newStatus);
+        orderRepository.save(order);
+    }
+
+    private AdminOrderDetailsDto mapToDetailsDto(Order order) {
+        List<AdminOrderItemDto> itemDtos = order.getItems().stream()
+                .map(this::mapItemToDto)
+                .collect(Collectors.toList());
+
+        return AdminOrderDetailsDto.builder()
+                .id(order.getId())
+                .createdAt(order.getCreatedAt())
+                .status(order.getStatus())
+                .firstName(order.getFirstName())
+                .lastName(order.getLastName())
+                .email(order.getEmail())
+                .phone(order.getPhone())
+                .shippingAddress(order.getShippingAddress())
+                .zipCode(order.getZipCode())
+                .city(order.getCity())
+                .shippingMethod(order.getShippingMethod())
+                .subtotal(order.getSubtotal())
+                .shippingCost(order.getShippingCost())
+                .total(order.getTotal())
+                .items(itemDtos)
+                .build();
+    }
+
+    private AdminOrderItemDto mapItemToDto(OrderItem item) {
+        ProductVariant variant = item.getProductVariant();
+
+        String sku = "Brak SKU";
+        List<String> detailsParts = new ArrayList<>();
+
+        if (variant != null) {
+            if (variant.getSku() != null) {
+                sku = variant.getSku();
+            }
+
+            if (variant.getSize() != null) {
+                detailsParts.add("Rozmiar: " + variant.getSize().getName());
+            }
+            if (variant.getColor() != null) {
+                detailsParts.add("Kolor: " + variant.getColor().getName());
+            }
+        }
+
+        String variantDetails = detailsParts.isEmpty() ? "Produkt podstawowy" : String.join(", ", detailsParts);
+
+        return AdminOrderItemDto.builder()
+                .productName(item.getProductName())
+                .sku(sku)
+                .variantDetails(variantDetails)
+                .quantity(item.getQuantity())
+                .unitPrice(item.getUnitPrice())
+                .totalPrice(item.getTotalPrice())
+                .build();
     }
 }
