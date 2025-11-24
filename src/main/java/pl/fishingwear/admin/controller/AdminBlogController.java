@@ -6,16 +6,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import pl.fishingwear.admin.dto.blog.AdminCommentDto;
-import pl.fishingwear.admin.dto.blog.BlogCategoryDto;
-import pl.fishingwear.admin.dto.blog.CategoryEditDto;
+import pl.fishingwear.admin.dto.blog.*;
 import pl.fishingwear.admin.dto.user.StaffUserDto;
-import pl.fishingwear.admin.dto.blog.BlogCategoryCreationDto;
 import pl.fishingwear.admin.exception.CategoryNotFoundException;
 import pl.fishingwear.admin.service.BlogManagementService;
 import pl.fishingwear.admin.service.UserManagementService;
+import pl.fishingwear.blog.model.BlogCategory;
+import pl.fishingwear.blog.model.enums.PostStatus;
+import pl.fishingwear.common.exception.UserNotFoundException;
+import pl.fishingwear.user.model.User;
+import pl.fishingwear.user.service.UserService;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -25,6 +30,7 @@ import java.util.NoSuchElementException;
 public class AdminBlogController {
     private final BlogManagementService blogManagementService;
     private final UserManagementService userManagementService;
+    private final UserService userService;
 
 
     @GetMapping("/blog")
@@ -134,7 +140,20 @@ public class AdminBlogController {
     }
 
     @GetMapping("/blog/create")
-    public String blogCreate() {
+    public String blogCreate(Model model) {
+        List<BlogCategoryDto> categories = blogManagementService.getAllCategories();
+        model.addAttribute("categories", categories);
         return "admin/create-post";
+    }
+
+    @PostMapping("/blog/posts/create")
+    public String createPost(
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam("categoryId") Long categoryId,
+            @RequestParam("imageFile") MultipartFile imageFile
+    ) throws IOException {
+        blogManagementService.createPost(title, content, categoryId, imageFile);
+        return "redirect:/admin/blog";
     }
 }

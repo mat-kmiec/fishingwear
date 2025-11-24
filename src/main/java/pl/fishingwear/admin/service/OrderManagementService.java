@@ -40,7 +40,6 @@ public class OrderManagementService {
                 Predicate idPredicate = cb.like(root.get("id").as(String.class), likeTerm);
                 predicates.add(cb.or(emailPredicate, lastNamePredicate, idPredicate));
             }
-
             if (statusFilter != null) {
                 predicates.add(cb.equal(root.get("status"), statusFilter));
             }

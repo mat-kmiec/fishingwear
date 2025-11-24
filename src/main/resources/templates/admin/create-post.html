@@ -14,7 +14,6 @@
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 
     <style>
-        /* Stylizacja edytora pod motyw */
         .note-editor.note-frame {
             border-color: #dee2e6;
             border-radius: 0.5rem;
@@ -87,7 +86,7 @@
                 </nav>
             </div>
 
-            <form action="/admin/blog/posts/create" method="POST" enctype="multipart/form-data">
+            <form th:action="@{/admin/blog/posts/create}" method="POST" enctype="multipart/form-data">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="h3 mb-0">Nowy artykuł</h2>
@@ -100,11 +99,18 @@
 
                 <div class="account-card p-4 p-md-5 mb-4">
                     <div class="mb-3">
-                        <label for="title" class="form-label fw-bold text-uppercase small text-secondary">Tytuł artykułu</label>
-                        <input type="text" class="form-control form-control-lg fw-bold" id="title" name="title" placeholder="Wpisz chwytliwy tytuł..." required>
+                        <label for="title" class="form-label fw-bold text-uppercase small text-secondary">
+                            Tytuł artykułu
+                        </label>
+                        <input type="text" class="form-control form-control-lg fw-bold"
+                               id="title" name="title"
+                               placeholder="Wpisz chwytliwy tytuł..." required>
                     </div>
+
                     <div class="mb-0">
-                        <label for="content" class="form-label fw-bold text-uppercase small text-secondary">Treść</label>
+                        <label for="content" class="form-label fw-bold text-uppercase small text-secondary">
+                            Treść
+                        </label>
                         <textarea id="content" name="content" required></textarea>
                     </div>
                 </div>
@@ -112,7 +118,6 @@
                 <div class="row g-4">
 
                     <div class="col-md-6">
-
                         <div class="account-card p-4 mb-4 h-100">
                             <h5 class="h6 fw-bold mb-3 border-bottom pb-2">Zdjęcie wyróżniające</h5>
 
@@ -120,31 +125,48 @@
                                 <img id="imagePreview" src="#" alt="Podgląd" class="image-upload-preview">
                                 <div class="image-upload-placeholder" id="imagePlaceholder">
                                     <i class="fa-regular fa-image fa-3x mb-2"></i>
-                                    <p class="small mb-0">Kliknij przycisk poniżej,<br>aby dodać zdjęcie</p>
+                                    <p class="small mb-0">
+                                        Kliknij przycisk poniżej,<br>aby dodać zdjęcie
+                                    </p>
                                 </div>
                             </div>
 
-                            <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" required onchange="previewFile()">
-                            <div class="form-text small mt-2">Zalecany rozmiar: 1200x630px (Max 5MB)</div>
+                            <!-- NAZWA MUSI BYĆ imageFile -->
+                            <input type="file"
+                                   class="form-control"
+                                   id="imageFile"
+                                   name="imageFile"
+                                   accept="image/*"
+                                   required
+                                   onchange="previewFile()">
+
+                            <div class="form-text small mt-2">
+                                Zalecany rozmiar: 1200x630px (Max 5MB)
+                            </div>
                         </div>
                     </div>
+
                     <div class="col-md-6">
                         <div class="account-card p-4 mb-4 h-100">
                             <h5 class="h6 fw-bold mb-3 border-bottom pb-2">Dodatkowe:</h5>
 
                             <div class="mb-3">
-                                <label for="category" class="form-label small fw-bold">Kategoria <span class="text-danger">*</span></label>
-                                <select class="form-select" id="category" name="categoryId" required>
-                                    <option value="" selected disabled>-- Wybierz kategorię --</option>
-                                    <option value="1">Poradniki wędkarskie</option>
-                                    <option value="2">Sprzęt i recenzje</option>
-                                    <option value="3">Relacje z wypraw</option>
-                                    <option value="4">Lifestyle</option>
+                                <label for="category" class="form-label small fw-bold">
+                                    Kategoria <span class="text-danger">*</span>
+                                </label>
+
+                                <select class="form-select" id="category" name="categoryId">
+                                    <option value="0">Brak</option>
+                                    <option th:each="category : ${categories}"
+                                            th:value="${category.id}"
+                                            th:text="${category.name}">
+                                    </option>
                                 </select>
                             </div>
+
+
                         </div>
                     </div>
-
                 </div>
 
             </form>

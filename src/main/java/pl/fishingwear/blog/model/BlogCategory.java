@@ -40,3 +40,4 @@ public class BlogCategory {
     @ToString.Exclude
     private List<Post> posts;
 }
+

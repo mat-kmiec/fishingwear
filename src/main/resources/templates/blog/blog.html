@@ -47,6 +47,8 @@
               max-height: 100vh;
               overflow-y: auto; /* pionowy scroll */
           }
+
+
       </style>
   </head>
   <body style="background-color: var(--color-neutral-light)">
@@ -83,10 +85,9 @@
         <div class="col-lg-8">
 
           <div class="account-card">
-
-            <div class="post-header-img-wrapper">
-              <img th:src="@{/uploads/blog/{imageName}(imageName=${post.img})}">
-            </div>
+              <div class="post-header-img-wrapper">
+                  <img th:src="@{/uploads/blog/full_{imageName}(imageName=${post.img})}" alt="">
+              </div>
 
             <div class="p-4 p-md-5">
               <div class="mb-3">
