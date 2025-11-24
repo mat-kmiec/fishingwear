@@ -132,4 +132,9 @@ public class AdminBlogController {
 
         return "redirect:/admin/blog#categories";
     }
+
+    @GetMapping("/blog/create")
+    public String blogCreate() {
+        return "admin/create-post";
+    }
 }
