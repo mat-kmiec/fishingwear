@@ -39,9 +39,12 @@ public class BlogManagementService {
     private final PostRepository postRepository;
     private final UserService userService;
     private final ImageService imageService;
+    private final BlogCategoryMapper blogCategoryMapper;
 
     public List<BlogCategoryDto> getAllCategories() {
-        return blogCategoryRepository.findAll().stream().map(BlogCategoryMapper::toDto).toList();
+        return blogCategoryRepository.findAllFullyPopulated().stream()
+                .map(BlogCategoryMapper::toDto)
+                .toList();
     }
 
     public List<AdminCommentDto> getPendingComments() {

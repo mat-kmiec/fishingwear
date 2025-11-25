@@ -23,5 +23,10 @@ public interface BlogCategoryRepository extends JpaRepository<BlogCategory, Long
     @Query("SELECT COUNT(p) FROM Post p WHERE p.category.id = :categoryId")
     int countPostsByCategory(@Param("categoryId") Long categoryId);
     int countByParentId(Long categoryId);
+    @Query("SELECT c FROM BlogCategory c LEFT JOIN FETCH c.assignedModerator")
+    List<BlogCategory> findAllWithModerators();
+
+    @Query("SELECT c FROM BlogCategory c LEFT JOIN FETCH c.assignedModerator LEFT JOIN FETCH c.parent")
+    List<BlogCategory> findAllFullyPopulated();
 
 }

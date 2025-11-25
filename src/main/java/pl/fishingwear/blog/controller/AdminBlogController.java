@@ -107,7 +107,6 @@ public class AdminBlogController {
             blogManagementService.updateCategory(categoryEditDto);
             redirectAttributes.addFlashAttribute("successMessage", "Kategoria została pomyślnie zaktualizowana!");
         } catch (IllegalArgumentException | NoSuchElementException e) {
-            // Obsługa błędów, np. brak kategorii, niepoprawne ID parenta/moderatora
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Wystąpił nieoczekiwany błąd podczas aktualizacji kategorii.");

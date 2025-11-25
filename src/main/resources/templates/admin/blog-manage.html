@@ -56,6 +56,15 @@
                 <a th:href="@{blog/create}" class="btn btn-primary-custom"> <i class="fa-solid fa-pen-to-square me-2"></i>Napisz nowy wpis
                 </a>
             </div>
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${successMessage}">Powiadomienie o sukcesie!</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${errorMessage}">Powiadomienie o błędzie!</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
 
             <ul class="nav nav-tabs" id="blogTabs" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -170,31 +179,35 @@
 
                                         <p class="small text-secondary mb-0">
                                             Kategoria nadrzędna:
-                                            <span th:text="${category.parentCategory != null ? category.parentCategory.name : 'Brak'}">xxx</span>
+                                            <span th:text="${category.parentCategoryName != null ? category.parentCategoryName : 'Brak'}">xxx</span>
+                                        </p>
+                                        <p class="small text-secondary mb-0">
+                                            Moderator:
+                                            <span th:text="${category.moderatorName != null ? category.moderatorName : 'Brak'}">xxx</span>
                                         </p>
 
                                     </div>
                                     <div>
-<!--                                        <a href="#"-->
-<!--                                           class="btn-link-custom me-2"-->
-<!--                                           data-bs-toggle="modal"-->
-<!--                                           data-bs-target="#editCategoryModal"-->
-<!--                                           th:data-category-id="${category.id}"-->
-<!--                                           th:data-category-name="${category.name}"-->
+                                        <a href="#"
+                                           class="btn-link-custom me-2"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#editCategoryModal"
+                                           th:data-category-id="${category.id}"
+                                           th:data-category-name="${category.name}"
 
-<!--                                           th:data-parent-id="${category.parentCategory() != null ? category.parentCategory.id : 0}"-->
-<!--                                           th:data-moderator-id="${category.moderator != null ? category.moderator.id : 0}">-->
+                                           th:data-parent-id="${category.parentCategoryId != null ? category.parentCategoryId : 0}"
+                                           >
 
-<!--                                            <i class="fa-solid fa-pen-to-square"></i>-->
-<!--                                        </a>-->
-<!--                                        <a href="#"-->
-<!--                                           class="btn-link-custom text-danger"-->
-<!--                                           data-bs-toggle="modal"-->
-<!--                                           data-bs-target="#deleteCategoryModal"-->
-<!--                                           th:data-category-id="${category.id}"-->
-<!--                                           th:data-category-name="${category.name}">-->
-<!--                                            <i class="fa-solid fa-trash-can"></i>-->
-<!--                                        </a>-->
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                        <a href="#"
+                                           class="btn-link-custom text-danger"
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#deleteCategoryModal"
+                                           th:data-category-id="${category.id}"
+                                           th:data-category-name="${category.name}">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
                                     </div>
                                 </li>
                             </ul>
@@ -203,15 +216,6 @@
                         <div class="col-md-5">
                             <div class="category-form p-4">
                                 <h5 class="mb-3" id="categoryFormLabel">Dodaj nową kategorię</h5>
-                                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <span th:text="${successMessage}">Powiadomienie o sukcesie!</span>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-
-                                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <span th:text="${errorMessage}">Powiadomienie o błędzie!</span>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
                                 <form th:action="@{/admin/blog/categories/create}" method="POST" th:object="${categoryCreationDto}">
                                     <div class="mb-3">
                                         <label for="catName" class="form-label">Nazwa</label>
