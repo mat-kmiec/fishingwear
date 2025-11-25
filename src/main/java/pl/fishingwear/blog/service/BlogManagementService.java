@@ -1,7 +1,6 @@
 package pl.fishingwear.blog.service;
 
 import lombok.AllArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,25 +18,19 @@ import pl.fishingwear.blog.repository.BlogCategoryRepository;
 import pl.fishingwear.blog.repository.CommentRepository;
 import pl.fishingwear.blog.repository.PostRepository;
 import pl.fishingwear.common.exception.UserNotFoundException;
+import pl.fishingwear.common.service.ImageService;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
 import pl.fishingwear.user.service.UserService;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class BlogManagementService {
 
-    private final static String UPLOAD_DIR = "uploads/blog/";
+    private final static String BLOG_UPLOAD_DIR = "uploads/blog/";
 
     private final BlogCategoryRepository blogCategoryRepository;
     private final CommentRepository commentRepository;
@@ -45,6 +38,7 @@ public class BlogManagementService {
     private final PostCreateMapper postCreateMapper;
     private final PostRepository postRepository;
     private final UserService userService;
+    private final ImageService imageService;
 
     public List<BlogCategoryDto> getAllCategories() {
         return blogCategoryRepository.findAll().stream().map(BlogCategoryMapper::toDto).toList();
@@ -135,10 +129,18 @@ public class BlogManagementService {
     }
 
     @Transactional
-    public void createPost(String title, String content, Long categoryId, MultipartFile image) throws IOException {
+    public void createPost(String title, String content, Long categoryId, MultipartFile image) { // usunąłem 'throws IOException'
         String fileName = null;
+
         if (image != null && !image.isEmpty()) {
-            fileName = saveImage(image);
+            fileName = imageService.saveImage(
+                    image,
+                    BLOG_UPLOAD_DIR,
+                    true,
+                    1200, 630,
+                    0.8,
+                    0.9
+            );
         }
 
         User author = userService.getCurrentUser()
@@ -162,34 +164,6 @@ public class BlogManagementService {
         postRepository.save(post);
     }
 
-    public String saveImage(MultipartFile file) {
-        try {
-            String uuid = UUID.randomUUID().toString();
-            String filename = uuid + ".jpg";
-            Path uploadPath = Paths.get(UPLOAD_DIR);
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
 
-            File mainFile = uploadPath.resolve(filename).toFile();
-            File thumbFile = uploadPath.resolve("thumb_" + filename).toFile();
-            Thumbnails.of(file.getInputStream())
-                    .scale(1.0)
-                    .outputQuality(0.9)
-                    .toFile(mainFile);
-
-
-            Thumbnails.of(mainFile)
-                    .size(1200, 630)
-                    .keepAspectRatio(true)
-                    .outputQuality(0.8)
-                    .toFile(thumbFile);
-
-            return filename;
-
-        } catch (IOException e) {
-            throw new RuntimeException("Błąd podczas zapisu pliku: " + e.getMessage(), e);
-        }
-    }
 
 }

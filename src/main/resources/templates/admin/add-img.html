@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale-1.0" />
+      <meta name="_csrf" th:content="${_csrf.token}"/>
+      <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>FishingWear - Panel Admina - Dodaj Zdjęcia</title>
       <th:block th:insert="fragments/head-styles :: theme-styles" />
     <link
@@ -39,6 +41,7 @@
 
         <div class="col-lg-8">
           <h2 class="h3 mb-4">Dodaj zdjęcia do Bazy</h2>
+            <div id="alert-placeholder"></div>
 
           <div class="account-card p-4 p-md-5">
             <form id="upload-form">
@@ -83,84 +86,121 @@
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
-    
-    <script>
+
+    <<script>
       document.addEventListener("DOMContentLoaded", function () {
-        const dropzoneWrapper = document.getElementById("dropzone-wrapper");
-        const fileInput = document.getElementById("file-input");
-        const previewArea = document.getElementById("preview-area");
-        
-        function formatBytes(bytes, decimals = 2) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const dm = decimals < 0 ? 0 : decimals;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-        }
+          const dropzoneWrapper = document.getElementById("dropzone-wrapper");
+          const fileInput = document.getElementById("file-input");
+          const previewArea = document.getElementById("preview-area");
+          const uploadForm = document.getElementById("upload-form");
 
-        dropzoneWrapper.addEventListener("dragover", (e) => {
-          e.preventDefault();
-          dropzoneWrapper.classList.add("dragover");
-        });
+          let uploadedFiles = [];
 
-        dropzoneWrapper.addEventListener("dragleave", () => {
-          dropzoneWrapper.classList.remove("dragover");
-        });
-
-        dropzoneWrapper.addEventListener("drop", (e) => {
-          e.preventDefault();
-          dropzoneWrapper.classList.remove("dragover");
-          fileInput.files = e.dataTransfer.files;
-          handleFiles(fileInput.files);
-        });
-
-        fileInput.addEventListener("change", () => {
-          handleFiles(fileInput.files);
-        });
-
-        function handleFiles(files) {
-          previewArea.innerHTML = ""; 
-          if (!files.length) return;
-
-          for (const file of files) {
-            if (!file.type.startsWith("image/")) continue;
-            
-            const reader = new FileReader();
-            
-            reader.onload = (e) => {
-              const previewCard = document.createElement("div");
-              previewCard.className = "preview-card";
-              previewCard.innerHTML = `
-                <img src="${e.target.result}" alt="Podgląd ${file.name}" class="preview-img">
-                <div class="preview-info">
-                  <strong>${file.name}</strong>
-                  <span>${formatBytes(file.size)}</span>
-                </div>
-                <button type="button" class="preview-remove" data-name="${file.name}">&times;</button>
-              `;
-              previewArea.appendChild(previewCard);
-            };
-            
-            reader.readAsDataURL(file);
+          function formatBytes(bytes, decimals = 2) {
+              if (bytes === 0) return '0 Bytes';
+              const k = 1024;
+              const dm = decimals < 0 ? 0 : decimals;
+              const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+              const i = Math.floor(Math.log(bytes) / Math.log(k));
+              return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
           }
-        }
-        
-        previewArea.addEventListener("click", (e) => {
-            if (e.target.classList.contains("preview-remove")) {
-                const card = e.target.closest(".preview-card");
-                card.remove();
-            }
-        });
-        
-        document.getElementById("upload-form").addEventListener("submit", (e) => {
-            e.preventDefault();
-            alert(`Wysłano ${previewArea.childElementCount} plików na serwer (symulacja).`);
-            previewArea.innerHTML = "";
-            fileInput.value = ""; 
-        });
+
+          function handleFiles(files) {
+              if (!files.length) return;
+
+              for (const file of files) {
+                  if (!file.type.startsWith("image/")) continue;
+                  uploadedFiles.push(file);
+
+                  const reader = new FileReader();
+                  reader.onload = (e) => {
+                      const previewCard = document.createElement("div");
+                      previewCard.className = "preview-card";
+                      previewCard.innerHTML = `
+            <img src="${e.target.result}" alt="Podgląd ${file.name}" class="preview-img">
+            <div class="preview-info">
+              <strong>${file.name}</strong>
+              <span>${formatBytes(file.size)}</span>
+            </div>
+            <button type="button" class="preview-remove">&times;</button>
+          `;
+
+                      // Obsługa usuwania pojedynczego kafelka
+                      previewCard.querySelector(".preview-remove").addEventListener("click", function() {
+                          uploadedFiles = uploadedFiles.filter(f => f !== file);
+                          previewCard.remove();
+                      });
+
+                      previewArea.appendChild(previewCard);
+                  };
+                  reader.readAsDataURL(file);
+              }
+          }
+
+          dropzoneWrapper.addEventListener("dragover", (e) => {
+              e.preventDefault();
+              dropzoneWrapper.classList.add("dragover");
+          });
+
+          dropzoneWrapper.addEventListener("dragleave", () => {
+              dropzoneWrapper.classList.remove("dragover");
+          });
+
+          dropzoneWrapper.addEventListener("drop", (e) => {
+              e.preventDefault();
+              dropzoneWrapper.classList.remove("dragover");
+              handleFiles(e.dataTransfer.files);
+          });
+
+          fileInput.addEventListener("change", () => {
+              handleFiles(fileInput.files);
+              fileInput.value = "";
+          });
+          uploadForm.addEventListener("submit", async (e) => {
+              e.preventDefault();
+
+              if (uploadedFiles.length === 0) {
+                  alert("Wybierz najpierw zdjęcia!");
+                  return;
+              }
+
+              const submitBtn = uploadForm.querySelector("button[type='submit']");
+              const originalBtnText = submitBtn.innerHTML;
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Wysyłanie...';
+              const formData = new FormData();
+              uploadedFiles.forEach(file => {
+                  formData.append("imageFiles", file);
+              });
+
+              const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+              const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+              try {
+                  const response = await fetch('/admin/slider/upload', {
+                      method: 'POST',
+                      headers: {
+                          [csrfHeader]: csrfToken
+                      },
+                      body: formData
+                  });
+
+                  if (response.ok) {
+                      alert("Zdjęcia zostały dodane!");
+                      window.location.href = "/admin/zdjecia";
+                  } else {
+                      throw new Error("Błąd serwera: " + response.status);
+                  }
+
+              } catch (error) {
+                  console.error("Error:", error);
+                  alert("Wystąpił błąd podczas wysyłania zdjęć.");
+                  submitBtn.disabled = false;
+                  submitBtn.innerHTML = originalBtnText;
+              }
+          });
 
       });
-    </script>
+  </script>
   </body>
 </html>
