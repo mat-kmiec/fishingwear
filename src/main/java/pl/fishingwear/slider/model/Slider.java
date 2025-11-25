@@ -25,7 +25,15 @@ public class Slider {
     @OneToMany(mappedBy = "slider", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SliderItem> items = new ArrayList<>();
 
+    public void addItem(SliderItem item) {
+        items.add(item);
+        item.setSlider(this);
+    }
 
+    public void removeItem(SliderItem item) {
+        items.remove(item);
+        item.setSlider(null);
+    }
 
 
 }

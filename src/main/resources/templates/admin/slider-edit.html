@@ -1,174 +1,226 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <title>FishingWear - Panel Admina - Edytor Slidera</title>
-      <th:block th:insert="fragments/head-styles :: theme-styles" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
 
-    <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
-    />
-    
+    <th:block th:insert="~{fragments/head-styles :: theme-styles}" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/slider.css}" />
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+<body style="background-color: var(--color-neutral-light)">
 
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-  <nav th:insert="~{fragments/nav :: nav}"></nav>
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container my-5">
-      <div class="row g-4">
+<div class="container my-5">
+    <div class="row g-4">
 
-          <div class="col-lg-4">
-              <div th:replace="fragments/admin-sidebar :: adminSidebar('slider')"></div>
-          </div>
+        <div class="col-lg-4">
+            <div th:replace="~{fragments/admin-sidebar :: adminSidebar('slider')}"></div>
+        </div>
 
         <div class="col-lg-8">
-          
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h2 class="h3 mb-0">Edytor Kolekcji</h2>
-              <p class="text-secondary mb-0">Główna strona - slider</p>
-            </div>
-            <a href="#" class="btn btn-primary-custom btn-lg">
-              <i class="fa-solid fa-save me-2"></i>Zapisz zmiany
-            </a>
-          </div>
 
-          <div class="row g-4">
-            
-            <div class="col-lg-7">
-              <div class="account-card p-4">
-                <h5 class="h6 mb-3 fw-bold text-secondary text-uppercase">Elementy w sliderze</h5>
-                
-                <div class="alert alert-info small p-2">
-                  <i class="fa-solid fa-arrows-up-down-left-right me-2"></i>
-                  Przeciągnij i upuść, aby zmienić kolejność.
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="h3 mb-0">Edytor Kolekcji</h2>
+                    <p class="text-secondary mb-0" th:text="${slider.name}">Nazwa kolekcji</p>
                 </div>
-                
-                <div class="row g-3" id="slider-editor-list">
-                  
-                  <div class="col-12 col-md-6">
-                    <div class="card slider-item-card">
-                      <img src="../../../../../uploads/products/1/dresy.png" class="card-img-top" alt="Zdjęcie produktu">
-                      <div class="card-body p-2">
-                        <textarea class="form-control form-control-sm" rows="3" placeholder="Wprowadź opis...">Spodnie dresowe super premium, idealne na każdą pogodę.</textarea>
-                      </div>
-                      <div class="slider-item-controls">
-                        <i class="fa-solid fa-grip-vertical drag-handle" title="Przeciągnij, aby posortować"></i>
-                        <a href="#" class="btn btn-remove-item" title="Usuń ze slidera">
-                          <i class="fa-solid fa-trash-can"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div class="col-12 col-md-6">
-                    <div class="card slider-item-card">
-                      <img src="../../../../../uploads/products/1/czapka.png" class="card-img-top" alt="Zdjęcie produktu">
-                      <div class="card-body p-2">
-                        <textarea class="form-control form-control-sm" rows="3" placeholder="Wprowadź opis...">Czapka z daszkiem z nowym logo. Must-have tego sezonu!</textarea>
-                      </div>
-                      <div class="slider-item-controls">
-                        <i class="fa-solid fa-grip-vertical drag-handle" title="Przeciągnij, aby posortować"></i>
-                        <a href="#" class="btn btn-remove-item" title="Usuń ze slidera">
-                          <i class="fa-solid fa-trash-can"></i>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
+                <button id="btn-save-slider" class="btn btn-primary-custom btn-lg">
+                    <i class="fa-solid fa-save me-2"></i>Zapisz zmiany
+                </button>
             </div>
-            
-            <div class="col-lg-5">
-              <div class="account-card p-4">
-                <h5 class="h6 mb-3 fw-bold text-secondary text-uppercase">Zdjęcia w bazie</h5>
-                
-                <input type="search" class="form-control form-control-sm mb-3" placeholder="Wyszukaj zdjęcie...">
-                
-                <div class="alert alert-info small p-2">
-                  <i class="fa-solid fa-arrow-left me-2"></i>
-                  Przeciągnij zdjęcie do panelu po lewej.
+
+            <div class="row g-4">
+
+                <div class="col-lg-7">
+                    <div class="account-card p-4">
+                        <h5 class="h6 mb-3 fw-bold text-secondary text-uppercase">Elementy w sliderze</h5>
+
+                        <div class="alert alert-info small p-2">
+                            <i class="fa-solid fa-arrows-up-down-left-right me-2"></i>
+                            Przeciągnij i upuść, aby zmienić kolejność.
+                        </div>
+
+                        <div class="row g-3" id="slider-editor-list">
+
+                            <div th:each="item : ${slider.items}" class="col-12 col-md-6 slider-wrapper-div">
+                                <div class="card slider-item-card">
+                                    <img th:src="@{'/uploads/slider/thumb_' + ${item.image.fileName}}" class="card-img-top" alt="Zdjęcie">
+
+                                    <div class="card-body p-2">
+                                        <textarea class="form-control form-control-sm item-description" rows="3" placeholder="Wprowadź opis..." th:text="${item.description}"></textarea>
+
+                                        <input type="hidden" class="item-image-id" th:value="${item.image.id}">
+                                    </div>
+
+                                    <div class="slider-item-controls">
+                                        <i class="fa-solid fa-grip-vertical drag-handle" title="Przeciągnij"></i>
+                                        <a href="#" class="btn btn-remove-item" title="Usuń ze slidera">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="gallery-list" id="gallery-list">
-                  <img src="../../../../../uploads/products/1/tshirt.png" class="gallery-thumbnail" alt="Miniatura">
-                  <img src="../../../../../uploads/products/1/kurtka.png" class="gallery-thumbnail" alt="Miniatura">
-                  <img src="../../../../../uploads/products/1/bluza.png" class="gallery-thumbnail" alt="Miniatura">
-                  <img src="../../../../../uploads/products/1/dresy.png" class="gallery-thumbnail" alt="Miniatura">
-                  <img src="../../../../../uploads/products/1/czapka.png" class="gallery-thumbnail" alt="Miniatura">
+
+                <div class="col-lg-5">
+                    <div class="account-card p-4">
+                        <h5 class="h6 mb-3 fw-bold text-secondary text-uppercase">Zdjęcia w bazie</h5>
+
+                        <input type="search" id="gallery-search" class="form-control form-control-sm mb-3" placeholder="Wyszukaj...">
+
+                        <div class="alert alert-info small p-2">
+                            <i class="fa-solid fa-arrow-left me-2"></i>
+                            Przeciągnij zdjęcie do panelu po lewej.
+                        </div>
+
+                        <div class="gallery-list" id="gallery-list">
+                            <img th:each="img : ${galleryImages}"
+                                 th:src="@{'/uploads/slider/thumb_' + ${img.fileName}}"
+                                 th:data-id="${img.id}"
+                                 class="gallery-thumbnail"
+                                 alt="Miniatura">
+                        </div>
+                    </div>
                 </div>
-              </div>
+
             </div>
-            
-          </div>
 
         </div>
-      </div>
     </div>
+</div>
 
-  <footer th:insert="~{fragments/footer :: footer}"></footer>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
-    
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        
-  
-        var editorList = document.getElementById('slider-editor-list');
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
+
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const sliderId = /*[[${slider.id}]]*/ 0;
+
+        const editorList = document.getElementById('slider-editor-list');
+        const galleryList = document.getElementById('gallery-list');
+
         new Sortable(editorList, {
+            group: 'slider-collection',
             animation: 150,
-            handle: '.drag-handle', 
-            group: 'slider-collection', 
+            handle: '.drag-handle',
             ghostClass: 'sortable-ghost',
+
+            onAdd: function (evt) {
+                const item = evt.item;
+
+                const imgSrc = item.src;
+                const imgId = item.getAttribute('data-id');
+                const wrapperDiv = document.createElement('div');
+                wrapperDiv.className = 'col-12 col-md-6 slider-wrapper-div';
+
+                wrapperDiv.innerHTML = `
+                    <div class="card slider-item-card">
+                      <img src="${imgSrc}" class="card-img-top" alt="Zdjęcie">
+                      <div class="card-body p-2">
+                        <textarea class="form-control form-control-sm item-description" rows="3" placeholder="Wprowadź opis..."></textarea>
+                        <input type="hidden" class="item-image-id" value="${imgId}">
+                      </div>
+                      <div class="slider-item-controls">
+                        <i class="fa-solid fa-grip-vertical drag-handle"></i>
+                        <a href="#" class="btn btn-remove-item"><i class="fa-solid fa-trash-can"></i></a>
+                      </div>
+                    </div>
+                `;
+
+                item.replaceWith(wrapperDiv);
+            }
         });
 
-       
-        var galleryList = document.getElementById('gallery-list');
         new Sortable(galleryList, {
-            animation: 150,
             group: {
                 name: 'slider-collection',
-                pull: 'clone', 
-                put: false      
+                pull: 'clone',
+                put: false
             },
-            sort: false, 
-            ghostClass: 'sortable-ghost',
+            animation: 150,
+            sort: false,
+            ghostClass: 'sortable-ghost'
         });
-        
 
         editorList.addEventListener("click", (e) => {
-            if (e.target.closest(".btn-remove-item")) {
+            const removeBtn = e.target.closest(".btn-remove-item");
+            if (removeBtn) {
                 e.preventDefault();
-                const card = e.target.closest(".col-12"); 
-                if (confirm("Czy na pewno chcesz usunąć ten element ze slidera?")) {
-                  card.remove();
+                // Szukamy najbliższego wrappera (col-12) i go usuwamy
+                const wrapper = removeBtn.closest(".slider-wrapper-div");
+                if (confirm("Usunąć ten element?")) {
+                    wrapper.remove();
                 }
             }
         });
 
-      });
-    </script>
-  </body>
+        const saveBtn = document.getElementById('btn-save-slider');
+
+        saveBtn.addEventListener('click', async () => {
+            const originalText = saveBtn.innerHTML;
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i>Zapisywanie...';
+
+            const items = [];
+            const cards = document.querySelectorAll('#slider-editor-list .slider-item-card');
+
+            cards.forEach(card => {
+                const idInput = card.querySelector('.item-image-id');
+                const descInput = card.querySelector('.item-description');
+
+                if (idInput) {
+                    items.push({
+                        imageId: parseInt(idInput.value),
+                        description: descInput ? descInput.value : ""
+                    });
+                }
+            });
+
+            const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
+            const csrfHeader = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
+
+            try {
+                const response = await fetch(`/admin/slider/save-items/${sliderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify(items)
+                });
+
+                if (response.ok) {
+                    alert('Zapisano pomyślnie!');
+                } else {
+                    const errorText = await response.text();
+                    alert('Błąd zapisu: ' + errorText);
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Wystąpił błąd połączenia z serwerem.');
+            } finally {
+                // Przywracamy przycisk
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+            }
+        });
+
+    });
+</script>
+</body>
 </html>

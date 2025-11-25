@@ -1,120 +1,129 @@
 <!DOCTYPE html>
-<html lang="pl">
-  <head>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FishingWear - Panel Admina - Kolekcje Slidera</title>
-      <th:block th:insert="fragments/head-styles :: theme-styles" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
 
-    <link
-      rel="stylesheet"
-      th:href="@{/libs/bootstrap/bootstrap.min.css}"
-      href="../../static/libs/bootstrap/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/style.css}"
-      href="../../static/css/style.css"
-    />
-    <link
-      rel="stylesheet"
-      th:href="@{/css/slider.css}"
-      href="../../static/css/slider.css"
-    />
+    <th:block th:insert="~{fragments/head-styles :: theme-styles}" />
 
-  </head>
-  <body style="background-color: var(--color-neutral-light)">
-  <nav th:insert="~{fragments/nav :: nav}"></nav>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="stylesheet" th:href="@{/css/slider.css}" />
+</head>
+<body style="background-color: var(--color-neutral-light)">
 
-    <div class="container my-5">
-      <div class="row g-4">
+<nav th:insert="~{fragments/nav :: nav}"></nav>
 
-          <div class="col-lg-4">
-              <div th:replace="fragments/admin-sidebar :: adminSidebar('slider')"></div>
-          </div>
+<div class="container my-5">
+    <div class="row g-4">
+
+        <div class="col-lg-4">
+            <div th:replace="~{fragments/admin-sidebar :: adminSidebar('slider')}"></div>
+        </div>
 
         <div class="col-lg-8">
-          
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="h3 mb-0">Kolekcje Slidera</h2>
-            <a href="#" th:href="@{/admin/slider/edycja}" class="btn btn-primary-custom">
-              <i class="fa-solid fa-plus me-2"></i>Dodaj nową kolekcję
-            </a>
-          </div>
 
-          <div class="account-card p-4">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Nazwa Kolekcji</th>
-                    <th scope="col">Ilość zdjęć</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Akcje</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  
-                  <tr>
-                    <td class="fw-bold">Główna strona - slider</td>
-                    <td>5</td>
-                    <td>
-                      <span class="badge badge-status completed">Aktywna</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn-link-custom me-3">Edytuj</a>
-                      <a href="#" class="btn-link-custom text-danger me-3">Usuń</a>
-                      <span class="text-success fw-bold">
-                        <i class="fa-solid fa-check me-1"></i>Aktywny
-                      </span>
-                    </td>
-                  </tr>
-                  
-                  <tr>
-                    <td class="fw-bold">Promocje zimowe</td>
-                    <td>3</td>
-                    <td>
-                      <span class="badge badge-status cancelled">Nieaktywna</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn-link-custom me-3">Edytuj</a>
-                      <a href="#" class="btn-link-custom text-danger me-3">Usuń</a>
-                      <a href="#" class="btn-link-custom">Ustaw jako aktywny</a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td class="fw-bold">Nowa kolekcja - Wiosna</td>
-                    <td>8</td>
-                    <td>
-                      <span class="badge badge-status cancelled">Nieaktywna</span>
-                    </td>
-                    <td>
-                      <a href="#" class="btn-link-custom me-3">Edytuj</a>
-                      <a href="#" class="btn-link-custom text-danger me-3">Usuń</a>
-                      <a href="#" class="btn-link-custom">Ustaw jako aktywny</a>
-                    </td>
-                  </tr>
-                  
-                </tbody>
-              </table>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h3 mb-0">Kolekcje Slidera</h2>
+                <button type="button" class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#createSliderModal">
+                    <i class="fa-solid fa-plus me-2"></i>Dodaj nową kolekcję
+                </button>
             </div>
-          </div>
+
+            <div class="account-card p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th scope="col">Nazwa Kolekcji</th>
+                            <th scope="col">Ilość zdjęć</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" style="min-width: 250px;">Akcje</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:each="slider : ${sliders}">
+
+                            <td class="fw-bold" th:text="${slider.name}">Nazwa</td>
+
+                            <td th:text="${slider.items.size()}">0</td>
+
+                            <td>
+                                <span th:if="${slider.isActive}" class="badge badge-status completed">Aktywna</span>
+                                <span th:unless="${slider.isActive}" class="badge badge-status cancelled">Nieaktywna</span>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+
+                                    <a th:href="@{/admin/slider/edycja/{id}(id=${slider.id})}" class="btn-link-custom">
+                                        Edytuj
+                                    </a>
+
+                                    <form th:action="@{/admin/slider/delete/{id}(id=${slider.id})}" method="POST"
+                                          onsubmit="return confirm('Czy na pewno usunąć tę kolekcję? Tej operacji nie można cofnąć.');">
+                                        <button type="submit" class="btn-link-custom text-danger border-0 bg-transparent p-0">
+                                            Usuń
+                                        </button>
+                                    </form>
+
+                                    <span th:if="${slider.isActive}" class="text-success fw-bold small">
+                                        <i class="fa-solid fa-check me-1"></i>Aktywny
+                                    </span>
+
+                                    <form th:unless="${slider.isActive}" th:action="@{/admin/slider/activate/{id}(id=${slider.id})}" method="POST">
+                                        <button type="submit" class="btn-link-custom border-0 bg-transparent p-0">
+                                            Ustaw jako aktywny
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(sliders)}">
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                Brak kolekcji sliderów.
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
         </div>
-      </div>
     </div>
+</div>
 
-  <footer th:insert="~{fragments/footer :: footer}"></footer>
+<div class="modal fade" id="createSliderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Nowa kolekcja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/admin/slider/create}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="sliderName" class="form-label text-secondary small text-uppercase fw-bold">Nazwa kolekcji</label>
+                        <input type="text" class="form-control" id="sliderName" name="name" placeholder="np. Promocje Lato 2025" required>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Anuluj</button>
+                    <button type="submit" class="btn btn-primary-custom">Utwórz</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-    <script
-      th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
-      src="../static/libs/bootstrap/bootstrap.bundle.min.js"
-    ></script>
+<footer th:insert="~{fragments/footer :: footer}"></footer>
 
-  </body>
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
+
+</body>
 </html>
