@@ -1,7 +1,7 @@
 package pl.fishingwear.slider.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort; // Opcjonalnie do sortowania
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +32,8 @@ public class SliderImageService {
                 true,
                 500, 300,
                 0.8,
-                0.95
+                0.95,
+                true
         );
 
         SliderImage sliderImage = new SliderImage();

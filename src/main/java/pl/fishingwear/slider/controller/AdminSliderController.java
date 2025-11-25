@@ -24,31 +24,22 @@ public class AdminSliderController {
     private final SliderImageService sliderImageService;
     private final SliderService sliderService;
 
-    // --- 1. WIDOK LISTY (Index) ---
     @GetMapping("/slider")
     public String slider(Model model) {
-        // Przekazujemy listę sliderów do tabeli w HTML
         model.addAttribute("sliders", sliderService.getAllSliders());
         return "admin/slider";
     }
 
-    // --- 2. WIDOK EDYCJI (Edit) ---
     @GetMapping("/slider/edycja/{id}")
     public String sliderEdit(@PathVariable Long id, Model model) {
         Slider slider = sliderService.getSlider(id);
-
-        // Sortujemy elementy slidera wg kolejności (sortOrder),
-        // żeby w panelu wyświetliły się tak, jak zostały zapisane.
         slider.getItems().sort(Comparator.comparing(SliderItem::getSortOrder));
 
         model.addAttribute("slider", slider);
-        // Przekazujemy wszystkie dostępne zdjęcia do prawej kolumny (Bank zdjęć)
         model.addAttribute("galleryImages", sliderImageService.getAllImages());
 
         return "admin/slider-edit";
     }
-
-    // --- 3. AKCJE FORMULARZY (Zwykłe POST) ---
 
     @PostMapping("/slider/create")
     public String createSlider(@RequestParam String name) {
@@ -68,7 +59,6 @@ public class AdminSliderController {
         return "redirect:/admin/slider";
     }
 
-    // --- 4. UPLOAD ZDJĘĆ (AJAX) ---
     @PostMapping("/slider/upload")
     public ResponseEntity<?> uploadSliderImage(@RequestParam("imageFiles") List<MultipartFile> imageFiles) {
         try {
@@ -82,7 +72,7 @@ public class AdminSliderController {
     }
 
     @PostMapping("/slider/save-items/{id}")
-    @ResponseBody // Ważne! Oznacza, że zwracamy JSON, a nie widok HTML
+    @ResponseBody
     public ResponseEntity<?> saveSliderItems(@PathVariable Long id, @RequestBody List<SliderItemDto> items) {
         try {
             sliderService.updateSliderContent(id, items);

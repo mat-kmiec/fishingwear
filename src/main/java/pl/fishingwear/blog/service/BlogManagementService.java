@@ -139,7 +139,8 @@ public class BlogManagementService {
                     true,
                     1200, 630,
                     0.8,
-                    0.9
+                    0.9,
+                    true
             );
         }
 

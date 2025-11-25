@@ -58,7 +58,7 @@
 
                 <div th:each="post : ${postsPage.content}" class="col-md-6">
                     <div class="card blog-card">
-                        <img th:src="@{/uploads/blog/full_{imageName}(imageName=${post.img})}"  class="card-img-top blog-card-img" th:alt="${post.title}">
+                        <img th:src="@{/uploads/blog/thumb_{imageName}(imageName=${post.img})}"  class="card-img-top blog-card-img" th:alt="${post.title}">
                         <div class="card-body d-flex flex-column">
                             <div>
                                 <span class="blog-badge me-2"

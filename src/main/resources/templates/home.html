@@ -31,33 +31,23 @@
   <body>
     <nav th:insert="~{fragments/nav :: nav}"></nav>
 
-    <div class="container-fluid my-5">
-      <div id="product-slider-container" class="slider-container">
-        <div class="slider-wrap">
-          <div class="track" id="track"></div>
+    <div class="container-fluid my-5 p-0" th:if="${not #lists.isEmpty(sliderItems)}">
+        <div id="product-slider-container" class="slider-container">
+            <div class="slider-wrap">
+                <div class="track" id="track"></div>
 
-          <button class="ctrl ctrl-prev" id="prevBtn" aria-label="Poprzednia">
-            <svg
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <button class="ctrl ctrl-next" id="nextBtn" aria-label="Następna">
-            <svg
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 6l6 6-6 6" />
-            </svg>
-          </button>
+                <button class="ctrl ctrl-prev" id="prevBtn" aria-label="Poprzednia">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                </button>
+                <button class="ctrl ctrl-next" id="nextBtn" aria-label="Następna">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M9 6l6 6-6 6" />
+                    </svg>
+                </button>
+            </div>
         </div>
-      </div>
     </div>
     <section class="parallax-cta my-5">
       <div class="container text-center">
@@ -386,6 +376,12 @@
       th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"
       src="../static/libs/bootstrap/bootstrap.bundle.min.js"
     ></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // To jest kluczowy moment! Java zamienia listę na tablicę JSON
+        const rawSliderData = /*[[${sliderItems}]]*/ [];
+        /*]]>*/
+    </script>
     <script th:src="@{/js/slider.js}" src="../static/js/slider.js"></script>
   </body>
 </html>

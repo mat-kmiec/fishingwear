@@ -57,7 +57,7 @@
             <column name="status" value="PUBLISHED"/>
             <column name="author_id" value="3"/>
             <column name="category_id" value="12"/>
-            <column name="img" value="blog-1.jpg"/>
+            <column name="img" value="blog-0.jpg"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2' DAY"/>
             <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
@@ -68,7 +68,7 @@
             <column name="status" value="PUBLISHED"/>
             <column name="author_id" value="3"/>
             <column name="category_id" value="12"/>
-            <column name="img" value="blog-1.jpg"/>
+            <column name="img" value="blog-0.jpg"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2' DAY"/>
             <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
@@ -79,7 +79,7 @@
             <column name="status" value="PUBLISHED"/>
             <column name="author_id" value="3"/>
             <column name="category_id" value="12"/>
-            <column name="img" value="blog-1.jpg"/>
+            <column name="img" value="blog-0.jpg"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '2' DAY"/>
             <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
@@ -90,7 +90,7 @@
             <column name="status" value="PUBLISHED"/>
             <column name="author_id" value="2"/>
             <column name="category_id" value="10"/>
-            <column name="img" value="blog-1.jpg"/>
+            <column name="img" value="blog-0.jpg"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP - INTERVAL '1' DAY"/>
             <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
@@ -101,7 +101,7 @@
             <column name="status" value="PENDING"/>
             <column name="author_id" value="4"/>
             <column name="category_id" value="10"/>
-            <column name="img" value="blog-1.jpg"/>
+            <column name="img" value="blog-0.jpg"/>
             <column name="created_at" valueComputed="CURRENT_TIMESTAMP"/>
             <column name="updated_at" valueComputed="CURRENT_TIMESTAMP"/>
         </insert>
