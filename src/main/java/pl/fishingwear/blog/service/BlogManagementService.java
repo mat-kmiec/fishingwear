@@ -98,6 +98,8 @@ public class BlogManagementService {
         if (!blogCategoryRepository.existsById(categoryId)) {
             throw new CategoryNotFoundException();
         }
+        postRepository.disassociatePosts(categoryId);
+        blogCategoryRepository.disassociateSubCategories(categoryId);
         blogCategoryRepository.deleteById(categoryId);
     }
 
@@ -120,7 +122,7 @@ public class BlogManagementService {
             category.setParent(null);
         }
 
-        if (dto.getModeratorId() != null || dto.getModeratorId() != 0) {
+        if (dto.getModeratorId() != null && dto.getModeratorId() > 0) {
             User moderator = userRepository.findById(dto.getModeratorId())
                     .orElseThrow(UserNotFoundException::new);
             category.setAssignedModerator(moderator);
@@ -132,7 +134,7 @@ public class BlogManagementService {
     }
 
     @Transactional
-    public void createPost(String title, String content, Long categoryId, MultipartFile image) { // usunąłem 'throws IOException'
+    public void createPost(String title, String content, Long categoryId, MultipartFile image) {
         String fileName = null;
 
         if (image != null && !image.isEmpty()) {

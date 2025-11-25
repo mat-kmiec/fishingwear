@@ -3,6 +3,7 @@ package pl.fishingwear.blog.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.fishingwear.blog.model.Post;
@@ -12,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-
 
 @Query(value = "SELECT * FROM blog_post p " +
         "WHERE p.status = 'PUBLISHED' " +
@@ -40,4 +40,8 @@ Page<Post> searchPosts(
     List<Post> findTop3ByStatusOrderByCreatedAtDesc(PostStatus status);
     Optional<Post> findByIdAndStatus(Long id, PostStatus status);
     Optional<Post> findById(Long id);
+
+    @Modifying
+    @Query("UPDATE Post p SET p.category = NULL WHERE p.category.id = :categoryId")
+    void disassociatePosts(@Param("categoryId") Long categoryId);
 }

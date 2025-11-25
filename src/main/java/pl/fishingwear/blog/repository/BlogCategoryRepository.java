@@ -1,6 +1,7 @@
 package pl.fishingwear.blog.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pl.fishingwear.blog.dto.BlogCategorySidebarDto;
@@ -29,4 +30,8 @@ public interface BlogCategoryRepository extends JpaRepository<BlogCategory, Long
     @Query("SELECT c FROM BlogCategory c LEFT JOIN FETCH c.assignedModerator LEFT JOIN FETCH c.parent")
     List<BlogCategory> findAllFullyPopulated();
 
+
+    @Modifying
+    @Query("UPDATE BlogCategory bc SET bc.parent = NULL WHERE bc.parent.id = :categoryId")
+    void disassociateSubCategories(@Param("categoryId") Long categoryId);
 }

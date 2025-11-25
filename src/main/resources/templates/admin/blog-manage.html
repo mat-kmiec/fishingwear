@@ -194,10 +194,8 @@
                                            data-bs-target="#editCategoryModal"
                                            th:data-category-id="${category.id}"
                                            th:data-category-name="${category.name}"
-
                                            th:data-parent-id="${category.parentCategoryId != null ? category.parentCategoryId : 0}"
-                                           >
-
+                                           th:data-moderator-id="${category.moderatorId != null ? category.moderatorId : 0}"  >
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
                                         <a href="#"
