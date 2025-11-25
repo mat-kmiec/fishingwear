@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.fishingwear.admin.exception.EmailCannotBeSendException;
+import pl.fishingwear.common.exception.EmailCannotBeSendException;
 import pl.fishingwear.cart.dto.CartItemDto;
 import pl.fishingwear.cart.dto.CartViewDto;
 import pl.fishingwear.common.service.MailService;
