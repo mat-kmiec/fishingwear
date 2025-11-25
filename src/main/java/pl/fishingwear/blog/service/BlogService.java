@@ -28,6 +28,7 @@ import pl.fishingwear.blog.repository.PostRepository;
 import pl.fishingwear.common.exception.UserNotFoundException;
 import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.repository.UserRepository;
+import pl.fishingwear.user.service.UserService;
 
 import java.security.Principal;
 import java.util.List;
@@ -42,6 +43,7 @@ public class BlogService {
     private final PostDetailsMapper postDetailsMapper;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public Page<PostDto> getPosts(int page, int size, String search, Long categoryId) {
         Pageable pageable = PageRequest.of(page, size);
@@ -82,29 +84,29 @@ public class BlogService {
             if (isStaff) {
                 comments = commentRepository.findByPostId(post.getId());
             } else {
-                User user = getCurrentUser(auth);
+                User user = userService.getCurrentUser().orElseThrow(UserNotFoundException::new);
                 comments = commentRepository.findVisibleForUser(post.getId(), user.getId());
             }
         }
         return postDetailsMapper.toDto(post, comments);
     }
 
-    private User getCurrentUser(Authentication auth) {
-        Object principal = auth.getPrincipal();
-        String email;
-
-        if (principal instanceof OAuth2User) {
-            OAuth2User oauthUser = (OAuth2User) principal;
-            email = oauthUser.getAttribute("email");
-        } else if (principal instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) principal;
-            email = userDetails.getUsername();
-        } else {
-            throw new IllegalStateException("Nieobsługiwany typ użytkownika: " + principal.getClass());
-        }
-
-        return userRepository.findByEmail(email)
-                .orElseThrow(UserNotFoundException::new);
-    }
+//    private User getCurrentUrer(Authentication auth) {
+//        Object principal = auth.getPrincipal();
+//        String email;
+//
+//        if (principal instanceof OAuth2User) {
+//            OAuth2User oauthUser = (OAuth2User) principal;
+//            email = oauthUser.getAttribute("email");
+//        } else if (principal instanceof UserDetails) {
+//            UserDetails userDetails = (UserDetails) principal;
+//            email = userDetails.getUsername();
+//        } else {
+//            throw new IllegalStateException("Nieobsługiwany typ użytkownika: " + principal.getClass());
+//        }
+//
+//        return userRepository.findByEmail(email)
+//                .orElseThrow(UserNotFoundException::new);
+//    }
 
 }

@@ -33,7 +33,9 @@ public class UserController {
     }
 
     @GetMapping("/moje-konto")
-    public String user() {
+    public String user(Model model) {
+        int userCount = userService.countAllUsers();
+        model.addAttribute("userCount", userCount);
         return "user/review";
     }
 
