@@ -43,6 +43,13 @@ public class BlogController {
     @GetMapping("/{id}")
     public String getPost(@PathVariable Long id, Model model) {
         PostDetailsDto postDetailsDto = blogService.getPostById(id);
+//        @ModelAttribute("recentPosts")
+//        public List<PostSideBarDto> getRecentPosts() {
+//            return blogService.getTop3Post();
+//        }
+//        List<PostSideBarDto> recentPosts = blogService.getTop3Post();
+
+        model.addAttribute("recentPosts", getTop3SideBarPosts());
         model.addAttribute("post", postDetailsDto);
         Long currentUserId = userService.getCurrentUser().map(User::getId).orElse(null);
         int pendingCommentCount = 0;
@@ -85,6 +92,7 @@ public class BlogController {
         model.addAttribute("totalPages", postsPage.getTotalPages());
         model.addAttribute("search", search);
         model.addAttribute("categoryId", categoryId);
+        model.addAttribute("recentPosts", getTop3SideBarPosts());
 
         return "blog/blog-list";
     }
@@ -101,11 +109,10 @@ public class BlogController {
         return Math.toIntExact(postRepository.countByStatus(PostStatus.PUBLISHED));
     }
 
-    @ModelAttribute("recentPosts")
-    public List<PostSideBarDto> getRecentPosts() {
+
+    private List<PostSideBarDto> getTop3SideBarPosts(){
         return blogService.getTop3Post();
     }
-
 
     @ExceptionHandler(UserNotFoundException.class)
     public String handleUserNotFound() {

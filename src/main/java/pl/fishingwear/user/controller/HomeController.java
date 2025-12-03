@@ -42,6 +42,8 @@ public class HomeController {
 
         model.addAttribute("sliderItems", itemsDto);
 
+
+
         return "home";
     }
 }
