@@ -152,38 +152,38 @@
                              constraintName="uq_vote_user_comment"/>
     </changeSet>
 
-    <changeSet id="06-create-notifications-table" author="fishingwear">
+    <changeSet id="20251218-create-notifications" author="">
         <createTable tableName="notifications">
-            <column name="id" type="BIGINT" autoIncrement="true">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-
-            <column name="user_id" type="BIGINT">
-                <constraints foreignKeyName="fk_notifications_user"
-                             referencedTableName="users"
-                             referencedColumnNames="id"
-                             nullable="false"/>
+            <column name="recipient_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_notif_recipient" referencedTableName="users" referencedColumnNames="id"/>
             </column>
-
-            <column name="message" type="VARCHAR(255)">
+            <column name="title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="type" type="VARCHAR(50)">
+            <column name="message" type="text">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="is_read" type="BOOLEAN" defaultValue="false">
+            <column name="target_url" type="varchar(500)"/>
+            <column name="type" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
-
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
+            <column name="post_id" type="bigint">
+                <constraints foreignKeyName="fk_notif_post" referencedTableName="blog_post" referencedColumnNames="id"/>
             </column>
+            <column name="category_id" type="bigint">
+                <constraints foreignKeyName="fk_notif_category" referencedTableName="blog_categories" referencedColumnNames="id"/>
+            </column>
+
+            <column name="is_read" type="boolean" defaultValueBoolean="false"/>
+            <column name="created_at" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP"/>
         </createTable>
 
-        <createIndex indexName="idx_notifications_user" tableName="notifications">
-            <column name="user_id"/>
+        <createIndex indexName="idx_notif_recipient_read" tableName="notifications">
+            <column name="recipient_id"/>
+            <column name="is_read"/>
         </createIndex>
     </changeSet>
 
@@ -261,5 +261,6 @@
             <column name="discussion_id"/>
         </createIndex>
     </changeSet>
+
 
 </databaseChangeLog>
