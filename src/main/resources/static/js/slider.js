@@ -1,12 +1,18 @@
+// 1. Konwersja danych z backendu (Java) na format slidera
+// Sprawdzamy czy zmienna istnieje, jeśli nie (np. błąd ładowania) dajemy pustą tablicę
 const backendData = (typeof rawSliderData !== 'undefined') ? rawSliderData : [];
+
+// 2. Mapowanie
 const products = backendData.map(item => {
     return {
         title: item.title || "",
         description: item.description,
+        // ZMIANA: Teraz w DTO mamy od razu pole 'imageName', a nie zagnieżdżony obiekt
         img: '/uploads/slider/' + (item.imageName ? item.imageName : 'placeholder.jpg')
     };
 });
 
+// Reszta zmiennych bez zmian
 const track = document.getElementById("track");
 let cardSlots = [];
 let active = 0;
@@ -16,10 +22,10 @@ let touchStartY = 0;
 let VISIBLE_CARDS;
 let CENTER_INDEX;
 let autoPlayTimer = null;
-const AUTO_PLAY_DELAY = 3000;
+const AUTO_PLAY_DELAY = 3000; // Zwiększyłem trochę czas, żeby dało się czytać
 
 function getProduct(index) {
-    if (products.length === 0) return null;
+    if (products.length === 0) return null; // Zabezpieczenie
     const n = products.length;
     const safeIndex = (index % n + n) % n;
     return products[safeIndex];
@@ -28,6 +34,7 @@ function getProduct(index) {
 function renderSlot(el, product) {
     if (!product) return;
 
+    // USUNIĘTO BUTTON Z HTML
     el.innerHTML = `
     <img src="${product.img}" class="card-img-top" alt="${product.title}">
     <div class="card-body">
@@ -37,6 +44,7 @@ function renderSlot(el, product) {
   `;
 }
 
+// ... updateSlots(), animate() ... (BEZ ZMIAN)
 function updateSlots() {
     cardSlots.forEach((el, i) => {
         const posIndex = i - CENTER_INDEX;
@@ -87,6 +95,7 @@ function animate(direction) {
     }, { once: true });
 }
 
+// ... Touch events (BEZ ZMIAN) ...
 function handleTouchStart(e) {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
@@ -123,6 +132,71 @@ function stopAutoPlay() {
     if (autoPlayTimer) clearInterval(autoPlayTimer);
 }
 
+function calculateMaxHeight() {
+    if (!products || products.length === 0) return;
+
+    // 1. Tworzymy tymczasowy, niewidoczny kontener do pomiarów
+    const measureContainer = document.createElement('div');
+    measureContainer.style.position = 'absolute';
+    measureContainer.style.visibility = 'hidden';
+    measureContainer.style.top = '-9999px';
+    measureContainer.style.width = 'var(--card-width)'; // Szerokość karty z CSS
+    measureContainer.style.padding = '0';
+
+    // Musimy dodać go do body, żeby przeglądarka mogła obliczyć style
+    document.body.appendChild(measureContainer);
+
+    let maxHeight = 0;
+
+    // 2. Iterujemy przez WSZYSTKIE produkty
+    products.forEach(product => {
+        // Tworzymy strukturę karty "na brudno"
+        const tempCard = document.createElement('div');
+        // Dodajemy style, które wpływają na wysokość (padding, fonty)
+        tempCard.style.width = '100%';
+        tempCard.style.display = 'flex';
+        tempCard.style.flexDirection = 'column';
+        tempCard.style.background = 'white'; // żeby symulować kartę
+
+        // Renderujemy zawartość
+        // UWAGA: Musi pasować do styli CSS (wysokość obrazka 260px + paddingi)
+        // W stylach CSS ustawiliśmy height zdjęcia na 260px, padding body na 20px.
+        // Tutaj musimy to odwzorować w prosty sposób lub wstrzyknąć HTML.
+
+        tempCard.innerHTML = `
+            <div style="height: 260px; width: 100%;"></div> <div style="padding: 20px; display: flex; flex-direction: column;">
+                ${product.title ? `<div class="product-title" style="font-weight:600; font-size:1.1rem; margin-bottom:8px;">${product.title}</div>` : ''}
+                <div class="product-description" style="font-size:0.9rem; margin-top:12px; margin-bottom:15px;">
+                    ${product.description}
+                </div>
+            </div>
+        `;
+
+        measureContainer.appendChild(tempCard);
+
+        // 3. Mierzymy wysokość
+        const height = tempCard.offsetHeight;
+        if (height > maxHeight) {
+            maxHeight = height;
+        }
+
+        // Czyścimy kontener
+        measureContainer.removeChild(tempCard);
+    });
+
+    // 4. Sprzątamy
+    document.body.removeChild(measureContainer);
+
+    // 5. Ustawiamy zmienną CSS dla całego slidera
+    // Dodajemy mały zapas (np. 10px) dla bezpieczeństwa
+    const finalHeight = maxHeight + 10;
+
+    const container = document.getElementById('product-slider-container');
+    if (container) {
+        container.style.setProperty('--card-height', `${finalHeight}px`);
+    }
+}
+
 function init() {
     const sliderContainer = document.getElementById('product-slider-container');
     if (!sliderContainer) return;
@@ -132,12 +206,17 @@ function init() {
         return;
     }
 
+    // >>> NOWE: Obliczamy wysokość przed renderowaniem <<<
+    calculateMaxHeight();
+
     const numProducts = products.length;
     const nextBtn = document.getElementById('nextBtn');
     const prevBtn = document.getElementById('prevBtn');
     const sliderWrap = sliderContainer.querySelector('.slider-wrap');
 
     if (!sliderWrap || !nextBtn || !prevBtn) return;
+
+    // Logika trybów (1, 2, 3-4, 5+ elementów)
     if (numProducts === 1) {
         nextBtn.style.display = 'none';
         prevBtn.style.display = 'none';
@@ -194,4 +273,8 @@ function init() {
     startAutoPlay();
 }
 
-init();
+// Uruchamiamy po załadowaniu zasobów, żeby fonty nie zmieniły wysokości tekstu
+window.addEventListener('load', init);
+
+
+

@@ -11,14 +11,20 @@
            th:classappend="${activeTab == 'user-manage'} ? ' active'"
            th:href="@{/admin/uzytkownicy}">Zarządzanie użytkownikami</a>
         <a class="nav-link"
+           th:classappend="${activeTab == 'order-manage'} ? ' active'"
+           th:href="@{/admin/zamowienia}">Zarządzanie Zamówieniami</a>
+        <hr class="my-2">
+
+        <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">
+            Blog
+        </h6>
+
+        <a class="nav-link"
            th:classappend="${activeTab == 'blog-manage'} ? ' active'"
            th:href="@{/admin/blog}">Zarządzanie Blogiem</a>
         <a class="nav-link"
-           th:classappend="${activeTab == 'order-manage'} ? ' active'"
-           th:href="@{/admin/zamowienia}">Zarządzanie Zamówieniami</a>
-
-
-        <hr class="my-2">
+           th:classappend="${activeTab == 'blog-activity'} ? ' active'"
+           th:href="@{/admin/blog}">Aktywność</a>
 
         <h6 class="nav-link disabled text-uppercase small fw-bold text-secondary ps-3 pt-3 pb-0">
             Sklep
