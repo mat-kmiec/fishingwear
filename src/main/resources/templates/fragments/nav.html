@@ -81,6 +81,19 @@
                 <span class="visually-hidden">przedmioty w koszyku</span>
               </span>
                 </a>
+                <a class="nav-link position-relative fs-4 me-3"
+                   th:href="@{/admin/blog/activity}"
+                   sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')"
+                   aria-label="Powiadomienia">
+
+                    <i class="fa-solid fa-bell"></i>
+
+                    <span th:if="${unreadNotificationsCount > 0}"
+                          class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-small bg-danger"
+                          >
+        <span th:text="${unreadNotificationsCount > 99 ? '99+' : unreadNotificationsCount}">5</span>
+    </span>
+                </a>
                 <div class="nav-item dropdown ms-3 me-3" sec:authorize="hasAnyRole('ADMIN', 'MODERATOR')">
 
                     <a class="nav-link dropdown-toggle fs-4 "

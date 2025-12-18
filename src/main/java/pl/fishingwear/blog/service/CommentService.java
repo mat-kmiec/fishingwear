@@ -9,6 +9,7 @@ import pl.fishingwear.blog.model.Comment;
 import pl.fishingwear.blog.model.CommentVote;
 import pl.fishingwear.blog.model.Post;
 import pl.fishingwear.blog.model.enums.CommentStatus;
+import pl.fishingwear.blog.model.enums.NotificationType;
 import pl.fishingwear.blog.repository.CommentRepository;
 import pl.fishingwear.blog.repository.CommentVoteRepository;
 import pl.fishingwear.blog.repository.PostRepository;
@@ -31,25 +32,60 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserService userService;
     private final CommentVoteRepository commentVoteRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public void addComment(Long postId, String commentContent, Principal principal){
         Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
         User user = userService.findByEmail(principal.getName());
+
         if(commentContent == null || commentContent.isBlank()){
             throw new IllegalArgumentException("Comment content cannot be empty");
         }
+
         Comment comment = Comment.builder()
                 .content(commentContent)
                 .post(post)
                 .author(user)
                 .createdAt(LocalDateTime.now())
                 .build();
+
         boolean userIsStaff = user.getRole().equals(Role.ADMIN) || user.getRole().equals(Role.MODERATOR);
+
         if (userIsStaff){
             comment.setStatus(CommentStatus.APPROVED);
+        } else {
+            sendNotificationToModerator(post, user);
         }
+
         commentRepository.save(comment);
+    }
+
+    private void sendNotificationToModerator(Post post, User author) {
+        // 1. Sprawdzamy, czy kategoria ma przypisanego moderatora
+        User recipient = post.getCategory().getAssignedModerator();
+
+        // 2. Jeśli nie ma przypisanego moderatora, pobieramy głównego admina (przykładowo)
+        if (recipient == null) {
+            recipient = userRepository.findFirstByRole(Role.ADMIN)
+                    .orElse(null); // Zabezpieczenie, jeśli w bazie nie ma admina
+        }
+
+        if (recipient != null) {
+            String title = "Nowy komentarz do akceptacji";
+            String message = String.format("Użytkownik %s dodał komentarz pod wpisem: %s",
+                    author.getFullName(), post.getTitle());
+            String url = "/blog/" + post.getId();
+
+            notificationService.createNotification(
+                    recipient,
+                    title,
+                    message,
+                    NotificationType.COMMENT_PENDING,
+                    url,
+                    post
+            );
+        }
     }
 
     @Transactional

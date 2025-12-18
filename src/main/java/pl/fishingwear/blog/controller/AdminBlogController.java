@@ -163,7 +163,7 @@ public class AdminBlogController {
     @GetMapping("/blog/activity")
     public String showActivityCenter(
             @AuthenticationPrincipal UserDetails userDetails,
-            @PageableDefault(size = 10) Pageable pageable,
+            @PageableDefault(size = 5) Pageable pageable,
             Model model) {
 
         String email = userDetails.getUsername();
@@ -175,6 +175,12 @@ public class AdminBlogController {
         model.addAttribute("unreadCount", unreadCount);
         model.addAttribute("activeTab", "blog-activity");
 
-        return "admin/activity";
+        return "admin/blog-activity";
     }
+
+//    @PostMapping("/blog/activity/mark-read/{id}")
+//    public String markAsRead(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
+//        notificationService.markAsRead(id);
+//        return "redirect:/admin/activity";
+//    }
 }

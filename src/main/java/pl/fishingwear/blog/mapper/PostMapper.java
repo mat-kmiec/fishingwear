@@ -10,18 +10,15 @@ import java.util.Optional;
 public class PostMapper {
 
     public PostDto toDto(Post post){
-        // Użycie Optional dla bezpiecznego dostępu do Author i jego pól
         User author = post.getAuthor();
 
-        // 1. Bezpieczne uzyskanie ID autora
         Long authorId = Optional.ofNullable(author)
                 .map(User::getId)
-                .orElse(null); // Zwraca null, jeśli autor jest null
+                .orElse(null);
 
-        // 2. Bezpieczne uzyskanie pełnej nazwy autora
         String authorFullName = Optional.ofNullable(author)
                 .map(a -> a.getFirstName() + " " + a.getLastName())
-                .orElse("Nieznany Autor"); // Zwraca domyślny ciąg, jeśli autor jest null
+                .orElse("Nieznany Autor");
 
         return new PostDto(
                 post.getId(),
@@ -29,8 +26,8 @@ public class PostMapper {
                 post.getContent(),
                 post.getImg(),
                 post.getStatus(),
-                authorId,            // Użycie bezpiecznego ID
-                authorFullName,      // Użycie bezpiecznej nazwy
+                authorId,
+                authorFullName,
                 post.getCategory(),
                 post.getCreatedAt()
         );

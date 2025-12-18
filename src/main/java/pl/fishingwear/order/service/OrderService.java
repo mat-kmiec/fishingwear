@@ -8,10 +8,12 @@ import pl.fishingwear.common.exception.EmailCannotBeSendException;
 import pl.fishingwear.cart.dto.CartItemDto;
 import pl.fishingwear.cart.dto.CartViewDto;
 import pl.fishingwear.common.service.MailService;
+import pl.fishingwear.order.dto.AdminOrderDetailsDto;
 import pl.fishingwear.order.dto.CheckoutFormDto;
 import pl.fishingwear.order.dto.OrderConfirmationDto;
 import pl.fishingwear.cart.model.Cart;
 import pl.fishingwear.order.dto.OrderDto;
+import pl.fishingwear.order.exception.OrderNotFoundException;
 import pl.fishingwear.order.mapper.OrderMapper;
 import pl.fishingwear.order.model.Order;
 import pl.fishingwear.order.model.OrderItem;
@@ -172,6 +174,16 @@ public class OrderService {
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public AdminOrderDetailsDto findOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        checkOrderAccess(order);
+
+        return orderMapper.toAdminDto(order);
     }
 
 }

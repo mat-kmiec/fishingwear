@@ -30,7 +30,7 @@
 
       <style>
           .category-list .list-group-item.active {
-              background-color: var(--color-primary); /* Tło koloru akcentu */
+              background-color: var(--color-primary);
               color: white;
               font-weight: 600;
               border-color: var(--color-accent);
@@ -45,7 +45,7 @@
 
           .comments-wrapper {
               max-height: 100vh;
-              overflow-y: auto; /* pionowy scroll */
+              overflow-y: auto;
           }
 
 
@@ -261,7 +261,7 @@
                     <i class="fa-solid fa-bell me-2"></i>
                     <span th:text="'Masz ' + ${pendingCommentCount} + ' komentarz do akceptacji.'"></span>
                 </div>
-              <a href="#" class="btn btn-outline-secondary w-100">
+              <a th:href="@{/admin/blog#comments}" class="btn btn-outline-secondary w-100">
                 Przejdź do kolejki moderacji
               </a>
             </div>

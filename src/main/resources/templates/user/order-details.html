@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'FishingWear - Moje zamówienie #' + ${order.id}">FishingWear - Moje zamówienie</title>
+
+    <th:block th:insert="~{fragments/head-styles :: theme-styles}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+
+    <style>
+        .badge-status.new { background-color: #0d6efd; color: white; }
+        .badge-status.processing { background-color: #ffc107; color: black; }
+        .badge-status.shipped { background-color: #198754; color: white; }
+        .badge-status.delivered { background-color: #0dcaf0; color: black; }
+        .badge-status.canceled { background-color: #dc3545; color: white; }
+
+        /* Styl dla paska postępu statusu */
+        .order-stepper {
+            display: flex;
+            justify-content: bgetween;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+        .step-item {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: #adb5bd;
+            transition: 0.3s;
+        }
+        .step-item.active .step-icon {
+            background: var(--color-primary);
+            color: white;
+        }
+        .step-item.completed .step-icon {
+            background: #198754;
+            color: white;
+        }
+    </style>
+</head>
+<body style="background-color: var(--color-neutral-light)">
+
+<nav th:insert="~{fragments/nav :: nav}"></nav>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <div th:replace="fragments/user-sidebar :: accountSidebar('orders')"></div>
+
+        <div class="col-lg-8">
+            <div class="mb-4 d-flex justify-content-between align-items-end">
+                <div>
+                    <h2 class="h3 mb-1" th:text="'Szczegóły zamówienia #' + ${order.id}">Zamówienie #10025</h2>
+                    <p class="text-muted mb-0" th:text="'Data złożenia: ' + ${#temporals.format(order.createdAt, 'dd.MM.yyyy HH:mm')}"></p>
+                </div>
+                <span class="badge badge-status p-2 px-3 fs-6"
+                      th:classappend="${#strings.toLowerCase(order.status)}"
+                      th:text="${order.status}">Nowe</span>
+            </div>
+
+            <div class="account-card p-4 mb-4 text-center">
+                <div class="d-flex justify-content-around">
+                    <div class="step-item" th:classappend="${order.status.name() != 'CANCELED'} ? 'completed' : ''">
+                        <div class="step-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                        <small>Złożone</small>
+                    </div>
+                    <div class="step-item" th:classappend="${order.status.name() == 'PROCESSING' or order.status.name() == 'SHIPPED' or order.status.name() == 'DELIVERED'} ? 'active' : ''">
+                        <div class="step-icon"><i class="fa-solid fa-box-open"></i></div>
+                        <small>W przygotowaniu</small>
+                    </div>
+                    <div class="step-item" th:classappend="${order.status.name() == 'SHIPPED' or order.status.name() == 'DELIVERED'} ? 'active' : ''">
+                        <div class="step-icon"><i class="fa-solid fa-truck"></i></div>
+                        <small>Wysłane</small>
+                    </div>
+                    <div class="step-item" th:classappend="${order.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                        <div class="step-icon"><i class="fa-solid fa-house-chimney-check"></i></div>
+                        <small>Odebrane</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="account-card p-4">
+                        <h4 class="h5 mb-4">Zakupione produkty</h4>
+                        <div class="table-responsive">
+                            <table class="table table-borderless align-middle">
+                                <thead>
+                                <tr class="text-muted small border-bottom">
+                                    <th>Produkt</th>
+                                    <th class="text-center">Ilość</th>
+                                    <th class="text-end">Cena</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="item : ${order.items}" class="border-bottom">
+                                    <td class="py-3">
+                                        <div class="fw-bold" th:text="${item.productName}">Wędka Jaxon</div>
+                                        <small class="text-muted" th:text="${item.variantDetails}">Rozmiar: XL</small>
+                                    </td>
+                                    <td class="text-center" th:text="${item.quantity}">1</td>
+                                    <td class="text-end fw-bold" th:text="${item.totalPrice} + ' zł'">199,99 zł</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 ms-auto" style="max-width: 300px;">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Suma częściowa:</span>
+                                <span th:text="${order.subtotal} + ' zł'">299,00 zł</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Dostawa:</span>
+                                <span th:text="${order.shippingCost} + ' zł'">15,00 zł</span>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between fs-5 fw-bold">
+                                <span>Łącznie:</span>
+                                <span style="color: var(--color-primary);" th:text="${order.total} + ' zł'">314,00 zł</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="account-card p-4 mb-4">
+                        <h4 class="h6 mb-3 fw-bold text-uppercase">Adres dostawy</h4>
+                        <address class="mb-0 small text-secondary">
+                            <strong class="text-dark" th:text="${order.firstName + ' ' + order.lastName}">Alicja Testowa</strong><br>
+                            <span th:text="${order.shippingAddress}">ul. Morska 15</span><br>
+                            <span th:text="${order.zipCode + ' ' + order.city}">80-001 Gdańsk</span>
+                        </address>
+                    </div>
+
+                    <div class="account-card p-4">
+                        <h4 class="h6 mb-3 fw-bold text-uppercase">Metoda płatności</h4>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-credit-card me-2 text-primary"></i>
+                            <span class="small" th:text="${order.paymentMethod != null ? order.paymentMethod : 'Przelewy24'}">Przelewy24</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a th:href="@{/historia-zamowien}" class="btn btn-outline-secondary">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Wróć do listy zamówień
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer th:insert="~{fragments/footer :: footer}"></footer>
+<script th:src="@{/libs/bootstrap/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

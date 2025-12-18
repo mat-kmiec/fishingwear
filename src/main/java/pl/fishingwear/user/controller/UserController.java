@@ -1,9 +1,13 @@
 package pl.fishingwear.user.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.fishingwear.common.exception.UserNotFoundException;
+import pl.fishingwear.order.dto.AdminOrderDetailsDto;
+import pl.fishingwear.order.dto.OrderDto;
 import pl.fishingwear.order.service.OrderService;
 import pl.fishingwear.theme.dto.ThemeDto;
 import pl.fishingwear.theme.service.ThemeService;
@@ -12,6 +16,7 @@ import pl.fishingwear.user.model.User;
 import pl.fishingwear.user.service.AddressService;
 import pl.fishingwear.user.service.UserService;
 
+import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,6 +53,40 @@ public class UserController {
 
         return "user/orders-list";
     }
+
+    @GetMapping("/historia-zamowien/{id}")
+    public String showOrderDetails(@PathVariable Long id, Principal principal, Model model) {
+        // 1. Sprawdzamy, czy principal nie jest nullem (bezpieczeństwo)
+        if (principal == null) {
+            return "redirect:/logowanie";
+        }
+
+        // 2. Pobieramy email bezpośrednio z principal
+        String email = principal.getName();
+
+        // 3. Pobieramy zamówienie (używając metody z checkOrderAccess, o której pisaliśmy wcześniej)
+        try {
+            AdminOrderDetailsDto orderDto = orderService.findOrderById(id);
+            model.addAttribute("order", orderDto);
+            return "user/order-details";
+        } catch (Exception e) {
+            return "redirect:/historia-zamowien";
+        }
+    }
+
+
+//    @GetMapping("/historia-zamowien/{id}")
+//    public String showOrderDetails(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails, Model model) {
+//        // 1. Pobierz DTO (używając istniejącej metody dla admina)
+//        AdminOrderDetailsDto orderDto = orderService.findOrderById(id);
+//
+//        // 2. Pobierz zalogowanego usera
+//        User currentUser = userService.findByEmail(userDetails.getUsername());
+//
+//
+//        model.addAttribute("order", orderDto);
+//        return "user/order-details";
+//    }
 
 
 
